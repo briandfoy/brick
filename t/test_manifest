@@ -38,5 +38,5 @@ date/valid_date.t
 date/ranges.t
 
 
-t/use_cases/zip_code.t
-t/use_cases/phone_number.t
+use_cases/zip_code.t
+use_cases/phone_number.t
