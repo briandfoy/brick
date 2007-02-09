@@ -1,0 +1,307 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Test::More 'no_plan';
+
+=head1 NAME
+
+Beancounter US Zip Code Use Case
+
+=head1 SYNOPSIS
+
+
+=head1 DESCRIPTION
+
+=cut
+
+my $class = 'Beancounter';
+use_ok( $class );
+
+my $bean = Beancounter->new();
+isa_ok( $bean, $class );
+
+=head2 Create the constraint
+
+=over 4
+
+=item Input
+
+=item Add to input hash
+
+=item Get the pieces to test each condition
+
+=item Compose the pieces
+
+=item Turn the composition into a constraint
+
+
+=back
+
+=cut 
+
+{
+package Beancounter::Pool;
+
+sub value_format_by_field_name
+	{
+	my( $pool, $hash ) = @_;
+	
+	my @subs = ();
+	
+	foreach my $field ( @{ $hash->{allowed_fields} } )
+		{
+		my $method = "_${field}_format";
+		do { warn "Cannot [$method]"; next } unless $pool->can( $method );
+		
+		my $blank = $pool->_is_blank( { field => $field } );
+		
+		my $sub = $pool->$method( { %$hash, field => $field } );
+		
+		my $either = $pool->__compose_satisfy_any( $blank, $sub );
+		
+		push @subs, $either;
+		}
+		
+	my $composed = $pool->__compose_satisfy_all( @subs );
+	
+	$pool->__make_constraint( $composed, $hash );
+	}
+	
+sub _postal_code_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	$hash->{exact_length} = 5;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_value_length_is_exactly( $hash ),		
+		$pool->_is_only_decimal_digits( $hash ),
+		);
+	}
+	
+sub _whole_number_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	$hash->{exact_length} = 5;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_is_only_decimal_digits( $hash ),
+		);
+	}
+	
+sub _birthday_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_is_YYYYMMDD_date_format( $hash ),
+		$pool->_is_valid_date( $hash ),
+		);
+	}
+
+sub _anniversary_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_is_YYYYMMDD_date_format( $hash ),
+		$pool->_is_valid_date( $hash ),
+		);
+	}
+
+sub _city_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_is_true( $hash ),
+		);
+	}
+
+sub _state_abbr_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	$hash->{exact_length} = 2;
+
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_value_length_is_exactly( $hash ),
+		$pool->_is_valid_date( $hash ),
+		);
+	}
+
+sub _country_format
+	{
+	my( $pool, $hash ) = @_;
+	
+	my $composed = $pool->__compose_satisfy_all( 
+		$pool->_is_true( $hash ),
+		);
+	}
+
+}
+
+=head2 Get some input data
+
+The input is a hash reference. The field names are the keys and their
+values are the hash values.
+
+=cut
+
+my $Input = {
+	birthday        => 1970010,
+	anniversary     => 20010101,
+	whole_number    => 123456,
+	postal_code     => '14227',
+	country         => 'United States',
+	state           => 'NY',
+	city            => 'Buffalo',
+	term            => 3,
+	_extra          => 'foo',
+	_super_bowl     => 'Da Bears!',
+	};
+
+	
+=head2 Create the profile
+
+=over 4
+
+=item Get the allowable field names, maybe from a configuration file or a database.
+Put the list of allowable fields in the 'allowed_fields'
+
+=cut
+
+my @allowed = grep { ! m/^_/ } keys %$Input;
+
+=item Get the required field names, maybe from a configuration file or a database.
+Put the list of required fields in the 'required_fields'. This only accounts for
+fields you know are required ahead of time, not fields required based on input
+conditions.
+
+=cut
+
+my @required = qw(birthday country state city postal_code);
+
+=back
+
+=cut 
+
+my $hash = {
+	allowed_fields  => \@allowed,
+	required_fields => \@required,
+	};
+	
+my $Profile = [
+	[ allowed_fields   => allowed_fields             => $hash ],
+	
+	[ required_fields  => required_fields            => $hash ],
+	
+	[ format_of_values => value_format_by_field_name => $hash ],
+
+	];
+	
+=head2 Test the profile with lint()
+
+This isn't a necessary step, but it's nice to know that the profile
+makes sense before you actually try to use it. Even if you don't do it
+for production code, you might want this step in there so you can turn
+it on for debugging.
+
+=cut
+
+my $lint = $bean->lint( $Profile );
+is( $lint, 0, "Profile has no errors" );
+
+=head2 Dump the profile with explain()
+
+This isn't a necessary step, but it's nice to know that the profile
+makes sense before you actually try to use it. Even if you don't do it
+for production code, you might want this step in there so you can turn
+it on for debugging.
+
+=cut
+
+print STDERR "\nExplaining $0 profile:\n", 
+	$bean->explain( $Profile ) if $ENV{DEBUG};
+
+=head2 Validate the data with apply()
+
+This isn't a necessary step, but it's nice to know that the profile
+makes sense before you actually try to use it. Even if you don't do it
+for production code, you might want this step in there so you can turn
+it on for debugging.
+
+=cut
+
+my $result = $bean->apply( $Profile, $Input );
+
+isa_ok( $result, ref [], "Results come back as array reference" );
+is( scalar @$result, scalar @$Profile, "Results has one element per Profile element" );
+
+print STDERR Data::Dumper->Dump( [$result], [qw(result)] );
+
+=head2 Check the results
+
+This isn't a necessary step, but it's nice to know that the profile
+makes sense before you actually try to use it. Even if you don't do it
+for production code, you might want this step in there so you can turn
+it on for debugging.
+
+=cut
+
+#print STDERR Data::Dumper->Dump( [$result], [qw(result)] ) ; #if $ENV{DEBUG};
+use Data::Dumper;
+
+print STDERR "\n" if $ENV{DEBUG};
+
+foreach my $index ( 0 .. $#$result )
+	{
+	my $entry = $result->[$index];
+	
+	print STDERR "----- $entry->[0] ----------------------------\n" if $ENV{DEBUG};
+	
+	do { print STDERR "\tpassed\n\n" if $ENV{DEBUG}; next } if $entry->[2];
+	
+	my @data = ( $entry->[3] );
+	my @errors = ();
+	my $iterations = 0;
+	while( my $error = shift @data )
+		{
+		last if $iterations++ > 20; # debugging guard against infinity
+#		print STDERR "Iteration $iterations\n";
+		if( $error->{handler} =~ m/^__/ )
+			{
+			push @data, @{ $error->{errors} };
+			next;
+			}
+		
+		push @errors, $error;
+		}
+		
+	#print STDERR Data::Dumper->Dump( [\@errors], [qw(errors)] ) ; #if $ENV{DEBUG};
+
+	#print STDERR "$entry->[0] checked by $entry->[1] which returned:\n\t$message\n";
+	
+	next unless ref $entry->[3] and @{ $entry->[3]{errors} } > 0;
+	
+	foreach my $error ( @errors )
+		{
+		print STDERR "$error->{handler}: $error->{message}\n" if $ENV{DEBUG};
+		}
+	
+	print STDERR "\n" if $ENV{DEBUG};
+	}
+
+exit;
+
+{
+my $row = shift @$result;
+is( $row->[2], 1, "zip_code passes" );
+}
+
+foreach my $row ( @$result )
+	{
+	is( $row->[2], 0, "$row->[0] fails (as expected)" );
+	}
