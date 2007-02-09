@@ -9,7 +9,7 @@ sub _is_odd_number
 	{
 	my( $pool, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$pool->add_to_bucket( {
 		description => "The number is odd",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],
@@ -25,7 +25,7 @@ sub _is_even_number
 	{
 	my( $pool, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$pool->add_to_bucket( {
 		description => "The number is even",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],

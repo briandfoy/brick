@@ -9,7 +9,7 @@ sub _is_the_number_3
 	{
 	my( $pool, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$pool->add_to_bucket( {
 		description => "It's the number 3",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],
@@ -25,7 +25,7 @@ sub _is_the_letter_e
 	{
 	my( $pool, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$pool->add_to_bucket( {
 		description => "It's the letter e",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],
