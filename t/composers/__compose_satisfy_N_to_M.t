@@ -3,15 +3,15 @@ use strict;
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::General' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::General' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
 
 my $false_sub = sub { 0 };
@@ -24,7 +24,7 @@ my $die_sub   = sub { die {
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
-my $sub = $pool->__compose_satisfy_N_to_M( 0, 1, $true_sub );
+my $sub = $bucket->__compose_satisfy_N_to_M( 0, 1, $true_sub );
 isa_ok( $sub, ref sub {}, "_value_length_is_equal_to_less_than returns a hash ref" );
 
 my $result = eval { $sub->({}) };
@@ -33,7 +33,7 @@ is( $result, 1, "Satisfied zero or one true test" );
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
-my $sub = $pool->__compose_satisfy_N_to_M( 1, 1, $true_sub );
+my $sub = $bucket->__compose_satisfy_N_to_M( 1, 1, $true_sub );
 isa_ok( $sub, ref sub {}, "'code' key has a sub reference in it" );
 
 my $result = eval { $sub->({}) };
@@ -42,7 +42,7 @@ is( $result, 1, "Satisfied exactly one true test" );
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
-my $sub = $pool->__compose_satisfy_N_to_M( 2, 2, $true_sub );
+my $sub = $bucket->__compose_satisfy_N_to_M( 2, 2, $true_sub );
 isa_ok( $sub, ref sub {}, "_value_length_is_equal_to_less_than returns a code ref" );
 
 my $result = eval { $sub->({}) };
@@ -62,7 +62,7 @@ is( scalar @{$at->{errors}}, 0, "'errors' key is an anonymous array with no elem
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
-my $sub = $pool->__compose_satisfy_N_to_M( 2, 2, $true_sub, $false_sub );
+my $sub = $bucket->__compose_satisfy_N_to_M( 2, 2, $true_sub, $false_sub );
 isa_ok( $sub, ref sub {}, "_value_length_is_equal_to_less_than returns a code ref" );
 
 my $result = eval { $sub->({}) };
@@ -77,7 +77,7 @@ my @subs = ( $die_sub, $true_sub, $false_sub  );
 
 foreach my $sub ( @subs ) { isa_ok( $sub, ref sub {} ) }
 
-my $sub = $pool->__compose_satisfy_N_to_M( 3, 3, @subs );
+my $sub = $bucket->__compose_satisfy_N_to_M( 3, 3, @subs );
 isa_ok( $sub, ref sub {}, "_value_length_is_equal_to_less_than returns a code ref" );
 
 my $result = eval { $sub->({}) };

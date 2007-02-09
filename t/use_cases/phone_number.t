@@ -6,7 +6,7 @@ use Test::More 'no_plan';
 
 =head1 NAME
 
-Beancounter Local US Phone Number Use Case
+Brick Local US Phone Number Use Case
 
 =head1 SYNOPSIS
 
@@ -15,11 +15,11 @@ Beancounter Local US Phone Number Use Case
 
 =cut
 
-my $class = 'Beancounter';
+my $class = 'Brick';
 use_ok( $class );
 
-my $bean = Beancounter->new();
-isa_ok( $bean, $class );
+my $brick = Brick->new();
+isa_ok( $brick, $class );
 
 =head2 Create the constraint
 
@@ -40,9 +40,9 @@ isa_ok( $bean, $class );
 
 =cut 
 
-sub Beancounter::Pool::is_US_local_phone_number
+sub Brick::Bucket::is_US_local_phone_number
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
 	$hash->{exact_length} = 7; # without separator
 
@@ -55,13 +55,13 @@ sub Beancounter::Pool::is_US_local_phone_number
 		\z
 		/x;
 
-	my $composed = $pool->__compose_satisfy_all(
-		$pool->_remove_non_digits( $hash ),
-		$pool->_value_length_is_exactly( $hash ),		
-		$pool->_matches_regex( $hash ),
+	my $composed = $bucket->__compose_satisfy_all(
+		$bucket->_remove_non_digits( $hash ),
+		$bucket->_value_length_is_exactly( $hash ),		
+		$bucket->_matches_regex( $hash ),
 		);
 	
-	$pool->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $hash );
 	}
 	
 =head2 Create the profile
@@ -87,7 +87,7 @@ it on for debugging.
 
 =cut
 
-my $lint = $bean->lint( $Profile );
+my $lint = $brick->lint( $Profile );
 is( $lint, 0, "Profile has no errors" );
 
 =head2 Dump the profile with explain()
@@ -100,7 +100,7 @@ it on for debugging.
 =cut
 
 print STDERR "\nExplaining zip code profile:\n", 
-	$bean->explain( $Profile ) if $ENV{DEBUG};
+	$brick->explain( $Profile ) if $ENV{DEBUG};
 
 =head2 Get some input data
 
@@ -127,7 +127,7 @@ it on for debugging.
 
 =cut
 
-my $result = $bean->apply( $Profile, $Input );
+my $result = $brick->apply( $Profile, $Input );
 
 =head2 Check the results
 

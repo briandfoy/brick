@@ -6,7 +6,7 @@ use Test::More 'no_plan';
 
 =head1 NAME
 
-Beancounter US Zip Code Use Case
+Brick US Zip Code Use Case
 
 =head1 SYNOPSIS
 
@@ -15,11 +15,11 @@ Beancounter US Zip Code Use Case
 
 =cut
 
-my $class = 'Beancounter';
+my $class = 'Brick';
 use_ok( $class );
 
-my $bean = Beancounter->new();
-isa_ok( $bean, $class );
+my $brick = Brick->new();
+isa_ok( $brick, $class );
 
 =head2 Create the constraint
 
@@ -41,103 +41,103 @@ isa_ok( $bean, $class );
 =cut 
 
 {
-package Beancounter::Pool;
+package Brick::Bucket;
 
 sub value_format_by_field_name
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
 	my @subs = ();
 	
 	foreach my $field ( @{ $hash->{allowed_fields} } )
 		{
 		my $method = "_${field}_format";
-		do { warn "Cannot [$method]"; next } unless $pool->can( $method );
+		do { warn "Cannot [$method]"; next } unless $bucket->can( $method );
 		
-		my $blank = $pool->_is_blank( { field => $field } );
+		my $blank = $bucket->_is_blank( { field => $field } );
 		
-		my $sub = $pool->$method( { %$hash, field => $field } );
+		my $sub = $bucket->$method( { %$hash, field => $field } );
 		
-		my $either = $pool->__compose_satisfy_any( $blank, $sub );
+		my $either = $bucket->__compose_satisfy_any( $blank, $sub );
 		
 		push @subs, $either;
 		}
 		
-	my $composed = $pool->__compose_satisfy_all( @subs );
+	my $composed = $bucket->__compose_satisfy_all( @subs );
 	
-	$pool->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $hash );
 	}
 	
 sub _postal_code_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
 	$hash->{exact_length} = 5;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_value_length_is_exactly( $hash ),		
-		$pool->_is_only_decimal_digits( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_value_length_is_exactly( $hash ),		
+		$bucket->_is_only_decimal_digits( $hash ),
 		);
 	}
 	
 sub _whole_number_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
 	$hash->{exact_length} = 5;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_is_only_decimal_digits( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_is_only_decimal_digits( $hash ),
 		);
 	}
 	
 sub _birthday_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_is_YYYYMMDD_date_format( $hash ),
-		$pool->_is_valid_date( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_is_YYYYMMDD_date_format( $hash ),
+		$bucket->_is_valid_date( $hash ),
 		);
 	}
 
 sub _anniversary_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_is_YYYYMMDD_date_format( $hash ),
-		$pool->_is_valid_date( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_is_YYYYMMDD_date_format( $hash ),
+		$bucket->_is_valid_date( $hash ),
 		);
 	}
 
 sub _city_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_is_true( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_is_true( $hash ),
 		);
 	}
 
 sub _state_abbr_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
 	$hash->{exact_length} = 2;
 
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_value_length_is_exactly( $hash ),
-		$pool->_is_valid_date( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_value_length_is_exactly( $hash ),
+		$bucket->_is_valid_date( $hash ),
 		);
 	}
 
 sub _country_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	
-	my $composed = $pool->__compose_satisfy_all( 
-		$pool->_is_true( $hash ),
+	my $composed = $bucket->__compose_satisfy_all( 
+		$bucket->_is_true( $hash ),
 		);
 	}
 
@@ -211,7 +211,7 @@ it on for debugging.
 
 =cut
 
-my $lint = $bean->lint( $Profile );
+my $lint = $brick->lint( $Profile );
 is( $lint, 0, "Profile has no errors" );
 
 =head2 Dump the profile with explain()
@@ -224,7 +224,7 @@ it on for debugging.
 =cut
 
 print STDERR "\nExplaining $0 profile:\n", 
-	$bean->explain( $Profile ) if $ENV{DEBUG};
+	$brick->explain( $Profile ) if $ENV{DEBUG};
 
 =head2 Validate the data with apply()
 
@@ -235,7 +235,7 @@ it on for debugging.
 
 =cut
 
-my $result = $bean->apply( $Profile, $Input );
+my $result = $brick->apply( $Profile, $Input );
 
 isa_ok( $result, ref [], "Results come back as array reference" );
 is( scalar @$result, scalar @$Profile, "Results has one element per Profile element" );

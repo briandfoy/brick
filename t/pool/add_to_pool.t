@@ -3,22 +3,22 @@ use Test::Data qw(Scalar);
 
 use strict;
 
-use Beancounter::Pool;
-use Beancounter::Numbers;
+use Brick::Bucket;
+use Brick::Numbers;
 
-my $class = 'Beancounter::Pool';
+my $class = 'Brick::Bucket';
 
 use_ok( $class );
 
-my $pool = $class->new;
-isa_ok( $pool, $class );
+my $bucket = $class->new;
+isa_ok( $bucket, $class );
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # good entry
 {
 my $code_ref = sub { 5 };
 
-my $sub = $pool->add_to_pool(
+my $sub = $bucket->add_to_bucket(
 	{
 	code        => $code_ref,
 	name        => 'Fiver',
@@ -32,7 +32,7 @@ isa_ok( $sub, ref sub {} );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # bad entry
 while (0 ){
-my $entry = $pool->add_to_pool(
+my $entry = $bucket->add_to_bucket(
 	{
 	code        => '',
 	name        => 'Fiver',
@@ -49,16 +49,16 @@ undef_ok( $entry, "Passing something other than a code ref returns undef" );
 can_ok( $class, 'number_within_range' );
 can_ok( $class, '__compose_satisfy_all' );
 
-$pool->add_to_pool( { code =>
-	$pool->number_within_range( { qw( field in_number minimum 5 maximum 10 inclusive 1 ) } )
+$bucket->add_to_bucket( { code =>
+	$bucket->number_within_range( { qw( field in_number minimum 5 maximum 10 inclusive 1 ) } )
 	} );
 	
 use Data::Dumper;
-#print STDERR Data::Dumper->Dump( [ $pool ], [qw(pool)] );
+#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(bucket)] );
 
 __END__
 my $level = 0;
-foreach my $tuple ( map { [ $pool->{$_}{code}, $pool->{$_}{name} ] } keys %{ $pool } )
+foreach my $tuple ( map { [ $bucket->{$_}{code}, $bucket->{$_}{name} ] } keys %{ $bucket } )
 	{		
 	#print "Sub is $sub\n";
 	
@@ -68,7 +68,7 @@ foreach my $tuple ( map { [ $pool->{$_}{code}, $pool->{$_}{name} ] } keys %{ $po
 
 	while( my $pair = shift @uses )
 		{
-		my $entry = $pool->get_from_pool( $pair->[1] );
+		my $entry = $bucket->get_from_bucket( $pair->[1] );
 		
 		print STDERR "\t" x $pair->[0], $entry->get_name, "\n";
 		

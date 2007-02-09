@@ -1,6 +1,6 @@
 # $Id$
 BEGIN {
-	@classes = qw(Beancounter);
+	@classes = qw(Brick);
 	}
 
 use Test::More tests => scalar @classes;

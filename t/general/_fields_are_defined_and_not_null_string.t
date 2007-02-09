@@ -3,17 +3,17 @@ use strict;
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::General' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::General' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
-my $sub = $pool->_fields_are_defined_and_not_null_string( 
+my $sub = $bucket->_fields_are_defined_and_not_null_string( 
 	{
 	fields => [ qw(one two red blue false) ],
 	}
@@ -24,7 +24,7 @@ isa_ok( $sub, ref sub {}, "_fields_are_defined_and_not_null_string returns a cod
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # All the fields have values. Zero field is okay.
 {
-my $sub = $pool->_fields_are_defined_and_not_null_string( 
+my $sub = $bucket->_fields_are_defined_and_not_null_string( 
 	{
 	fields => [ qw(one two red blue false) ],
 	}
@@ -46,7 +46,7 @@ diag( "Eval error: $at" ) unless defined $result;
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # Extra fields are there
 {
-my $sub = $pool->_fields_are_defined_and_not_null_string( 
+my $sub = $bucket->_fields_are_defined_and_not_null_string( 
 	{
 	fields => [ qw(one two red blue empty undefined) ],
 	}

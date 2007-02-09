@@ -1,13 +1,13 @@
-package Mock::Pool;
-use base qw(Beancounter::Pool);
+package Mock::Bucket;
+use base qw(Brick::Bucket);
 
-use Beancounter;
+use Brick;
 
 sub new { bless {}, $_[0] }
 
-sub add_to_pool { return $_[1]->{code} }
+sub add_to_bucket { return $_[1]->{code} }
 
-sub pool_class { Beancounter->pool_class }
+sub bucket_class { Brick->bucket_class }
 
 sub comprise {}
 

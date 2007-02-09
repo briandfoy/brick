@@ -3,15 +3,15 @@ use strict;
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::General' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::General' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -21,7 +21,7 @@ my $undef_sub = sub { return };
 my $pass_sub  = sub { 1 };
 
 {
-my $sub = $pool->__compose_pass_or_skip( $undef_sub, $pass_sub );
+my $sub = $bucket->__compose_pass_or_skip( $undef_sub, $pass_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };
@@ -29,7 +29,7 @@ ok( $result, "Satisfied one" );
 }
 
 {
-my $sub = $pool->__compose_pass_or_skip( $undef_sub, $undef_sub );
+my $sub = $bucket->__compose_pass_or_skip( $undef_sub, $undef_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };
@@ -55,7 +55,7 @@ my $undef_sub = sub {
 my $pass_sub  = sub { 1 };
 
 {
-my $sub = $pool->__compose_pass_or_skip( $undef_sub, $pass_sub );
+my $sub = $bucket->__compose_pass_or_skip( $undef_sub, $pass_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };
@@ -83,7 +83,7 @@ my $dog_selector = sub {
 	return unless $_[0]->{animal} eq 'dog'; return 1 
 	};
 
-my $sub = $pool->__compose_pass_or_skip( $cat_selector, $dog_selector );
+my $sub = $bucket->__compose_pass_or_skip( $cat_selector, $dog_selector );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 foreach my $animal ( qw(dog cat dog) )
@@ -125,7 +125,7 @@ my $cat_sound = sub {
 	return 1 
 	};
 
-my $cat_composed = $pool->__compose_pass_or_stop( $cat_selector, $cat_sound );
+my $cat_composed = $bucket->__compose_pass_or_stop( $cat_selector, $cat_sound );
 	
 my $dog_selector = sub { 
 	print STDERR "Running dog selector with $_[0]->{animal}\n" if $ENV{DEBUG};
@@ -141,9 +141,9 @@ my $dog_sound = sub {
 	return 1 
 	};
 
-my $dog_composed = $pool->__compose_pass_or_stop( $dog_selector, $dog_sound );
+my $dog_composed = $bucket->__compose_pass_or_stop( $dog_selector, $dog_sound );
 
-my $sub = $pool->__compose_pass_or_skip( $cat_composed, $dog_composed );
+my $sub = $bucket->__compose_pass_or_skip( $cat_composed, $dog_composed );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 foreach my $animal ( qw(dog cat dog) )

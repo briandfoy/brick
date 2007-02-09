@@ -1,10 +1,10 @@
 use Test::More 'no_plan';
 
-my $class = 'Beancounter';
+my $class = 'Brick';
 use_ok( $class );
 
-my $bean = $class->new();
-isa_ok( $bean, $class );
+my $brick = $class->new();
+isa_ok( $brick, $class );
 
 $ENV{DEBUG} ||= 0;
 
@@ -43,10 +43,10 @@ my %input = (
 	not_a_number => 'NaN',
 	);
 	
-my( $lint ) = $bean->lint( \@profile );
+my( $lint ) = $brick->lint( \@profile );
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
-my $result = $bean->apply( \@profile, \%input );
+my $result = $brick->apply( \@profile, \%input );
 
 isa_ok( $result, ref [], "apply() returns an array reference" );
 

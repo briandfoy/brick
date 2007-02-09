@@ -1,10 +1,10 @@
 use Test::More 'no_plan';
 use strict;
 
-my $class = 'Beancounter::Pool';
+my $class = 'Brick::Bucket';
 
 use_ok( $class );
 
-my $pool = $class->new;
+my $bucket = $class->new;
 
-isa_ok( $pool, $class );
+isa_ok( $bucket, $class );

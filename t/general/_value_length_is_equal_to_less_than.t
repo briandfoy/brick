@@ -2,17 +2,17 @@
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::General' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::General' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
-my $sub = $pool->_value_length_is_equal_to_less_than( 
+my $sub = $bucket->_value_length_is_equal_to_less_than( 
 	{
 	field          => 'string',
 	maximum_length => 10,

@@ -1,16 +1,16 @@
 use Test::More 'no_plan';
 use strict;
 
-my $class = 'Beancounter';
+my $class = 'Brick';
 use_ok( $class );
 
-my $bean = $class->new;
-isa_ok( $bean, $class );
+my $brick = $class->new;
+isa_ok( $brick, $class );
 
-my $pool = $bean->pool_class->new();
-isa_ok( $pool, $bean->pool_class );
+my $bucket = $brick->bucket_class->new();
+isa_ok( $bucket, $brick->bucket_class );
 
 
-my $entry = $pool->entry_class->new;
+my $entry = $bucket->entry_class->new;
 
-isa_ok( $entry, $pool->entry_class );
+isa_ok( $entry, $bucket->entry_class );

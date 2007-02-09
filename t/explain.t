@@ -1,10 +1,10 @@
 use Test::More 'no_plan';
 
-my $class = 'Beancounter';
+my $class = 'Brick';
 use_ok( $class );
 
-my $bean = $class->new();
-isa_ok( $bean, $class );
+my $brick = $class->new();
+isa_ok( $brick, $class );
 
 $ENV{DEBUG} ||= 0;
 
@@ -13,11 +13,11 @@ $ENV{DEBUG} ||= 0;
 my @profile = (
 );
 
-my $lint = $bean->lint( \@profile );
+my $lint = $brick->lint( \@profile );
 
 is( $lint, 0, "Profile is formatted correctly\n" );
 
-my $str = $bean->explain( \@profile );
+my $str = $brick->explain( \@profile );
 print STDERR $str if $ENV{DEBUG};
 }
 
@@ -41,14 +41,14 @@ my @profile = (
 
 	);
 
-my( $lint ) = $bean->lint( \@profile );
+my( $lint ) = $brick->lint( \@profile );
 
 #print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
 #use Data::Dumper;
 
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
-my $str = $bean->explain( \@profile );
+my $str = $brick->explain( \@profile );
 
 #print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
 }

@@ -2,10 +2,10 @@
 
 use Test::More;
 
-use_ok( 'Beancounter' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick' );
+use_ok( 'Brick::Bucket' );
 
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 use warnings;
 
@@ -72,7 +72,7 @@ date for that combination.
 
 =cut
 
-my $bucket = Beancounter::Pool->new;
+my $bucket = Brick::Bucket->new;
 
 =head3 Payroll dates
 
@@ -91,7 +91,7 @@ workers can also be contractors by taking on extra projects.
 sub _is_valid_semester_date {
 	my( $bucket, $hash ) = @_;
 	
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => '_is_valid_semester_date',
 		description => 'Semester date validator',
 		code        => sub {
@@ -115,7 +115,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) }, "invalid semester doesn
 sub _is_valid_fall_or_spring_date {
 	my( $bucket, $hash ) = @_;
 	
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => '_is_valid_fall_or_spring_date',
 		description => 'Spring or Fall semester date validator',
 		handler     => '_is_valid_fall_or_spring_date',
@@ -139,7 +139,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) }, "August isn't Fall or S
 sub _is_valid_paydate {
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => '_is_valid_paydate',
 		description => 'Paydate validator',
 		code        => sub {
@@ -163,7 +163,7 @@ ok( ! eval { $sub->( { effective_date => 1970080 } ) },  "invalid paydate doesn'
 sub _is_semiannual_payroll_date {
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => '_is_semiannual_payroll_date',
 		description => 'Semiannual date selector',
 		code        => sub {
@@ -186,7 +186,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) },  "invalid semiannual do
 sub _is_quarterly_payroll_date {
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => '_is_quarterly_payroll_date',
 		description => 'Quarterly date selector',
 		code        => sub {
@@ -223,7 +223,7 @@ sub _is_faculty
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_faculty',
 		description => 'Faculty selector',
 		code        => sub  { $_[0]->{worker_type} eq "Faculty" ? 1 : () },
@@ -242,7 +242,7 @@ sub _is_professional
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_professional',
 		description => 'Faculty selector',
 		code        =>  sub { $_[0]->{worker_type} eq "Professional" ? 1 : () },
@@ -268,7 +268,7 @@ sub _is_faculty_21
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_faculty_21',
 		description => 'Faculty 21 selector',
 		code        => sub { $_[0]->{pay_basis} eq "Faculty 21" ? 1 : () },
@@ -288,7 +288,7 @@ sub _is_faculty_26
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_faculty_26',
 		description => 'Faculty 26 selector',
 		code        => sub { $_[0]->{pay_basis} eq "Faculty 26" ? 1 : () },
@@ -308,7 +308,7 @@ sub _is_hourly
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_hourly',
 		description => 'Hourly selector',
 		code        => sub { $_[0]->{pay_basis} eq "Hourly"     ? 1 : () },
@@ -328,7 +328,7 @@ sub _is_salary
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_salary',
 		description => 'Salary selector',
 		code        => sub { $_[0]->{pay_basis} eq "Salary"     ? 1 : () },
@@ -348,7 +348,7 @@ sub _is_fee_based
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_fee_based',
 		description => 'Fee selector',
 		code        => sub { $_[0]->{pay_basis} eq "Fee"        ? 1 : () },
@@ -368,7 +368,7 @@ sub _is_extra_service
 	{
 	my( $bucket, $hash ) = @_;
 
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_extra_service',
 		description => 'Extra service selector',
 		code        => sub { $_[0]->{pay_basis} eq "Extra"      ? 1 : () },
@@ -395,7 +395,7 @@ sub _is_quarterly
 	{
 	my( $bucket, $hash ) = @_;
 	
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_quarterly',
 		description => 'Quarterly selector',
 		code   => sub { $_[0]->{payments} eq "Quarterly" ? 1 : () },
@@ -415,7 +415,7 @@ sub _is_semiannually
 	{
 	my( $bucket, $hash ) = @_;
 	
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_semiannually',
 		description => 'Semiannually selector',
 		code        => sub { $_[0]->{payments} eq "Semi-annually"  ? 1 : () },
@@ -435,7 +435,7 @@ sub _is_single_payment
 	{
 	my( $bucket, $hash ) = @_;
 	
-	$bucket->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => 'is_single_payment',
 		description => 'Single payment selector',
 		code        => sub { $_[0]->{payments} eq "Single" ? 1 : () },
@@ -1019,7 +1019,7 @@ my $sub = $bucket->effective_date( {} );
 isa_ok( $sub, ref sub {} );
 }
 
-my $bean = Beancounter->new;
+my $brick = Brick->new;
 
 my $Input   = {
 	worker_type    => 'Faculty',
@@ -1036,13 +1036,13 @@ my $Profile = [
 	[ effective_date => effective_date  => $hash ],
 	];
 	
-my $lint = $bean->lint( $Profile );
+my $lint = $brick->lint( $Profile );
 is( $lint, 0, "Profile passes lint" );
 
-print STDERR $bean->explain( $Profile ) if $ENV{DEBUG};
+print STDERR $brick->explain( $Profile ) if $ENV{DEBUG};
 
 
-my $results = $bean->apply( $Profile, $Input );
+my $results = $brick->apply( $Profile, $Input );
 print STDERR Data::Dumper->Dump( [$results], [qw(results)] ) if $ENV{DEBUG};
 
 isa_ok( $results, ref [], "Results is an array reference" );

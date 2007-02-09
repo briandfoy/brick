@@ -3,15 +3,15 @@ use strict;
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::General' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::General' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -23,7 +23,7 @@ my $zero_sub  = sub { 0 };
 my $pass_sub  = sub { 1 };
 
 {
-my $sub = $pool->__compose_pass_or_stop( $pass_sub, $undef_sub, $die_sub );
+my $sub = $bucket->__compose_pass_or_stop( $pass_sub, $undef_sub, $die_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->( {}) };
@@ -34,7 +34,7 @@ ok( ! ref $at, "No error in \$@" );
 }
 
 {
-my $sub = $pool->__compose_pass_or_stop( $undef_sub, $undef_sub );
+my $sub = $bucket->__compose_pass_or_stop( $undef_sub, $undef_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };
@@ -45,7 +45,7 @@ ok( ! ref $at, "No error in \$@" );
 }
 
 {
-my $sub = $pool->__compose_pass_or_stop( $pass_sub, $die_sub );
+my $sub = $bucket->__compose_pass_or_stop( $pass_sub, $die_sub );
 isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };

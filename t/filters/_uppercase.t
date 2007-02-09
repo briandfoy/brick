@@ -2,17 +2,17 @@
 
 use Test::More 'no_plan';
 
-use_ok( 'Beancounter::Filters' );
-use_ok( 'Beancounter::Pool' );
+use_ok( 'Brick::Filters' );
+use_ok( 'Brick::Bucket' );
 
 use lib qw( t/lib );
-use_ok( 'Mock::Pool' );
+use_ok( 'Mock::Bucket' );
 
-my $pool = Mock::Pool->new;
-isa_ok( $pool, 'Mock::Pool' );
-isa_ok( $pool, Mock::Pool->pool_class );
+my $bucket = Mock::Bucket->new;
+isa_ok( $bucket, 'Mock::Bucket' );
+isa_ok( $bucket, Mock::Bucket->bucket_class );
 
-my $sub = $pool->_uppercase( { filter_fields => [ qw(string string1 string2) ] } );
+my $sub = $bucket->_uppercase( { filter_fields => [ qw(string string1 string2) ] } );
 	
 isa_ok( $sub, ref sub {}, "_uppercase returns a code ref" );
 

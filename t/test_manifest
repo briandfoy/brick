@@ -9,10 +9,10 @@ composers/__compose_satisfy_N_to_M.t
 composers/__compose_pass_or_stop.t
 composers/__compose_pass_or_skip.t
 
-pool/load.t
-pool/new_pool.t
-pool/new_entry.t
-pool/add_to_pool.t
+bucket/load.t
+bucket/new_bucket.t
+bucket/new_entry.t
+bucket/add_to_bucket.t
 
 explain.t
 apply.t
