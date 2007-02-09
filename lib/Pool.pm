@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -7,12 +7,12 @@ use vars qw($VERSION);
 
 use Carp;
 
-use Beancounter::Constraints;
+use Brick::Constraints;
 
 foreach my $package ( qw(Numbers Regex Strings Date General Composers Filters) )
 	{
 	# print STDERR "Requiring $package\n";
-	eval "require Beancounter::$package";
+	eval "require Brick::$package";
 	print STDERR $@ if $@;
 	}
 
@@ -20,13 +20,13 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter - This is the description
+Brick - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter::Constraints::Pool;
+	use Brick::Constraints::Bucket;
 
-	my $pool = Beancounter::Constraints::Pool->new();
+	my $bucket = Brick::Constraints::Bucket->new();
 
 =head1 DESCRIPTION
 
@@ -36,7 +36,7 @@ Beancounter - This is the description
 
 =item new()
 
-Creates a new pool to store Beancounter constraints
+Creates a new pool to store Brick constraints
 
 =cut
 
@@ -69,7 +69,7 @@ sub entry_class { __PACKAGE__ . "::Entry"; }
 
 =over 4
 
-=item add_to_pool( HASHREF )
+=item add_to_bucket( HASHREF )
 
 You can pass these entries in the HASHREF:
 
@@ -90,12 +90,12 @@ It returns the subroutine reference.
 
 =cut
 
-sub add_to_pool
+sub add_to_bucket
 	{
 	require B;
 	my @caller = main::__caller_chain_as_list();
 	# print STDERR Data::Dumper->Dump( [\@caller],[qw(caller)] );
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my( $sub, $name, $description, $args, $fields ) = @$hash{ qw(code name description args fields) };
 
@@ -105,24 +105,24 @@ sub add_to_pool
 		croak "Code ref [$sub] is not a reference! $caller[1]{sub}";
 		return;
 		}
-	elsif( exists $pool->{ $sub } )
+	elsif( exists $bucket->{ $sub } )
 		{
 		#carp "Sub already enchanted!";
 		#return $sub;
 		no warnings;
-		my $old_name = $pool->{ $sub }{name};
+		my $old_name = $bucket->{ $sub }{name};
 		#print STDERR "Previous name is $old_name; passed in name is $name\n"
 			#if $ENV{DEBUG};
 		}
 
-	my $entry = $pool->{ $sub } || $pool->entry_class->new( $hash );
+	my $entry = $bucket->{ $sub } || $pool->entry_class->new( $hash );
 
 	$entry->{code} = $sub;
 
 	$entry->set_name( do {
 		if( defined $name ) { $name }
 		elsif( defined $entry->get_name ) { $entry->get_name }
-		elsif( ($name) = map { $_->{'sub'} =~ /^__|add_to_pool/ ? () :  $_->{'sub'} } @caller )
+		elsif( ($name) = map { $_->{'sub'} =~ /^__|add_to_bucket/ ? () :  $_->{'sub'} } @caller )
 			{
 			$name;
 			}
@@ -140,16 +140,16 @@ sub add_to_pool
 		"This spot left intentionally blank by a naughty programmer"
 		);
 
-	$entry->{created_by} ||= [ map { $_->{'sub'} =~ /add_to_pool/ ? () :  $_->{'sub'} } @caller ];
+	$entry->{created_by} ||= [ map { $_->{'sub'} =~ /add_to_bucket/ ? () :  $_->{'sub'} } @caller ];
 
 	$entry->set_gv( B::svref_2object($sub)->GV );
 
-	$pool->{ $sub } = $entry;
+	$bucket->{ $sub } = $entry;
 
 	$sub;
 	}
 
-=item get_from_pool( CODEREF )
+=item get_from_bucket( CODEREF )
 
 Gets the entry for the specified CODEREF. If the CODEREF is not in the pool,
 it returns false.
@@ -158,11 +158,11 @@ The return value is an entry instance.
 
 =cut
 
-sub get_from_pool
+sub get_from_bucket
 	{
-	my( $pool, $sub ) = @_;
+	my( $bucket, $sub ) = @_;
 
-	return exists $pool->{$sub} ? $pool->{$sub} : ();
+	return exists $bucket->{$sub} ? $pool->{$sub} : ();
 	}
 
 =item get_all_keys
@@ -179,31 +179,31 @@ sub get_all_keys { keys %{ $_[0] } }
 
 Tell the pool that the COMPOSED_CODEREF is made up of THE_OTHER_CODEREFS.
 
-	$pool->comprise( $sub, @component_subs );
+	$bucket->comprise( $sub, @component_subs );
 
 =cut
 
 sub comprise
 	{
-	my( $pool, $compriser, @used ) = @_;
+	my( $bucket, $compriser, @used ) = @_;
 
-	$pool->get_from_pool( $compriser )->add_bit( @used );
+	$bucket->get_from_bucket( $compriser )->add_bit( @used );
 	}
 
 
 =back
 
-=head1 Beancounter::Pool::Entry
+=head1 Brick::Bucket::Entry
 
 =cut
 
-package Beancounter::Pool::Entry;
+package Brick::Bucket::Entry;
 
 use Carp qw(carp);
 
 =over 4
 
-=item my $entry = Beancounter::Pool::Entry->new( HASHREF )
+=item my $entry = Brick::Bucket::Entry->new( HASHREF )
 
 =cut
 
@@ -225,7 +225,7 @@ Get the GV object associated with the entry. The GV object comes from
 the svref_2object(SVREF) function in the C<B> module. Use it to get
 information about the coderef's creation.
 
-	my $entry = $pool->get_entry( $coderef );
+	my $entry = $bucket->get_entry( $coderef );
 	my $gv    = $entry->get_gv;
 
 	printf "$coderef comes from %s line %s\n",

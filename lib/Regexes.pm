@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -11,15 +11,15 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter - This is the description
+Brick - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter::Constraints;
+	use Brick::Constraints;
 
 =head1 DESCRIPTION
 
-See C<Beancounter::Constraints> for the general discussion of constraint
+See C<Brick::Constraints> for the general discussion of constraint
 creation.
 
 =head2 Utilities
@@ -37,7 +37,7 @@ Create a code ref to apply a regular expression to the named field.
 
 sub _matches_regex
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
@@ -47,7 +47,7 @@ sub _matches_regex
     	return sub {};
 		}
 
-	$pool->add_to_pool ( {
+	$bucket->add_to_bucket ( {
 		name        => $caller[0]{'sub'},
 		description => ( $hash->{description} || "Match a regular expression" ),
 		#args        => [ dclone $hash ],

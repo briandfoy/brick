@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -9,17 +9,17 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter::Filters - do something to the input data
+Brick::Filters - do something to the input data
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
 =over 4
 
-=item $pool->_uppercase( HASHREF )
+=item $bucket->_uppercase( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -34,11 +34,11 @@ error.
 
 sub _uppercase
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "filter: uppercase the input",
 		code        => sub {
@@ -52,7 +52,7 @@ sub _uppercase
 		} );
 	}
 
-=item $pool->_lowercase( HASHREF )
+=item $bucket->_lowercase( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -67,11 +67,11 @@ error.
 
 sub _lowercase
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "filter: uppercase the input",
 		code        => sub {
@@ -85,7 +85,7 @@ sub _lowercase
 		} );
 	}
 
-=item $pool->_remove_non_digits( HASHREF )
+=item $bucket->_remove_non_digits( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -100,11 +100,11 @@ error.
 
 sub _remove_non_digits
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "filter: remove non-digits",
 		code        => sub {
@@ -124,7 +124,7 @@ sub _remove_non_digits
 		} );
 	}
 
-=item $pool->_remove_whitespace( HASHREF )
+=item $bucket->_remove_whitespace( HASHREF )
 
 This modifies the input data permanently. It removes the whitespace
 from the specified value in filter_fields. The value is still tainted
@@ -138,11 +138,11 @@ This filter always succeeds, so it will not generate an error.
 
 sub _remove_whitespace
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "filter: remove whitespace",
 		code        => sub {
@@ -155,7 +155,7 @@ sub _remove_whitespace
 		} );
 	}
 
-=item $pool->_remove_extra_fields( HASHREF )
+=item $bucket->_remove_extra_fields( HASHREF )
 
 This modifies the input data permanently. It removes any fields in
 the input that are not also in the 'filter_fields' value in HASHREF.
@@ -168,13 +168,13 @@ This filter always succeeds, so it will not generate an error.
 
 sub _remove_extra_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	my %allowed = map { $_, 1 } @{ $hash->{filter_fields} };
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "filter: remove extra fields",
 		code        => sub {

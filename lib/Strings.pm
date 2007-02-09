@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -9,17 +9,17 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter::General - constraints for domain-nonspecific stuff
+Brick::General - constraints for domain-nonspecific stuff
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
 =over 4
 
-=item $pool->value_length_is_exactly( HASHREF )
+=item $bucket->value_length_is_exactly( HASHREF )
 
 	exact_length
 
@@ -27,15 +27,15 @@ Beancounter::General - constraints for domain-nonspecific stuff
 
 sub _value_length_is_exactly
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{minimum_length} = $hash->{exact_length};
 	$hash->{maximum_length} = $hash->{exact_length};
 
-	$pool->_value_length_is_between( $hash );
+	$bucket->_value_length_is_between( $hash );
 	}
 
-=item $pool->value_length_is_greater_than( HASHREF )
+=item $bucket->value_length_is_greater_than( HASHREF )
 
 	minimum_length
 
@@ -43,11 +43,11 @@ sub _value_length_is_exactly
 
 sub _value_length_is_equal_to_greater_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "Length of value in $hash->{field} is greater than or equal to $hash->{minimum_length} characters",
 		code        => sub {
@@ -59,7 +59,7 @@ sub _value_length_is_equal_to_greater_than
 		} );
 	}
 
-=item $pool->value_length_is_less_than( HASHREF )
+=item $bucket->value_length_is_less_than( HASHREF )
 
 	maximum_length
 
@@ -67,11 +67,11 @@ sub _value_length_is_equal_to_greater_than
 
 sub _value_length_is_equal_to_less_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name        => $caller[0]{'sub'},
 		description => "Length of value in $hash->{field} is less than or equal to $hash->{maximum_length} characters",
 		code        => sub {
@@ -83,7 +83,7 @@ sub _value_length_is_equal_to_less_than
 		} );
 	}
 
-=item $pool->value_length_is_between( HASHREF )
+=item $bucket->value_length_is_between( HASHREF )
 
 	minimum_length
 	maximum_length
@@ -92,12 +92,12 @@ sub _value_length_is_equal_to_less_than
 
 sub _value_length_is_between
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $min = $pool->_value_length_is_equal_to_greater_than( $hash );
-	my $max = $pool->_value_length_is_equal_to_less_than( $hash );
+	my $min = $bucket->_value_length_is_equal_to_greater_than( $hash );
+	my $max = $bucket->_value_length_is_equal_to_less_than( $hash );
 
-	my $composed = $pool->__compose_satisfy_all( $min, $max );
+	my $composed = $bucket->__compose_satisfy_all( $min, $max );
 	}
 
 =back

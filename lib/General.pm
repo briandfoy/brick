@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -11,11 +11,11 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter::General - constraints for domain-nonspecific stuff
+Brick::General - constraints for domain-nonspecific stuff
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
@@ -30,11 +30,11 @@ Beancounter::General - constraints for domain-nonspecific stuff
 
 sub _is_blank
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{fields} = [ $hash->{field} ];
 
-	$pool->_fields_are_blank( $hash );
+	$bucket->_fields_are_blank( $hash );
 	}
 
 =item _is_true( HASHREF )
@@ -44,11 +44,11 @@ sub _is_blank
 
 sub _is_true
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{fields} = [ $hash->{field} ];
 
-	$pool->_fields_are_true( $hash );
+	$bucket->_fields_are_true( $hash );
 	}
 
 
@@ -59,11 +59,11 @@ sub _is_true
 
 sub _is_defined
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{fields} = [ $hash->{field} ];
 
-	$pool->_fields_are_defined( $hash );
+	$bucket->_fields_are_defined( $hash );
 	}
 
 =back
@@ -72,7 +72,7 @@ sub _is_defined
 
 =over 4
 
-=item $pool->defined_fields( HASHREF )
+=item $bucket->defined_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for definedness. It takes the same input.
@@ -82,13 +82,13 @@ to verify that each field for definedness. It takes the same input.
 
 sub defined_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_are_defined( $hash );
-	$pool->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_defined( $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
-=item $pool->true_fields( HASHREF )
+=item $bucket->true_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for true values. It takes the same input.
@@ -97,13 +97,13 @@ to verify that each field for true values. It takes the same input.
 
 sub true_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_are_true( $hash );
-	$pool->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_true( $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
-=item $pool->false_fields( HASHREF )
+=item $bucket->false_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for false values. It takes the same input.
@@ -112,13 +112,13 @@ to verify that each field for false values. It takes the same input.
 
 sub false_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_are_false( $hash );
-	$pool->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_false( $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
-=item $pool->blank_fields( HASHREF )
+=item $bucket->blank_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field has blank values. It takes the same input.
@@ -127,13 +127,13 @@ to verify that each field has blank values. It takes the same input.
 
 sub blank_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_are_blank( $hash );
-	$pool->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_blank( $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
-=item $pool->exist_fields( HASHREF )
+=item $bucket->exist_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field has blank values. It takes the same input.
@@ -142,13 +142,13 @@ to verify that each field has blank values. It takes the same input.
 
 sub exist_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_exist( $hash );
-	$pool->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_exist( $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
-=item $pool->allowed_fields( HASHREF )
+=item $bucket->allowed_fields( HASHREF )
 
 A wrapper around _remove_extra_fields to remove anything not in the
 list of the key 'allowed_fields' in HASHREF.
@@ -161,19 +161,19 @@ should be there are. Use required fields for that.
 
 sub allowed_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $filter_sub = $pool->_remove_extra_fields(
+	my $filter_sub = $bucket->_remove_extra_fields(
 		{
 		%$hash,
 		filter_fields => $hash->{allowed_fields}
 		}
 		);
 
-	$pool->__make_constraint( $filter_sub, $hash );
+	$bucket->__make_constraint( $filter_sub, $hash );
 	}
 
-=item $pool->required_fields( HASHREF )
+=item $bucket->required_fields( HASHREF )
 
 A wrapper around _fields_are_defined_and_not_null_string to check for
 the presence of the required fields. A required field must exist in
@@ -183,16 +183,16 @@ the input hash and have a defined value that is not the null string.
 
 sub required_fields
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $sub = $pool->_fields_are_defined_and_not_null_string(
+	my $sub = $bucket->_fields_are_defined_and_not_null_string(
 		{
 		%$hash,
 		fields => $hash->{required_fields},
 		}
 		);
 
-	$pool->__make_constraint( $sub, $hash );
+	$bucket->__make_constraint( $sub, $hash );
 	}
 
 =item _exist_fields( HASHREF )
@@ -213,7 +213,7 @@ If a code error occurs, it dies with a simple scalar.
 
 sub _exist_fields
 	{
-	my( $pool, $hash, $sub ) = @_;
+	my( $bucket, $hash, $sub ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
@@ -226,7 +226,7 @@ sub _exist_fields
     	return sub {};
 		}
 
-	my $composed = $pool->add_to_pool ( {
+	my $composed = $bucket->add_to_bucket ( {
 		description => ( $hash->{description} || "Fields exist" ),
 		#args        => [ dclone $hash ],
 		fields      => [ $hash->{fields} ],
@@ -253,7 +253,7 @@ sub _exist_fields
 			},
 		} );
 
-	$pool->comprise( $composed, $sub );
+	$bucket->comprise( $composed, $sub );
 
 	$composed;
 	}
@@ -280,7 +280,7 @@ If a code error occurs, it dies with a simple scalar.
 
 sub __fields_are_something
 	{
-	my( $pool, $hash, $sub ) = @_;
+	my( $bucket, $hash, $sub ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
@@ -291,7 +291,7 @@ sub __fields_are_something
     	return sub {};
 		}
 
-	my $composed = $pool->add_to_pool ( {
+	my $composed = $bucket->add_to_bucket ( {
 		description => ( $hash->{description} || "Fields exist" ),
 		#args        => [ dclone $hash ],
 		fields      => [ $hash->{fields} ],
@@ -326,7 +326,7 @@ sub __fields_are_something
 			},
 		} );
 
-	$pool->comprise( $composed, $sub );
+	$bucket->comprise( $composed, $sub );
 
 	$composed;
 	}
@@ -340,13 +340,13 @@ have a true value. See __fields_are_something for details.
 
 sub _fields_are_defined_and_not_null_string
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	#print STDERR "_fields_are_defined_and_not_null_string: ", Data::Dumper->Dump( [$hash], [qw(hash)] );
 
 	$hash->{test_name} = 'defined but not null';
 
-	$pool->__fields_are_something( $hash, sub { defined $_[0] and $_[0] ne '' } );
+	$bucket->__fields_are_something( $hash, sub { defined $_[0] and $_[0] ne '' } );
 	}
 
 
@@ -359,11 +359,11 @@ __fields_are_something for details.
 
 sub _fields_are_defined
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{test_name} = 'defined';
 
-	$pool->__fields_are_something( $hash, sub { defined $_[0] } );
+	$bucket->__fields_are_something( $hash, sub { defined $_[0] } );
 	}
 
 =item _fields_are_blank( HASHREF )
@@ -375,11 +375,11 @@ undefined or the empty string). See __fields_are_something for details.
 
 sub _fields_are_blank
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{test_name} = 'blank';
 
-	$pool->__fields_are_something( $hash, sub { ! defined $_[0] or $_[0] eq ''  } );
+	$bucket->__fields_are_something( $hash, sub { ! defined $_[0] or $_[0] eq ''  } );
 	}
 
 =item _fields_are_false( HASHREF )
@@ -391,11 +391,11 @@ sense). See __fields_are_something for details.
 
 sub _fields_are_false
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{test_name} = 'false';
 
-	$pool->__fields_are_something( $hash, sub { ! $_[0]  } );
+	$bucket->__fields_are_something( $hash, sub { ! $_[0]  } );
 	}
 
 =item _fields_are_true( HASHREF )
@@ -407,11 +407,11 @@ sense). See __fields_are_something for details.
 
 sub _fields_are_true
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	$hash->{test_name} = 'true';
 
-	$pool->__fields_are_something( $hash, sub { $_[0] } );
+	$bucket->__fields_are_something( $hash, sub { $_[0] } );
 	}
 
 =back

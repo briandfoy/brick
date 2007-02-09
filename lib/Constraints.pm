@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -9,17 +9,17 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter::Constraints - Connect the input data to the closures in the pool
+Brick::Constraints - Connect the input data to the closures in the pool
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
 =over 4
 
-=item $pool->__make_constraint( CODEREF, INPUT_HASH_REF )
+=item $bucket->__make_constraint( CODEREF, INPUT_HASH_REF )
 
 Turn a closure into a constraint by providing the bridge between the
 input hash and code reference.
@@ -31,7 +31,7 @@ pieces you want.
 
 sub __make_constraint # may need to change name to make generic
 	{
-    my( $pool, $validator, $hash ) = @_;
+    my( $bucket, $validator, $hash ) = @_;
 
 	$hash ||= {};
 
@@ -50,16 +50,16 @@ sub __make_constraint # may need to change name to make generic
  		)
     	{
     	croak( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
-    	return $pool->add_to_pool( {
+    	return $bucket->add_to_bucket( {
     		code        => sub {},
     		name        => "Null subroutine",
     		description => "This sub does nothing, because something didn't happen correctly."
     		} );
 		}
 
-    my $constraint = $pool->add_to_pool( {
+    my $constraint = $bucket->add_to_bucket( {
     	name        => $name,
-    	description => "Beancounter constraint sub for $name",
+    	description => "Brick constraint sub for $name",
 
     	code        => sub {
     		my $input_hash = shift;
@@ -71,7 +71,7 @@ sub __make_constraint # may need to change name to make generic
 			},
 		} );
 
-    $pool->comprise( $constraint, $validator );
+    $bucket->comprise( $constraint, $validator );
 
     return $constraint;
 	}
@@ -85,7 +85,7 @@ Adapter for Data::FormValidator
 
 sub __make_dfv_constraint # may need to change name to make generic
 	{
-    my( $pool, $validator, $hash ) = @_;
+    my( $bucket, $validator, $hash ) = @_;
 
 	$hash ||= {};
 
@@ -99,12 +99,12 @@ sub __make_dfv_constraint # may need to change name to make generic
  		)
     	{
     	carp( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
-    	return $pool->add_to_pool( { code => sub {}, name => "Null subroutine",
+    	return $bucket->add_to_bucket( { code => sub {}, name => "Null subroutine",
     		description => "This sub does nothing, because something didn't happen correctly."
     		} );
 		}
 
-    my $constraint = $pool->add_to_pool( {
+    my $constraint = $bucket->add_to_bucket( {
     	name        => $name,
     	description => "Data::FormValidator constraint sub for $callers[-1]{'sub'}",
 
@@ -124,7 +124,7 @@ sub __make_dfv_constraint # may need to change name to make generic
 			},
 		} );
 
-    $pool->comprise( $constraint, $validator );
+    $bucket->comprise( $constraint, $validator );
 
     return $constraint;
 	}

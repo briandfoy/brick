@@ -1,7 +1,7 @@
 # $Id$
-use Beancounter::Pool;
+use Brick::Bucket;
 
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -14,16 +14,16 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter::Composers - This is the description
+Brick::Composers - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter::Constraints::Pool;
+	use Brick::Constraints::Bucket;
 
 =head1 DESCRIPTION
 
 This module defines composing functions in the
-Beancounter::Constraints package. Each function takes a list of code
+Brick::Constraints package. Each function takes a list of code
 refs and returns a single code ref that wraps all of them. The single
 code ref returns true or false (but defined), as with other
 constraints.
@@ -47,8 +47,8 @@ once.
 
 sub __compose_satisfy_all
 	{
-	my $pool = shift;
-	$pool->__compose_satisfy_N( scalar @_, @_ );
+	my $bucket = shift;
+	$bucket->__compose_satisfy_N( scalar @_, @_ );
 	}
 
 =item __compose_satisfy_any( LIST OF CODEREFS )
@@ -61,8 +61,8 @@ short-circuiting.
 
 sub __compose_satisfy_any
 	{
-	my $pool = shift;
-	$pool->__compose_satisfy_N_to_M( 1, scalar @_, @_ );
+	my $bucket = shift;
+	$bucket->__compose_satisfy_N_to_M( 1, scalar @_, @_ );
 	}
 
 =item __compose_satisfy_none( LIST OF CODEREFS )
@@ -75,8 +75,8 @@ short-circuiting.
 
 sub __compose_satisfy_none
 	{
-	my $pool = shift;
-	$pool->__compose_satisfy_N_to_M( 0, 0, @_ );
+	my $bucket = shift;
+	$bucket->__compose_satisfy_N_to_M( 0, 0, @_ );
 	}
 
 =item __compose_satisfy_N( SCALAR, LIST OF CODEREFS )
@@ -89,9 +89,9 @@ is no short-circuiting.
 
 sub __compose_satisfy_N
 	{
-	my( $pool, $n, @subs ) = @_;
+	my( $bucket, $n, @subs ) = @_;
 
-	$pool->__compose_satisfy_N_to_M( $n, $n, @subs );
+	$bucket->__compose_satisfy_N_to_M( $n, $n, @subs );
 	}
 
 =item __compose_satisfy_N_to_M( LIST OF CODEREFS )
@@ -104,7 +104,7 @@ checked so there is no short-circuiting.
 
 sub __compose_satisfy_N_to_M
 	{
-	my( $pool, $n, $m, @subs ) = @_;
+	my( $bucket, $n, $m, @subs ) = @_;
 
 	if( grep { ref $_ ne ref sub {} } @subs )
 		{
@@ -116,7 +116,7 @@ sub __compose_satisfy_N_to_M
 
 	my $max = @subs;
 
-	my $sub = $pool->add_to_pool( {
+	my $sub = $bucket->add_to_bucket( {
 		code => sub {
 			my $count = 0;
 			my @dies = ();
@@ -141,7 +141,7 @@ sub __compose_satisfy_N_to_M
 			},
 		});
 
-	$pool->comprise( $sub, @subs );
+	$bucket->comprise( $sub, @subs );
 
 	return $sub;
 	}
@@ -152,9 +152,9 @@ sub __compose_satisfy_N_to_M
 
 sub __compose_not
 	{
-	my( $pool, $not_sub ) = @_;
+	my( $bucket, $not_sub ) = @_;
 
-	my $sub = $pool->add_to_pool( {
+	my $sub = $bucket->add_to_bucket( {
 		code => sub { if( $not_sub->( @_ ) ) { die {} } else { return 1 } },
 		} );
 
@@ -176,7 +176,7 @@ This can still die for programming (not logic) errors.
 
 sub __compose_pass_or_skip
 	{
-	my( $pool, @subs ) = @_;
+	my( $bucket, @subs ) = @_;
 
 	if( grep { ref $_ ne ref sub {} } @subs )
 		{
@@ -188,7 +188,7 @@ sub __compose_pass_or_skip
 
 	my $max = @subs;
 
-	my $sub = $pool->add_to_pool( {
+	my $sub = $bucket->add_to_bucket( {
 		code => sub {
 			my $count = 0;
 			my @dies = ();
@@ -215,7 +215,7 @@ sub __compose_pass_or_skip
 			},
 		});
 
-	$pool->comprise( $sub, @subs );
+	$bucket->comprise( $sub, @subs );
 
 	return $sub;
 	}
@@ -250,7 +250,7 @@ This can still die for programming (not logic) errors.
 
 sub __compose_pass_or_stop
 	{
-	my( $pool, @subs ) = @_;
+	my( $bucket, @subs ) = @_;
 
 	if( grep { ref $_ ne ref sub {} } @subs )
 		{
@@ -262,7 +262,7 @@ sub __compose_pass_or_stop
 
 	my $max = @subs;
 
-	my $sub = $pool->add_to_pool( {
+	my $sub = $bucket->add_to_bucket( {
 		code => sub {
 			my $count = 0;
 			my @dies = ();
@@ -292,7 +292,7 @@ sub __compose_pass_or_stop
 			},
 		});
 
-	$pool->comprise( $sub, @subs );
+	$bucket->comprise( $sub, @subs );
 
 	return $sub;
 	}

@@ -1,8 +1,8 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
-use Beancounter::Pool;
+use Brick::Bucket;
 
 use subs qw();
 use vars qw($VERSION);
@@ -13,11 +13,11 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter - This is the description
+Brick - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
@@ -25,7 +25,7 @@ Beancounter - This is the description
 
 =over 4
 
-=item $pool->number_within_range( HASHREF )
+=item $bucket->number_within_range( HASHREF )
 
 Hash fields:
 
@@ -37,7 +37,7 @@ Hash fields:
 
 sub number_within_range
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @missing = sort grep { ! defined $hash->{$_} } qw( minimum maximum );
 
@@ -51,25 +51,25 @@ sub number_within_range
     	return sub {};
 		}
 
-	my $format_sub = $pool->_is_decimal_integer( $hash );
+	my $format_sub = $bucket->_is_decimal_integer( $hash );
 
 	my $range_sub =	$hash->{inclusive} ?
-			$pool->_inclusive_within_numeric_range( $hash )
+			$bucket->_inclusive_within_numeric_range( $hash )
 				:
-			$pool->_exclusive_within_numeric_range( $hash );
+			$bucket->_exclusive_within_numeric_range( $hash );
 
-	my $composed_sub = $pool->__compose_satisfy_all( $format_sub, $range_sub );
+	my $composed_sub = $bucket->__compose_satisfy_all( $format_sub, $range_sub );
 
-	$pool->__make_constraint( $composed_sub, $hash );
+	$bucket->__make_constraint( $composed_sub, $hash );
 	}
 
 sub _is_only_decimal_digits
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	my $sub = $pool->_matches_regex( {
+	my $sub = $bucket->_matches_regex( {
 		description  => "The $hash->{field} value only has decimal digits",
 		field        => $hash->{field},
 		name         => $caller[0]{'sub'},
@@ -80,9 +80,9 @@ sub _is_only_decimal_digits
 			/x,
 		} );
 
-	my $composed = $pool->__compose_satisfy_all( $sub );
+	my $composed = $bucket->__compose_satisfy_all( $sub );
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name => $caller[0]{'sub'},
 		code => $composed,
 		} );
@@ -90,11 +90,11 @@ sub _is_only_decimal_digits
 
 sub _is_decimal_integer
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	my $sub = $pool->_matches_regex( {
+	my $sub = $bucket->_matches_regex( {
 		description  => "The $hash->{field} is an integer in base 10",
 		field        => $hash->{field},
 		name         => $caller[0]{'sub'},
@@ -106,9 +106,9 @@ sub _is_decimal_integer
 			/x,
 		} );
 
-	my $composed = $pool->__compose_satisfy_all( $sub );
+	my $composed = $bucket->__compose_satisfy_all( $sub );
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name => $caller[0]{'sub'},
 		code => $composed,
 		} );
@@ -116,32 +116,32 @@ sub _is_decimal_integer
 
 sub _inclusive_within_numeric_range
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		description => "Find number within the range [$hash->{minimum}, $hash->{maximum}] inclusively",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],
-		code        => $pool->__compose_satisfy_all(
-			$pool->_numeric_equal_or_greater_than( $hash ),
-			$pool->_numeric_equal_or_less_than( $hash ),
+		code        => $bucket->__compose_satisfy_all(
+			$bucket->_numeric_equal_or_greater_than( $hash ),
+			$bucket->_numeric_equal_or_less_than( $hash ),
 			),
 		} );
 	}
 
 sub _exclusive_within_numeric_range
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		description => "Find number within the range [$hash->{minimum}, $hash->{maximum}] exclusively",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],
-		code        => $pool->__compose_satisfy_all(
-			$pool->_numeric_strictly_greater_than( $hash ),
-			$pool->_numeric_strictly_less_than( $hash ),
+		code        => $bucket->__compose_satisfy_all(
+			$bucket->_numeric_strictly_greater_than( $hash ),
+			$bucket->_numeric_strictly_less_than( $hash ),
 			),
 		} );
 
@@ -149,11 +149,11 @@ sub _exclusive_within_numeric_range
 
 sub _numeric_equal_or_greater_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool({
+	$bucket->add_to_bucket({
 		description => "The number is equal to or greater than $hash->{minimum}",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],
@@ -169,11 +169,11 @@ sub _numeric_equal_or_greater_than
 
 sub _numeric_strictly_greater_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool({
+	$bucket->add_to_bucket({
 		description => "The number is greater than $hash->{minimum}",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],
@@ -189,11 +189,11 @@ sub _numeric_strictly_greater_than
 
 sub _numeric_equal_or_less_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool({
+	$bucket->add_to_bucket({
 		description => "The number is equal to or less than $hash->{maximum}",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],
@@ -209,11 +209,11 @@ sub _numeric_equal_or_less_than
 
 sub _numeric_strictly_less_than
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool({
+	$bucket->add_to_bucket({
 		description => "The number is less than $hash->{maximum}",
 		args        => [ dclone $hash ],
 		fields      => [ $hash->{field} ],

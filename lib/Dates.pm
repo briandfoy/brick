@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter::Pool;
+package Brick::Bucket;
 use strict;
 
 use subs qw();
@@ -12,11 +12,11 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter - This is the description
+Brick - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
 =head1 DESCRIPTION
 
@@ -29,13 +29,13 @@ Beancounter - This is the description
 
 sub _is_YYYYMMDD_date_format
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name => $caller[0]{'sub'},
-		code => $pool->_matches_regex( {
+		code => $bucket->_matches_regex( {
 			description  => "The $hash->{field} is in the YYYYMMDD date format",
 			field        => $hash->{field},
 			name         => $caller[0]{'sub'},
@@ -52,11 +52,11 @@ sub _is_YYYYMMDD_date_format
 
 sub _is_valid_date
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		name => $caller[0]{'sub'},
 		code => sub {
 			my $eval_error = 'Could not parse YYYYMMMDD date';
@@ -102,40 +102,40 @@ sub _is_valid_date
 
 sub _is_in_the_future
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_tomorrow
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_today
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_yesterday
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_in_the_past
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 	croak "Not implemented";
 	}
 
 
 sub _date_is_after
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		description => "Date is after the start date",
 		code        => sub {
 			my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
@@ -152,9 +152,9 @@ sub _date_is_after
 
 sub _date_is_before
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_pool( {
+	$bucket->add_to_bucket( {
 		description => "Date is before the end date",
 		code        => sub {
 			my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
@@ -170,14 +170,14 @@ sub _date_is_before
 
 sub date_within_range  # inclusive, negative numbers indicate past
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	my $before_sub = $pool->_date_is_before( $hash );
-	my $after_sub  = $pool->_date_is_after( $hash );
+	my $before_sub = $bucket->_date_is_before( $hash );
+	my $after_sub  = $bucket->_date_is_after( $hash );
 
-	my $composed   = $pool->__compose_satisfy_all( $after_sub, $before_sub );
+	my $composed   = $bucket->__compose_satisfy_all( $after_sub, $before_sub );
 
-	$pool->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $hash );
 	}
 
 =item days_between_dates_within_range
@@ -187,10 +187,10 @@ sub date_within_range  # inclusive, negative numbers indicate past
 
 sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->__make_constraint(
-		$pool->add_to_pool( {
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket( {
 			name        => "Date within range",
 			description => "",
 			code        => sub {
@@ -206,10 +206,10 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 
 sub days_between_outside_range
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->__make_constraint(
-		$pool->add_to_pool( {
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket( {
 			name        => "Date outside of range",
 			description => "",
 			code        => sub {
@@ -227,10 +227,10 @@ sub days_between_outside_range
 
 sub at_least_N_days_between
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->__make_constraint(
-		$pool->add_to_pool( {
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket( {
 			name        => "Date within $hash->{number_of_days} days of base date",
 			description => "",
 			code        => sub {
@@ -247,10 +247,10 @@ sub at_least_N_days_between
 
 sub at_most_N_days_between
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->__make_constraint(
-		$pool->add_to_pool( {
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket( {
 			name        => "Date within $hash->{number_of_days} days of base date",
 			description => "",
 			code        => sub {
@@ -267,28 +267,28 @@ sub at_most_N_days_between
 
 sub at_most_N_days_after
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub at_most_N_days_before
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub before_fixed_date
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub after_fixed_date
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
 	croak "Not implemented!";
 	}

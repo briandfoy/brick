@@ -1,5 +1,5 @@
 # $Id$
-package Beancounter;
+package Brick;
 use strict;
 
 use subs qw();
@@ -12,13 +12,13 @@ $VERSION = '0.10_01';
 
 =head1 NAME
 
-Beancounter - This is the description
+Brick - This is the description
 
 =head1 SYNOPSIS
 
-	use Beancounter;
+	use Brick;
 
-	my $bean = Beancounter->new( {
+	my $brick = Brick->new( {
 		external_packages => [ qw(Foo::Validator Bar::Validator) ]
 		} );
 
@@ -31,7 +31,7 @@ Beancounter - This is the description
 		[ outside   => ex_number       => $hash ],
 		);
 
-	my $results = $bean->apply( \@profile, \%input );
+	my $results = $brick->apply( \@profile, \%input );
 
 =head1 DESCRIPTION
 
@@ -40,9 +40,9 @@ Beancounter - This is the description
 
 =over 4
 
-=item Beancounter->new
+=item Brick->new
 
-Create a new C<Beancounter>. Currently this doesn't do anything other than
+Create a new C<Brick>. Currently this doesn't do anything other than
 give you an object so you can call methods.
 
 Future ideas? Maybe store several pools or profiles?
@@ -66,16 +66,16 @@ sub _load_external_packages
 	{
 	my( $self, @packages ) = @_;
 	
-	my $pool_class = $self->pool_class;
+	my $bucket_class = $self->pool_class;
 
 	foreach my $package ( @packages )
 		{
-		eval "package $pool_class; require $package; $package->import";
+		eval "package $bucket_class; require $package; $package->import";
 		}
 	
 	}
 	
-=item Beancounter->error_str
+=item Brick->error_str
 
 The error message from the last things that happened.
 
@@ -97,7 +97,7 @@ sub _set_error { $Error = $_[1] }
 
 =over 4
 
-=item $bean->init
+=item $brick->init
 
 Initialize the instance, or return it to a pristine state. Normally
 you don't have to do this because C<new> does it for you, but if you
@@ -109,9 +109,9 @@ sub init
 	{
 	my( $self, $args ) = @_;
 
-	my $pool_class = $self->pool_class;
+	my $bucket_class = $self->pool_class;
 	
-	eval "require $pool_class";
+	eval "require $bucket_class";
 
 	$self->{pools} = [];
 	
@@ -123,7 +123,7 @@ sub init
 		}
 	}
 
-=item $bean->add_validator_packages( PACKAGES )
+=item $brick->add_validator_packages( PACKAGES )
 
 Load external validator packages into the pool. Each of these packages
 should export the functions they want to make available. C<add_validator_package>
@@ -139,7 +139,7 @@ sub add_validator_packages
 	}
 
 
-=item my $new_bean = $bean->clone;
+=item my $new_bean = $brick->clone;
 
 Based on the current instance, create another one just like it but not
 connected to it (in effect forking the instance). After the C<clone>
@@ -154,12 +154,12 @@ a copy breaks, I'll fix that.
 
 sub clone
 	{
-	my( $bean ) = shift;
+	my( $brick ) = shift;
 
-	$bean;
+	$brick;
 	}
 
-=item my $result_arrayref = $bean->apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
+=item my $result_arrayref = $brick->apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
 
 Apply the profile to the data in the input hash reference. It returns an
 array reference whose elements correspond to the elements in the profile.
@@ -168,12 +168,12 @@ array reference whose elements correspond to the elements in the profile.
 
 sub apply
 	{
-	my( $bean, $profile, $input ) = @_;
+	my( $brick, $profile, $input ) = @_;
 
-	my( $pool, $refs ) = $bean->create_pool( $profile );
+	my( $bucket, $refs ) = $brick->create_bucket( $profile );
 
 	my @entries = map {
-		my $e = $pool->get_from_pool( $_ );
+		my $e = $bucket->get_from_bucket( $_ );
 		[ map { $e->$_ } qw(get_coderef get_name) ]
 		} @$refs;
 
@@ -218,7 +218,7 @@ sub apply
 	return \@results;
 	}
 
-=item $bean->explain( PROFILE_ARRAYREF )
+=item $brick->explain( PROFILE_ARRAYREF )
 
 Turn the profile into a textual description without applying it to any
 data. This does not add the profile to instance and it does not add
@@ -241,9 +241,9 @@ it in different ways (text output, hash output).
 
 sub explain
 	{
-	my( $bean, $profile ) = @_;
+	my( $brick, $profile ) = @_;
 
-	my $temp_bean = $bean->clone;
+	my $temp_bean = $brick->clone;
 
 	if( $temp_bean->lint( $profile ) )
 		{
@@ -251,12 +251,12 @@ sub explain
 		return;
 		}
 
-	my( $pool, $refs ) = $temp_bean->create_pool( $profile );
-		#print STDERR Data::Dumper->Dump( [ $pool ], [qw(pool)] );
+	my( $bucket, $refs ) = $temp_bean->create_bucket( $profile );
+		#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(pool)] );
 		#print STDERR Data::Dumper->Dump( [ $refs ], [qw(refs)] );
 
 	my @entries = map {
-		my $e = $pool->get_from_pool( $_ );
+		my $e = $bucket->get_from_bucket( $_ );
 		[ map { $e->$_ } qw(get_coderef get_name) ]
 		} @$refs;
 
@@ -274,7 +274,7 @@ sub explain
 
 		while( my $pair = shift @uses )
 			{
-			my $entry = $pool->get_from_pool( $pair->[1] );
+			my $entry = $bucket->get_from_bucket( $pair->[1] );
 			#print Data::Dumper->Dump( [ $entry ], [qw(entry)] );
 			next unless $entry;
 
@@ -292,7 +292,7 @@ sub explain
 	$str;
 	}
 
-=item $bean->lint
+=item $brick->lint
 
 Examine the profile and complain about irregularities in format. This
 only checks the format; it does not try to determine if the profile
@@ -303,7 +303,7 @@ had the error:
 	format  -   the element is an arrayref
 	name    -   the name is a scalar
 	method  -   is a code ref or can be found in the package
-					$bean->pool_class returns
+					$brick->pool_class returns
 	args    -   the last element is a hash reference
 
 If the profile is not an array reference, C<lint> immediately returns
@@ -312,7 +312,7 @@ format success and the number of errors (so true) for format failures.
 If there is a format error (e.g. an element is not an array ref), it
 immediately returns the number of errors up to that point.
 
-	my $lint = $bean->lint( \@profile );
+	my $lint = $brick->lint( \@profile );
 
 	print do {
 		if( not defined $lint ) { "Profile must be an array ref\n" }
@@ -346,7 +346,7 @@ Errors for duplicate names?
 
 sub lint
 	{
-	my( $bean, $profile ) = @_;
+	my( $brick, $profile ) = @_;
 
 	return unless(
 		eval { $profile->isa( ref [] ) } or
@@ -374,7 +374,7 @@ sub lint
 		$h->{args} = "Couldn't find method [$method]" unless
 			eval { $method->isa( ref sub {} ) } or
 			UNIVERSAL::isa( $method, sub {} )    or
-			eval { $bean->pool_class->can( $method ) }; #XXX which class though?
+			eval { $brick->pool_class->can( $method ) }; #XXX which class though?
 
 		$h->{args} = "Args is not a hash reference" unless
 			eval { $args->isa( ref {} ) } or
@@ -392,10 +392,10 @@ sub lint
 	wantarray ? %$lint : ( scalar keys %$lint );
 	}
 
-=item $bean->create_pool( PROFILE_ARRAYREF )
+=item $brick->create_bucket( PROFILE_ARRAYREF )
 
-This method creates a C<Beancounter::Pool> instance (or an instance in
-the package returned by C<$bean->pool_class> ) based on the profile
+This method creates a C<Brick::Bucket> instance (or an instance in
+the package returned by C<$brick->pool_class> ) based on the profile
 and returns the pool instance. Along the way it affects the args
 hashref in each profile element to add the element name as the key
 C<profile_name> and the actual coderef (not just the method name) as
@@ -406,10 +406,10 @@ closure, uses it to name the closure in the pool.
 If the profile doesn't pass C<lint> test, this method croaks. You
 might want to safeguard that by calling C<lint> first.
 
-	my $pool = do {
-		if( my( $lint ) = $bean->lint( $profile ) )
+	my $bucket = do {
+		if( my( $lint ) = $brick->lint( $profile ) )
 			{
-			$bean->create_pool( $profile );
+			$brick->create_bucket( $profile );
 			}
 		else
 			{
@@ -427,29 +427,29 @@ investigated the consequences of that.
 In scalar context this returns a new pool instance. If the profile might
 be bad, use an eval to catch the croak:
 
-	my $pool = eval{ $bean->create_pool( \@profile ) };
+	my $bucket = eval{ $brick->create_bucket( \@profile ) };
 
-In list context, it returns the C<$pool> instance and an anonymous array
+In list context, it returns the C<$bucket> instance and an anonymous array
 reference with the stringified closures (which are also the keys in the
 pool). The elements in the anonymous array correspond to the elements in
 the profile. This is handy in C<explain> which needs to find the pool
 entries for each profile elements. You probably won't need the second
 argument most of the time.
 
-	my( $pool, $refs ) = eval { $bean->create_pool( \@profile ) };
+	my( $bucket, $refs ) = eval { $brick->create_bucket( \@profile ) };
 
 =cut
 
-sub create_pool
+sub create_bucket
 	{
-	my( $bean, $profile ) = @_;
+	my( $brick, $profile ) = @_;
 
-	unless( 0 == $bean->lint( $profile || [] ) ) # zero but true!
+	unless( 0 == $brick->lint( $profile || [] ) ) # zero but true!
 		{
-		croak "Bad profile for create_pool! Perhaps you need to check it with lint"
+		croak "Bad profile for create_bucket! Perhaps you need to check it with lint"
 		};
 
-	my $pool = $bean->pool_class->new;
+	my $bucket = $brick->pool_class->new;
 
 	my @coderefs = ();
 	foreach my $entry ( @$profile )
@@ -464,28 +464,28 @@ sub create_pool
 				{
 				$method;
 				}
-			elsif( my $code = eval{ $pool->$method( $args ) } )
+			elsif( my $code = eval{ $bucket->$method( $args ) } )
 				{
 				$code;
 				}
 			elsif( $@ ) { croak $@ }
 			};
 
-		push @coderefs, map { "$_" } $pool->add_to_pool( $args );
+		push @coderefs, map { "$_" } $bucket->add_to_bucket( $args );
 		}
 
-	wantarray ? ( $pool, \@coderefs ) : $pool;
+	wantarray ? ( $bucket, \@coderefs ) : $pool;
 	}
 
-=item $bean->pool_class
+=item $brick->pool_class
 
 The namespace where the constraint building blocks are defined. By default
-this is C<Beancounter::Pool>. If you don't like that, override this in a
+this is C<Brick::Bucket>. If you don't like that, override this in a
 subclass.
 
 =cut
 
-sub pool_class { 'Beancounter::Pool' }
+sub pool_class { 'Brick::Bucket' }
 
 
 =back
