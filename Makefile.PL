@@ -4,8 +4,8 @@ use ExtUtils::MakeMaker;
 eval "use Test::Manifest 1.14";
 
 WriteMakefile(
-	'NAME'	       => 'Beancounter',
-	'VERSION_FROM' => 'lib/Beancounter.pm',
+	'NAME'	       => 'Brick',
+	'VERSION_FROM' => 'lib/Brick.pm',
 	'LICENSE'      => 'perl',
 	
 	'PREREQ_PM'    => { 
@@ -13,18 +13,19 @@ WriteMakefile(
 		},
 
 	'PM'           => {
-		'lib/Beancounter.pm'  => '$(INST_LIBDIR)/Beancounter.pm',
-		'lib/Pool.pm'         => '$(INST_LIBDIR)/Beancounter/Pool.pm',
-		'lib/Composers.pm'    => '$(INST_LIBDIR)/Beancounter/Composers.pm',
-		'lib/Numbers.pm'      => '$(INST_LIBDIR)/Beancounter/Numbers.pm',
-		'lib/Strings.pm'      => '$(INST_LIBDIR)/Beancounter/Strings.pm',
-		'lib/Regex.pm'        => '$(INST_LIBDIR)/Beancounter/Regex.pm',
-		'lib/Date.pm'         => '$(INST_LIBDIR)/Beancounter/Date.pm',
-		'lib/General.pm'      => '$(INST_LIBDIR)/Beancounter/General.pm',
-		'lib/Constraints.pm'  => '$(INST_LIBDIR)/Beancounter/Constraints.pm',
-		'lib/Filters.pm'      => '$(INST_LIBDIR)/Beancounter/Filters.pm',
+		'lib/Brick.pm'        => '$(INST_LIBDIR)/Brick.pm',
+		'lib/Bucket.pm'       => '$(INST_LIBDIR)/Brick/Bucket.pm',
+		'lib/Composers.pm'    => '$(INST_LIBDIR)/Brick/Composers.pm',
+		'lib/Numbers.pm'      => '$(INST_LIBDIR)/Brick/Numbers.pm',
+		'lib/Strings.pm'      => '$(INST_LIBDIR)/Brick/Strings.pm',
+		'lib/Regexes.pm'      => '$(INST_LIBDIR)/Brick/Regexes.pm',
+		'lib/Dates.pm'        => '$(INST_LIBDIR)/Brick/Dates.pm',
+		'lib/General.pm'      => '$(INST_LIBDIR)/Brick/General.pm',
+		'lib/Constraints.pm'  => '$(INST_LIBDIR)/Brick/Constraints.pm',
+		'lib/Filters.pm'      => '$(INST_LIBDIR)/Brick/Filters.pm',
+		'lib/Selectors.pm'    => '$(INST_LIBDIR)/Brick/Selectors.pm',
 		},
 
-	clean  => { FILES    => q|Beancounter-*| },
+	clean  => { FILES    => q|Brick-*| },
 
 	);

@@ -8,7 +8,7 @@ use vars qw($VERSION);
 use Carp qw(carp croak);
 use DateTime;
 
-$VERSION = '0.10_01';
+$VERSION = '0.20_01';
 
 =head1 NAME
 

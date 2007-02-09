@@ -8,7 +8,7 @@ use vars qw($VERSION);
 use Carp qw( carp croak );
 use Data::Dumper;
 
-$VERSION = '0.10_01';
+$VERSION = '0.20_01';
 
 =head1 NAME
 
@@ -45,7 +45,7 @@ Brick - This is the description
 Create a new C<Brick>. Currently this doesn't do anything other than
 give you an object so you can call methods.
 
-Future ideas? Maybe store several pools or profiles?
+Future ideas? Maybe store several buckets or profiles?
 
 =cut
 
@@ -66,7 +66,7 @@ sub _load_external_packages
 	{
 	my( $self, @packages ) = @_;
 	
-	my $bucket_class = $self->pool_class;
+	my $bucket_class = $self->bucket_class;
 
 	foreach my $package ( @packages )
 		{
@@ -109,11 +109,11 @@ sub init
 	{
 	my( $self, $args ) = @_;
 
-	my $bucket_class = $self->pool_class;
+	my $bucket_class = $self->bucket_class;
 	
 	eval "require $bucket_class";
 
-	$self->{pools} = [];
+	$self->{buckets} = [];
 	
 	if( defined $args->{external_packages} && 
 		! UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
@@ -125,7 +125,7 @@ sub init
 
 =item $brick->add_validator_packages( PACKAGES )
 
-Load external validator packages into the pool. Each of these packages
+Load external validator packages into the bucket. Each of these packages
 should export the functions they want to make available. C<add_validator_package>
 C<require>s each package and calls its C<import> routine.
 
@@ -222,7 +222,7 @@ sub apply
 
 Turn the profile into a textual description without applying it to any
 data. This does not add the profile to instance and it does not add
-the constraints to the pool.
+the constraints to the bucket.
 
 If everything goes right, this returns a single string that represents
 the profile.
@@ -252,7 +252,7 @@ sub explain
 		}
 
 	my( $bucket, $refs ) = $temp_bean->create_bucket( $profile );
-		#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(pool)] );
+		#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(bucket)] );
 		#print STDERR Data::Dumper->Dump( [ $refs ], [qw(refs)] );
 
 	my @entries = map {
@@ -303,7 +303,7 @@ had the error:
 	format  -   the element is an arrayref
 	name    -   the name is a scalar
 	method  -   is a code ref or can be found in the package
-					$brick->pool_class returns
+					$brick->bucket_class returns
 	args    -   the last element is a hash reference
 
 If the profile is not an array reference, C<lint> immediately returns
@@ -374,7 +374,7 @@ sub lint
 		$h->{args} = "Couldn't find method [$method]" unless
 			eval { $method->isa( ref sub {} ) } or
 			UNIVERSAL::isa( $method, sub {} )    or
-			eval { $brick->pool_class->can( $method ) }; #XXX which class though?
+			eval { $brick->bucket_class->can( $method ) }; #XXX which class though?
 
 		$h->{args} = "Args is not a hash reference" unless
 			eval { $args->isa( ref {} ) } or
@@ -395,13 +395,13 @@ sub lint
 =item $brick->create_bucket( PROFILE_ARRAYREF )
 
 This method creates a C<Brick::Bucket> instance (or an instance in
-the package returned by C<$brick->pool_class> ) based on the profile
-and returns the pool instance. Along the way it affects the args
+the package returned by C<$brick->bucket_class> ) based on the profile
+and returns the bucket instance. Along the way it affects the args
 hashref in each profile element to add the element name as the key
 C<profile_name> and the actual coderef (not just the method name) as
 the key C<code>. The closure generators are allowed to use those keys.
 For instance, C<__make_constraint>, which is usually the top level
-closure, uses it to name the closure in the pool.
+closure, uses it to name the closure in the bucket.
 
 If the profile doesn't pass C<lint> test, this method croaks. You
 might want to safeguard that by calling C<lint> first.
@@ -420,25 +420,27 @@ might want to safeguard that by calling C<lint> first.
 
 From the profile it extracts the method name to create the closure for
 it based on its arguments. If the method item is already a code
-reference it uses it add is, but still adds it to the pool. This could
+reference it uses it add is, but still adds it to the bucket. This could
 be handy for using closures from other classes, but I haven't
 investigated the consequences of that.
 
-In scalar context this returns a new pool instance. If the profile might
+In scalar context this returns a new bucket instance. If the profile might
 be bad, use an eval to catch the croak:
 
 	my $bucket = eval{ $brick->create_bucket( \@profile ) };
 
 In list context, it returns the C<$bucket> instance and an anonymous array
 reference with the stringified closures (which are also the keys in the
-pool). The elements in the anonymous array correspond to the elements in
-the profile. This is handy in C<explain> which needs to find the pool
+bucket). The elements in the anonymous array correspond to the elements in
+the profile. This is handy in C<explain> which needs to find the bucket
 entries for each profile elements. You probably won't need the second
 argument most of the time.
 
 	my( $bucket, $refs ) = eval { $brick->create_bucket( \@profile ) };
 
 =cut
+
+sub create_pool { croak "create_pool is now create_bucket!" }
 
 sub create_bucket
 	{
@@ -449,7 +451,7 @@ sub create_bucket
 		croak "Bad profile for create_bucket! Perhaps you need to check it with lint"
 		};
 
-	my $bucket = $brick->pool_class->new;
+	my $bucket = $brick->bucket_class->new;
 
 	my @coderefs = ();
 	foreach my $entry ( @$profile )
@@ -474,10 +476,10 @@ sub create_bucket
 		push @coderefs, map { "$_" } $bucket->add_to_bucket( $args );
 		}
 
-	wantarray ? ( $bucket, \@coderefs ) : $pool;
+	wantarray ? ( $bucket, \@coderefs ) : $bucket;
 	}
 
-=item $brick->pool_class
+=item $brick->bucket_class
 
 The namespace where the constraint building blocks are defined. By default
 this is C<Brick::Bucket>. If you don't like that, override this in a
@@ -485,7 +487,7 @@ subclass.
 
 =cut
 
-sub pool_class { 'Brick::Bucket' }
+sub bucket_class { 'Brick::Bucket' }
 
 
 =back
@@ -499,10 +501,10 @@ sub pool_class { 'Brick::Bucket' }
 =head1 SOURCE AVAILABILITY
 
 This source is part of a SourceForge project which always has the
-latest sources in CVS, as well as all of the previous releases.
+latest sources in SVN, as well as all of the previous releases.
 
-	http://sourceforge.net/projects/brian-d-foy/
-
+	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
+ 
 If, for some reason, I disappear from the world, one of the other
 members of the project can shepherd this module appropriately.
 

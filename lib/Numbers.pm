@@ -9,7 +9,7 @@ use vars qw($VERSION);
 
 use Storable qw(dclone);
 
-$VERSION = '0.10_01';
+$VERSION = '0.20_01';
 
 =head1 NAME
 
@@ -238,9 +238,9 @@ sub _numeric_strictly_less_than
 =head1 SOURCE AVAILABILITY
 
 This source is part of a SourceForge project which always has the
-latest sources in CVS, as well as all of the previous releases.
+latest sources in SVN, as well as all of the previous releases.
 
-	http://sourceforge.net/projects/brian-d-foy/
+	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
 
 If, for some reason, I disappear from the world, one of the other
 members of the project can shepherd this module appropriately.

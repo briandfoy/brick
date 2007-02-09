@@ -9,14 +9,14 @@ use Carp;
 
 use Brick::Constraints;
 
-foreach my $package ( qw(Numbers Regex Strings Date General Composers Filters) )
+foreach my $package ( qw(Numbers Regexes Strings Dates General Composers Filters Selectors) )
 	{
 	# print STDERR "Requiring $package\n";
 	eval "require Brick::$package";
 	print STDERR $@ if $@;
 	}
 
-$VERSION = '0.10_01';
+$VERSION = '0.20_01';
 
 =head1 NAME
 
@@ -36,7 +36,7 @@ Brick - This is the description
 
 =item new()
 
-Creates a new pool to store Brick constraints
+Creates a new bucket to store Brick constraints
 
 =cut
 
@@ -73,7 +73,7 @@ sub entry_class { __PACKAGE__ . "::Entry"; }
 
 You can pass these entries in the HASHREF:
 
-	code        - the coderef to add to the pool
+	code        - the coderef to add to the bucket
 	name        - a name for the entry, which does not have to be unique
 	description - explain what this coderef does
 	args        - a reference to the arguments that the coderef closes over
@@ -84,11 +84,13 @@ The method adds these fields to the entry:
 	gv          - a GV reference from B::svref_2object($sub), useful for
 				finding where an anonymous coderef came from
 
-	created_by  - the name of the routine that added the entry to the pool
+	created_by  - the name of the routine that added the entry to the bucket
 
 It returns the subroutine reference.
 
 =cut
+
+sub add_to_pool { croak "add_to_pool is now add_to_bucket" }
 
 sub add_to_bucket
 	{
@@ -115,7 +117,7 @@ sub add_to_bucket
 			#if $ENV{DEBUG};
 		}
 
-	my $entry = $bucket->{ $sub } || $pool->entry_class->new( $hash );
+	my $entry = $bucket->{ $sub } || $bucket->entry_class->new( $hash );
 
 	$entry->{code} = $sub;
 
@@ -151,7 +153,7 @@ sub add_to_bucket
 
 =item get_from_bucket( CODEREF )
 
-Gets the entry for the specified CODEREF. If the CODEREF is not in the pool,
+Gets the entry for the specified CODEREF. If the CODEREF is not in the bucket,
 it returns false.
 
 The return value is an entry instance.
@@ -162,13 +164,13 @@ sub get_from_bucket
 	{
 	my( $bucket, $sub ) = @_;
 
-	return exists $bucket->{$sub} ? $pool->{$sub} : ();
+	return exists $bucket->{$sub} ? $bucket->{$sub} : ();
 	}
 
 =item get_all_keys
 
-Returns an unordered list of the keys (entry IDs) in the pool.
-Although you probably know that the pool is a hash, use this just in
+Returns an unordered list of the keys (entry IDs) in the bucket.
+Although you probably know that the bucket is a hash, use this just in
 case the data structure changes.
 
 =cut
@@ -177,7 +179,7 @@ sub get_all_keys { keys %{ $_[0] } }
 
 =item comprise( COMPOSED_CODEREF, THE_OTHER_CODEREFS )
 
-Tell the pool that the COMPOSED_CODEREF is made up of THE_OTHER_CODEREFS.
+Tell the bucket that the COMPOSED_CODEREF is made up of THE_OTHER_CODEREFS.
 
 	$bucket->comprise( $sub, @component_subs );
 
@@ -256,7 +258,7 @@ sub get_description { $_[0]->{description} }
 =item $entry->get_coderef()
 
 Get the coderef for the entry. This is the actual reference that you
-can execute, not the string form used for the pool key.
+can execute, not the string form used for the bucket key.
 
 =cut
 
@@ -274,7 +276,7 @@ sub get_comprises   { $_[0]->{comprises}   }
 
 =item $entry->get_created_by()
 
-Get the name of the routine that added the entry to the pool. This
+Get the name of the routine that added the entry to the bucket. This
 is handy for tracing the flow of code refs around the program. Different
 routines my make coderefs with the same name, so you also want to know
 who created it. You can use this with C<get_gv> to get file and line numbers
@@ -293,7 +295,7 @@ sub get_fields      { [ keys %{ $_[0]->entry( $_[1] )->{fields} } ] }
 =item $entry->set_name( SCALAR )
 
 Set the entry's name. Usually this happens when you add the object
-to the pool, but you might want to update it to show more specific or higher
+to the bucket, but you might want to update it to show more specific or higher
 level information. For instance, if you added the code ref with a low
 level routine that named the entry "check_number", a higher order routine
 might want to reuse the same entry but pretend it created it by setting
@@ -306,7 +308,7 @@ sub set_name        { $_[0]->{name}        = $_[1] }
 =item $entry->set_description( SCALAR )
 
 Set the entry's description. Usually this happens when you add the object
-to the pool, but you might want to update it to show more specific or higher
+to the bucket, but you might want to update it to show more specific or higher
 level information. See C<get_name>.
 
 =cut
@@ -316,7 +318,7 @@ sub set_description { $_[0]->{description} = $_[1] }
 =item $entry->set_gv( SCALAR )
 
 Set the GV object for the entry. You probably don't want to do this
-yourself. The pool does it for you when it adds the object.
+yourself. The bucket does it for you when it adds the object.
 
 =cut
 
@@ -391,10 +393,10 @@ sub main::__caller_chain_as_list
 =head1 SOURCE AVAILABILITY
 
 This source is part of a SourceForge project which always has the
-latest sources in CVS, as well as all of the previous releases.
+latest sources in SVN, as well as all of the previous releases.
 
-	http://sourceforge.net/projects/brian-d-foy/
-
+	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
+ 
 If, for some reason, I disappear from the world, one of the other
 members of the project can shepherd this module appropriately.
 
