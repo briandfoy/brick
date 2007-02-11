@@ -30,11 +30,11 @@ Brick::General - constraints for domain-nonspecific stuff
 
 sub _is_blank
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{fields} = [ $hash->{field} ];
+	$setup->{fields} = [ $setup->{field} ];
 
-	$bucket->_fields_are_blank( $hash );
+	$bucket->_fields_are_blank( $setup );
 	}
 
 =item _is_true( HASHREF )
@@ -44,11 +44,11 @@ sub _is_blank
 
 sub _is_true
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{fields} = [ $hash->{field} ];
+	$setup->{fields} = [ $setup->{field} ];
 
-	$bucket->_fields_are_true( $hash );
+	$bucket->_fields_are_true( $setup );
 	}
 
 
@@ -59,11 +59,11 @@ sub _is_true
 
 sub _is_defined
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{fields} = [ $hash->{field} ];
+	$setup->{fields} = [ $setup->{field} ];
 
-	$bucket->_fields_are_defined( $hash );
+	$bucket->_fields_are_defined( $setup );
 	}
 
 =back
@@ -82,10 +82,10 @@ to verify that each field for definedness. It takes the same input.
 
 sub defined_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $sub = $bucket->_fields_are_defined( $hash );
-	$bucket->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_defined( $setup );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
 =item $bucket->true_fields( HASHREF )
@@ -97,10 +97,10 @@ to verify that each field for true values. It takes the same input.
 
 sub true_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $sub = $bucket->_fields_are_true( $hash );
-	$bucket->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_true( $setup );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
 =item $bucket->false_fields( HASHREF )
@@ -112,10 +112,10 @@ to verify that each field for false values. It takes the same input.
 
 sub false_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $sub = $bucket->_fields_are_false( $hash );
-	$bucket->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_false( $setup );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
 =item $bucket->blank_fields( HASHREF )
@@ -127,10 +127,10 @@ to verify that each field has blank values. It takes the same input.
 
 sub blank_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $sub = $bucket->_fields_are_blank( $hash );
-	$bucket->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_are_blank( $setup );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
 =item $bucket->exist_fields( HASHREF )
@@ -142,10 +142,10 @@ to verify that each field has blank values. It takes the same input.
 
 sub exist_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $sub = $bucket->_fields_exist( $hash );
-	$bucket->__make_constraint( $sub, $hash );
+	my $sub = $bucket->_fields_exist( $setup );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
 =item $bucket->allowed_fields( HASHREF )
@@ -161,16 +161,16 @@ should be there are. Use required fields for that.
 
 sub allowed_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my $filter_sub = $bucket->_remove_extra_fields(
 		{
-		%$hash,
-		filter_fields => $hash->{allowed_fields}
+		%$setup,
+		filter_fields => $setup->{allowed_fields}
 		}
 		);
 
-	$bucket->__make_constraint( $filter_sub, $hash );
+	$bucket->__make_constraint( $filter_sub, $setup );
 	}
 
 =item $bucket->required_fields( HASHREF )
@@ -183,19 +183,19 @@ the input hash and have a defined value that is not the null string.
 
 sub required_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my $sub = $bucket->_fields_are_defined_and_not_null_string(
 		{
-		%$hash,
-		fields => $hash->{required_fields},
+		%$setup,
+		fields => $setup->{required_fields},
 		}
 		);
 
-	$bucket->__make_constraint( $sub, $hash );
+	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item _exist_fields( HASHREF )
+=item _fields_exist( HASHREF )
 
 	fields  - an anonymous array of fields that must exist in input
 
@@ -211,29 +211,29 @@ If a code error occurs, it dies with a simple scalar.
 
 =cut
 
-sub _exist_fields
+sub _fields_exist
 	{
-	my( $bucket, $hash, $sub ) = @_;
+	my( $bucket, $setup, $sub ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	#print STDERR Data::Dumper->Dump( [\@caller], [qw(caller)] );
 
-	unless( eval { $hash->{fields}->isa( ref [] ) } or
-		UNIVERSAL::isa( $hash->{fields}, ref [] ) )
+	unless( eval { $setup->{fields}->isa( ref [] ) } or
+		UNIVERSAL::isa( $setup->{fields}, ref [] ) )
 		{
-    	confess( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
-    	return sub {};
+		confess( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
+		return sub {};
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
-		description => ( $hash->{description} || "Fields exist" ),
-		#args        => [ dclone $hash ],
-		fields      => [ $hash->{fields} ],
+		description => ( $setup->{description} || "Fields exist" ),
+		#args        => [ dclone $setup ],
+		fields      => [ $setup->{fields} ],
 		code        => sub {
 			my @errors;
 			my @missing;
-			foreach my $f ( @{ $hash->{fields} } )
+			foreach my $f ( @{ $setup->{fields} } )
 				{
 				next if exists $_[0]->{ $f };
 
@@ -280,27 +280,27 @@ If a code error occurs, it dies with a simple scalar.
 
 sub __fields_are_something
 	{
-	my( $bucket, $hash, $sub ) = @_;
+	my( $bucket, $setup, $sub ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	unless( eval { $hash->{fields}->isa( ref [] ) } or
-		UNIVERSAL::isa( $hash->{fields}, ref [] ) )
+	unless( eval { $setup->{fields}->isa( ref [] ) } or
+		UNIVERSAL::isa( $setup->{fields}, ref [] ) )
 		{
-    	croak( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
-    	return sub {};
+		croak( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
+		return sub {};
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
-		description => ( $hash->{description} || "Fields exist" ),
-		#args        => [ dclone $hash ],
-		fields      => [ $hash->{fields} ],
+		description => ( $setup->{description} || "Fields exist" ),
+		#args        => [ dclone $setup ],
+		fields      => [ $setup->{fields} ],
 		code        => sub {
 
 			#print STDERR Data::Dumper->Dump( [$_[0]], [qw(input)] );
 			my @errors;
 			my @bad;
-			foreach my $f ( @{ $hash->{fields} } )
+			foreach my $f ( @{ $setup->{fields} } )
 				{
 				no warnings 'uninitialized';
 				#print STDERR "Checking field $f ... ";
@@ -310,14 +310,14 @@ sub __fields_are_something
 
 				push @errors, {
 					handler => $caller[1]{'sub'},
-					message => "Field [$f] was not $hash->{test_name}. It was [$_[0]->{$f}]",
+					message => "Field [$f] was not $setup->{test_name}. It was [$_[0]->{$f}]",
 					} unless $result;
 
 				push @bad, $f unless $result;
 				}
 
 			die {
-				message  => "Not all fields were $hash->{test_name}: [@bad]",
+				message  => "Not all fields were $setup->{test_name}: [@bad]",
 				errors   => \@errors,
 				handler  => $caller[0]{'sub'},
 				} if @bad;
@@ -340,13 +340,13 @@ have a true value. See __fields_are_something for details.
 
 sub _fields_are_defined_and_not_null_string
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	#print STDERR "_fields_are_defined_and_not_null_string: ", Data::Dumper->Dump( [$hash], [qw(hash)] );
+	#print STDERR "_fields_are_defined_and_not_null_string: ", Data::Dumper->Dump( [$setup], [qw(setup)] );
 
-	$hash->{test_name} = 'defined but not null';
+	$setup->{test_name} = 'defined but not null';
 
-	$bucket->__fields_are_something( $hash, sub { defined $_[0] and $_[0] ne '' } );
+	$bucket->__fields_are_something( $setup, sub { defined $_[0] and $_[0] ne '' } );
 	}
 
 
@@ -359,11 +359,11 @@ __fields_are_something for details.
 
 sub _fields_are_defined
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{test_name} = 'defined';
+	$setup->{test_name} = 'defined';
 
-	$bucket->__fields_are_something( $hash, sub { defined $_[0] } );
+	$bucket->__fields_are_something( $setup, sub { defined $_[0] } );
 	}
 
 =item _fields_are_blank( HASHREF )
@@ -375,11 +375,11 @@ undefined or the empty string). See __fields_are_something for details.
 
 sub _fields_are_blank
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{test_name} = 'blank';
+	$setup->{test_name} = 'blank';
 
-	$bucket->__fields_are_something( $hash, sub { ! defined $_[0] or $_[0] eq ''  } );
+	$bucket->__fields_are_something( $setup, sub { ! defined $_[0] or $_[0] eq ''  } );
 	}
 
 =item _fields_are_false( HASHREF )
@@ -391,11 +391,11 @@ sense). See __fields_are_something for details.
 
 sub _fields_are_false
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{test_name} = 'false';
+	$setup->{test_name} = 'false';
 
-	$bucket->__fields_are_something( $hash, sub { ! $_[0]  } );
+	$bucket->__fields_are_something( $setup, sub { ! $_[0]  } );
 	}
 
 =item _fields_are_true( HASHREF )
@@ -407,11 +407,11 @@ sense). See __fields_are_something for details.
 
 sub _fields_are_true
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{test_name} = 'true';
+	$setup->{test_name} = 'true';
 
-	$bucket->__fields_are_something( $hash, sub { $_[0] } );
+	$bucket->__fields_are_something( $setup, sub { $_[0] } );
 	}
 
 =back

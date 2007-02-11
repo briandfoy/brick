@@ -37,41 +37,41 @@ Hash fields:
 
 sub number_within_range
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my @missing = sort grep { ! defined $hash->{$_} } qw( minimum maximum );
+	my @missing = sort grep { ! defined $setup->{$_} } qw( minimum maximum );
 
   	if( @missing )
     	{
-    	carp( sprintf "number_within_range missing %s%s attibute%s",
+    	no warnings 'uninitialized';
+    	croak( sprintf "number_within_range missing %s%s attibute%s",
     		$missing[0],
     		$missing[1] ? " and $missing[1]" : '',
     		$missing[1] ? 's' : ''
     		);
-    	return sub {};
 		}
 
-	my $format_sub = $bucket->_is_decimal_integer( $hash );
+	my $format_sub = $bucket->_is_decimal_integer( $setup );
 
-	my $range_sub =	$hash->{inclusive} ?
-			$bucket->_inclusive_within_numeric_range( $hash )
+	my $range_sub =	$setup->{inclusive} ?
+			$bucket->_inclusive_within_numeric_range( $setup )
 				:
-			$bucket->_exclusive_within_numeric_range( $hash );
+			$bucket->_exclusive_within_numeric_range( $setup );
 
 	my $composed_sub = $bucket->__compose_satisfy_all( $format_sub, $range_sub );
 
-	$bucket->__make_constraint( $composed_sub, $hash );
+	$bucket->__make_constraint( $composed_sub, $setup );
 	}
 
 sub _is_only_decimal_digits
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	my $sub = $bucket->_matches_regex( {
-		description  => "The $hash->{field} value only has decimal digits",
-		field        => $hash->{field},
+		description  => "The $setup->{field} value only has decimal digits",
+		field        => $setup->{field},
 		name         => $caller[0]{'sub'},
 		regex        => qr/
 			\A
@@ -90,13 +90,14 @@ sub _is_only_decimal_digits
 
 sub _is_decimal_integer
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
+	no warnings 'uninitialized';
 	my $sub = $bucket->_matches_regex( {
-		description  => "The $hash->{field} is an integer in base 10",
-		field        => $hash->{field},
+		description  => "The $setup->{field} is an integer in base 10",
+		field        => $setup->{field},
 		name         => $caller[0]{'sub'},
 		regex        => qr/
 			\A
@@ -116,32 +117,32 @@ sub _is_decimal_integer
 
 sub _inclusive_within_numeric_range
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		description => "Find number within the range [$hash->{minimum}, $hash->{maximum}] inclusively",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] inclusively",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => $bucket->__compose_satisfy_all(
-			$bucket->_numeric_equal_or_greater_than( $hash ),
-			$bucket->_numeric_equal_or_less_than( $hash ),
+			$bucket->_numeric_equal_or_greater_than( $setup ),
+			$bucket->_numeric_equal_or_less_than( $setup ),
 			),
 		} );
 	}
 
 sub _exclusive_within_numeric_range
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
-		description => "Find number within the range [$hash->{minimum}, $hash->{maximum}] exclusively",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] exclusively",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => $bucket->__compose_satisfy_all(
-			$bucket->_numeric_strictly_greater_than( $hash ),
-			$bucket->_numeric_strictly_less_than( $hash ),
+			$bucket->_numeric_strictly_greater_than( $setup ),
+			$bucket->_numeric_strictly_less_than( $setup ),
 			),
 		} );
 
@@ -149,80 +150,80 @@ sub _exclusive_within_numeric_range
 
 sub _numeric_equal_or_greater_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
-		description => "The number is equal to or greater than $hash->{minimum}",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "The number is equal to or greater than $setup->{minimum}",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The number in $hash->{field} was $_[0]->{ $hash->{field} }, but should have been greater than or equal to $hash->{minimum}",
-				field   => $hash->{field} ,
+				message => "The number in $setup->{field} was $_[0]->{ $setup->{field} }, but should have been greater than or equal to $setup->{minimum}",
+				field   => $setup->{field} ,
 				handler => $caller[0]{'sub'},
-				} unless $_[0]->{ $hash->{field} } >=  $hash->{minimum}
+				} unless $_[0]->{ $setup->{field} } >=  $setup->{minimum}
 			},
 		} );
 	}
 
 sub _numeric_strictly_greater_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
-		description => "The number is greater than $hash->{minimum}",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "The number is greater than $setup->{minimum}",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The number in $hash->{field} was $_[0]->{ $hash->{field} }, but should have been strictly greater than $hash->{minimum}",
-				field   => $hash->{field} ,
+				message => "The number in $setup->{field} was $_[0]->{ $setup->{field} }, but should have been strictly greater than $setup->{minimum}",
+				field   => $setup->{field} ,
 				handler => $caller[0]{'sub'},
-				} unless $_[0]->{ $hash->{field} } >  $hash->{minimum};
+				} unless $_[0]->{ $setup->{field} } >  $setup->{minimum};
 			},
 		} );
 	}
 
 sub _numeric_equal_or_less_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
-		description => "The number is equal to or less than $hash->{maximum}",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "The number is equal to or less than $setup->{maximum}",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The number in $hash->{field} was $_[0]->{ $hash->{field} }, but should have been less than or equal to $hash->{maximum}",
-				field   => $hash->{field},
+				message => "The number in $setup->{field} was $_[0]->{ $setup->{field} }, but should have been less than or equal to $setup->{maximum}",
+				field   => $setup->{field},
 				handler => $caller[0]{'sub'},
-				} unless $_[0]->{ $hash->{field} } <=  $hash->{maximum};
+				} unless $_[0]->{ $setup->{field} } <=  $setup->{maximum};
 			},
 		} );
 	}
 
 sub _numeric_strictly_less_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
-		description => "The number is less than $hash->{maximum}",
-		args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		description => "The number is less than $setup->{maximum}",
+		args        => [ dclone $setup ],
+		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The number in $hash->{field} was $_[0]->{ $hash->{field} }, but should have been strictly less than $hash->{maximum}",
-				field   => $hash->{field},
+				message => "The number in $setup->{field} was $_[0]->{ $setup->{field} }, but should have been strictly less than $setup->{maximum}",
+				field   => $setup->{field},
 				handler => $caller[0]{'sub'},
-				} unless $_[0]->{ $hash->{field} } <  $hash->{maximum};
+				} unless $_[0]->{ $setup->{field} } <  $setup->{maximum};
 			},
 		} );
 	}

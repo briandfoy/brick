@@ -16,7 +16,6 @@ bucket/new_entry.t
 bucket/add_to_bucket.t
 bucket/get_brick_by_name.t
 bucket/unique.t
-bucket/anonymous_brick.t
 
 
 explain.t
@@ -32,14 +31,15 @@ filters/_uppercase.t
 filters/_lowercase.t
 filters/_remove_extra_fields.t
 
-
-general/fields_are_something.t
-general/_exist_fields.t
+general/__fields_are_something.t
+general/_is_defined.t
+general/_fields_exists.t
 general/_fields_are_defined_and_not_null_string.t
 general/_value_length_is_equal_to_greater_than.t
 general/_value_length_is_equal_to_less_than.t
 general/_value_length_is_between.t
 
+numbers/number_within_range.t
 
 messages/number_range_error.t
 
