@@ -206,7 +206,7 @@ returns the number of bricks it found.
 
 =cut
 
-sub get_from_bucket_by_name
+sub get_brick_by_name
 	{
 	my( $bucket, $name ) = @_;
 

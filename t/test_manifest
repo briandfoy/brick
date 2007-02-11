@@ -13,7 +13,7 @@ bucket/load.t
 bucket/new_bucket.t
 bucket/new_entry.t
 bucket/add_to_bucket.t
-bucket/get_from_bucket_by_name.t
+bucket/get_brick_by_name.t
 bucket/unique.t
 
 explain.t

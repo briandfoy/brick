@@ -14,10 +14,10 @@ isa_ok( $bucket, $brick->bucket_class );
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-ok( defined &Brick::Bucket::get_from_bucket_by_name, "Method is defined" );
+ok( defined &Brick::Bucket::get_brick_by_name, "Method is defined" );
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'One' );
+my $count = $bucket->get_brick_by_name( 'One' );
 is( $count, 0, "No bricks in the bucket yet" );
 }
 
@@ -37,12 +37,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 1, "One brick in the bucket now" );
 }
 
 {
-my( $code_ref ) = $bucket->get_from_bucket_by_name( $name );
+my( $code_ref ) = $bucket->get_brick_by_name( $name );
 isa_ok( $code_ref, ref sub {} );
 is( $code_ref, $sub, "Got back the same code ref" );
 }
@@ -56,7 +56,7 @@ my $sub2 =  sub { __LINE__ };
 my $name = 'Two';
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 0, "No bricks in the bucket yet" );
 }
 
@@ -70,12 +70,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 1, "One brick in the bucket now" );
 }
 
 {
-my( $code_ref ) = $bucket->get_from_bucket_by_name( $name );
+my( $code_ref ) = $bucket->get_brick_by_name( $name );
 isa_ok( $code_ref, ref sub {} );
 is( $code_ref, $sub2, "Got back the same code ref" );
 }
@@ -89,7 +89,7 @@ my $sub3 =  sub { __LINE__ };
 my $name = 'One';
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 1, "One brick named [$name] already" );
 }
 
@@ -102,12 +102,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 2, "Two bricks name [$name] in the bucket now" );
 }
 
 {
-my @code_refs = $bucket->get_from_bucket_by_name( $name );
+my @code_refs = $bucket->get_brick_by_name( $name );
 is( scalar @code_refs, 2, "Got two code refs" );
 }
 }
@@ -120,7 +120,7 @@ my $sub3 = sub { __LINE__ };
 my $name = 'Two';
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 1, "No bricks in the bucket yet" );
 }
 
@@ -136,7 +136,7 @@ eval {
 ok( $@, "Adding already unique name croaks" );
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 1, "Still only one brick named [$name]" );
 }
 
@@ -150,7 +150,7 @@ my $sub3 = sub { __LINE__ };
 my $name = 'One';
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 2, "Only one brick named [$name]" );
 }
 
@@ -167,7 +167,7 @@ eval {
 ok( $@, "Adding already unique name croaks" );
 
 {
-my $count = $bucket->get_from_bucket_by_name( $name );
+my $count = $bucket->get_brick_by_name( $name );
 is( $count, 2, "Still only one brick named [$name]" );
 }
 

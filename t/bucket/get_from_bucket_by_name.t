@@ -14,10 +14,10 @@ isa_ok( $bucket, $brick->bucket_class );
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-ok( defined &Brick::Bucket::get_from_bucket_by_name, "Method is defined" );
+ok( defined &Brick::Bucket::get_brick_by_name, "Method is defined" );
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'One' );
+my $count = $bucket->get_brick_by_name( 'One' );
 is( $count, 0, "No bricks in the bucket yet" );
 }
 
@@ -34,12 +34,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'One' );
+my $count = $bucket->get_brick_by_name( 'One' );
 is( $count, 1, "One brick in the bucket now" );
 }
 
 {
-my( $code_ref ) = $bucket->get_from_bucket_by_name( 'One' );
+my( $code_ref ) = $bucket->get_brick_by_name( 'One' );
 isa_ok( $code_ref, ref sub {} );
 is( $code_ref, $sub, "Got back the same code ref" );
 }
@@ -49,7 +49,7 @@ is( $code_ref, $sub, "Got back the same code ref" );
 my $sub2 =  sub { __LINE__ };
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'Two' );
+my $count = $bucket->get_brick_by_name( 'Two' );
 is( $count, 0, "No bricks in the bucket yet" );
 }
 
@@ -62,12 +62,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'Two' );
+my $count = $bucket->get_brick_by_name( 'Two' );
 is( $count, 1, "One brick in the bucket now" );
 }
 
 {
-my( $code_ref ) = $bucket->get_from_bucket_by_name( 'Two' );
+my( $code_ref ) = $bucket->get_brick_by_name( 'Two' );
 isa_ok( $code_ref, ref sub {} );
 is( $code_ref, $sub2, "Got back the same code ref" );
 }
@@ -77,7 +77,7 @@ is( $code_ref, $sub2, "Got back the same code ref" );
 my $sub3 =  sub { __LINE__ };
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'Two' );
+my $count = $bucket->get_brick_by_name( 'Two' );
 is( $count, 1, "No bricks in the bucket yet" );
 }
 
@@ -90,12 +90,12 @@ $bucket->add_to_bucket(
 	);
 
 {
-my $count = $bucket->get_from_bucket_by_name( 'Two' );
+my $count = $bucket->get_brick_by_name( 'Two' );
 is( $count, 2, "One brick in the bucket now" );
 }
 
 {
-my @code_refs = $bucket->get_from_bucket_by_name( 'Two' );
+my @code_refs = $bucket->get_brick_by_name( 'Two' );
 is( scalar @code_refs, 2, "Got two code refs" );
 isa_ok( $code_refs[0], ref sub {} );
 isa_ok( $code_refs[1], ref sub {} );
