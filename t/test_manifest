@@ -33,7 +33,7 @@ filters/_remove_extra_fields.t
 
 general/__fields_are_something.t
 general/_is_defined.t
-general/_fields_exists.t
+general/_fields_exist.t
 general/_fields_are_defined_and_not_null_string.t
 general/_value_length_is_equal_to_greater_than.t
 general/_value_length_is_equal_to_less_than.t
