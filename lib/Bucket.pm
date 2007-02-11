@@ -45,9 +45,20 @@ sub new
 	my( $class ) = @_;
 
 
-	bless {}, $class;
+	my $self = bless {}, $class;
+	
+	$self->_init;
+	
+	$self;
 	}
 
+sub _init
+	{
+	my $self = shift;
+	
+	$self->{_names} = {};
+	}
+	
 =item entry_class
 
 
@@ -78,6 +89,11 @@ You can pass these entries in the HASHREF:
 	description - explain what this coderef does
 	args        - a reference to the arguments that the coderef closes over
 	fields      - the input field names the coderef references
+	unique      - this name has to be unique
+
+If you pass a true value for the C<unique> value, then there can't be
+any other brick with that name already, or a later brick which tries to
+use the same name will fail.
 
 The method adds these fields to the entry:
 
@@ -97,30 +113,42 @@ sub add_to_bucket
 	require B;
 	my @caller = main::__caller_chain_as_list();
 	# print STDERR Data::Dumper->Dump( [\@caller],[qw(caller)] );
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my( $sub, $name, $description, $args, $fields ) = @$hash{ qw(code name description args fields) };
+	my( $sub, $name, $description, $args, $fields, $unique )
+		= @$setup{ qw(code name description args fields unique) };
 
+	$unique ||= 0;
+	$name   ||= '(anonymous)';
+	
+	# ensure we have a sub first
 	unless( ref $sub eq ref sub {} )
 		{
-		print STDERR Data::Dumper->Dump( [$hash],[qw(hash)] );
+		#print STDERR Data::Dumper->Dump( [$setup],[qw(setup)] );
 		croak "Code ref [$sub] is not a reference! $caller[1]{sub}";
-		return;
 		}
+	# and that the name doesn't exist already if it's to be unique
+	elsif( $unique and exists $bucket->{ _names }{ $name } )
+		{
+		croak "A brick named [$name] already exists";
+		}
+	# or the name isn't unique already
+	elsif( exists $bucket->{ _names }{ $name } and $bucket->{ _names }{ $name } )
+		{
+		croak "A brick named [$name] already exists";
+		}
+	# and that the code ref isn't already in there
 	elsif( exists $bucket->{ $sub } )
 		{
-		#carp "Sub already enchanted!";
-		#return $sub;
 		no warnings;
 		my $old_name = $bucket->{ $sub }{name};
-		#print STDERR "Previous name is $old_name; passed in name is $name\n"
-			#if $ENV{DEBUG};
 		}
 
-	my $entry = $bucket->{ $sub } || $bucket->entry_class->new( $hash );
+	my $entry = $bucket->{ $sub } || $bucket->entry_class->new( $setup );
 
-	$entry->{code} = $sub;
-
+	$entry->{code}   = $sub;
+	$entry->{unique} = $unique;
+	
 	$entry->set_name( do {
 		if( defined $name ) { $name }
 		elsif( defined $entry->get_name ) { $entry->get_name }
@@ -147,7 +175,7 @@ sub add_to_bucket
 	$entry->set_gv( B::svref_2object($sub)->GV );
 
 	$bucket->{ $sub } = $entry;
-
+	$bucket->{ _names }{ $name } = $unique;
 	$sub;
 	}
 
@@ -186,7 +214,9 @@ sub get_from_bucket_by_name
 	
 	foreach my $key ( $bucket->get_all_keys )
 		{
+		#print STDERR "Got key $key\n";
 		my $brick = $bucket->get_from_bucket( $key );
+		#print STDERR Data::Dumper->Dump( [$brick], [qw(brick)] );
 		
 		next unless $brick->get_name eq $name;
 		
@@ -204,7 +234,7 @@ case the data structure changes.
 
 =cut
 
-sub get_all_keys { keys %{ $_[0] } }
+sub get_all_keys { grep { ! /^_/ } keys %{ $_[0] } }
 
 =item comprise( COMPOSED_CODEREF, THE_OTHER_CODEREFS )
 
