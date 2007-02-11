@@ -53,20 +53,20 @@ ok( defined &{ "${bucket_class}::_is_the_letter_e" },
 isa_ok( $bucket->_is_the_letter_e, ref sub {} );	
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-ok( ! defined &{ "${bucket_class}::_is_odd_number" },
-	"_is_the_number_3 is not in $bucket_class"
+ok( ! defined &{ "${bucket_class}::_is_odd" },
+	"_is_odd is not in $bucket_class"
 	);
-ok( ! defined &{ "${bucket_class}::_is_even_number" },
-	"_is_the_letter_e is not in $bucket_class"
+ok( ! defined &{ "${bucket_class}::_is_even" },
+	"_is_even is not in $bucket_class"
 	);
 
 use_ok( 'Mock::BarValidator' );
 
-ok( ! defined &{ "${bucket_class}::_is_odd_number" },
-	"_is_the_number_3 is not in $bucket_class"
+ok( ! defined &{ "${bucket_class}::_is_odd" },
+	"_is_odd is not in $bucket_class"
 	);
-ok( ! defined &{ "${bucket_class}::_is_even_number" },
-	"_is_the_letter_e is not in $bucket_class"
+ok( ! defined &{ "${bucket_class}::_is_even" },
+	"_is_even is not in $bucket_class"
 	);
 	
 $brick->add_validator_packages( 'Mock::BarValidator' );	

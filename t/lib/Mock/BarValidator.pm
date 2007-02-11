@@ -3,13 +3,13 @@ use base qw(Exporter);
 
 use vars qw( @EXPORT );
 
-@EXPORT = qw( _is_odd_number _is_even_number );
+@EXPORT = qw( _is_odd _is_even );
 
-sub _is_odd_number
+sub _is_odd
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_bucket( {
+	$bucket->add_to_bucket( {
 		description => "The number is odd",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],
@@ -21,11 +21,11 @@ sub _is_odd_number
 		} );
 	}
 	
-sub _is_even_number
+sub _is_even
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_bucket( {
+	$bucket->add_to_bucket( {
 		description => "The number is even",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],

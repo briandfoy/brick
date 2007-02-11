@@ -7,9 +7,9 @@ use vars qw( @EXPORT );
 
 sub _is_the_number_3
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_bucket( {
+	$bucket->add_to_bucket( {
 		description => "It's the number 3",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],
@@ -23,9 +23,9 @@ sub _is_the_number_3
 	
 sub _is_the_letter_e
 	{
-	my( $pool, $hash ) = @_;
+	my( $bucket, $hash ) = @_;
 
-	$pool->add_to_bucket( {
+	$bucket->add_to_bucket( {
 		description => "It's the letter e",
 		args        => [ $hash ],
 		fields      => [ $hash->{field} ],

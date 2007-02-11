@@ -167,6 +167,35 @@ sub get_from_bucket
 	return exists $bucket->{$sub} ? $bucket->{$sub} : ();
 	}
 
+=item get_from_bucket_by_name( NAME )
+
+Gets the code references for the bricks with the name NAME. Since
+bricks don't have to have a unique name, it might return more than
+one.
+
+In list context return the bricks with NAMe, In scalar context
+returns the number of bricks it found.
+
+=cut
+
+sub get_from_bucket_by_name
+	{
+	my( $bucket, $name ) = @_;
+
+	my @found;
+	
+	foreach my $key ( $bucket->get_all_keys )
+		{
+		my $brick = $bucket->get_from_bucket( $key );
+		
+		next unless $brick->get_name eq $name;
+		
+		push @found, $brick->get_coderef;
+		}
+		
+	wantarray ? @found : scalar @found;
+	}
+	
 =item get_all_keys
 
 Returns an unordered list of the keys (entry IDs) in the bucket.
@@ -193,6 +222,28 @@ sub comprise
 	}
 
 
+=item dump_bucket
+
+Show the names and descriptions of the entries in the bucket. This is
+mostly a debugging tool.
+
+=cut
+
+sub dump_bucket
+	{
+	my $bucket = shift;
+	
+	foreach my $key ( $bucket->get_all_keys )
+		{
+		my $brick = $bucket->get_from_bucket( $key );
+		
+		print $brick->get_name, " --> $key\n";
+		print $brick->get_description, "\n";
+		}
+	
+	1;	
+	}
+	
 =back
 
 =head1 Brick::Bucket::Entry

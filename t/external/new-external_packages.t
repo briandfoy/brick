@@ -31,10 +31,10 @@ ok( ! defined &{ "${bucket_class}::_is_the_letter_e" },
 	"_is_the_letter_e is not in $bucket_class"
 	);
 	
-ok( ! defined &{ "${bucket_class}::_is_odd_number" },
+ok( ! defined &{ "${bucket_class}::_is_odd" },
 	"_is_the_number_3 is not in $bucket_class"
 	);
-ok( ! defined &{ "${bucket_class}::_is_even_number" },
+ok( ! defined &{ "${bucket_class}::_is_even" },
 	"_is_the_letter_e is not in $bucket_class"
 	);
 
@@ -48,17 +48,20 @@ ok( defined &{ "${bucket_class}::_is_the_number_3" },
 	);
 isa_ok( $bucket->_is_the_number_3, ref sub {} );	
 
+
 ok( defined &{ "${bucket_class}::_is_the_letter_e" },
 	"_is_the_letter_e is in $bucket_class after add_validator_packages"
 	);
 isa_ok( $bucket->_is_the_letter_e, ref sub {} );	
 
-ok( defined &{ "${bucket_class}::_is_odd_number" },
-	"_is_the_number_3 is not in $bucket_class after add_validator_packages"
-	);
-isa_ok( $bucket->_is_odd_number, ref sub {} );	
 
-ok( defined &{ "${bucket_class}::_is_even_number" },
-	"_is_the_letter_e is not in $bucket_class after add_validator_packages"
+ok( defined &{ "${bucket_class}::_is_odd" },
+	"_is_odd is not in $bucket_class after add_validator_packages"
 	);
-isa_ok( $bucket->_is_even_number, ref sub {} );	
+isa_ok( $bucket->_is_odd, ref sub {} );	
+
+
+ok( defined &{ "${bucket_class}::_is_even" },
+	"_is_even is not in $bucket_class after add_validator_packages"
+	);
+isa_ok( $bucket->_is_even, ref sub {} );	
