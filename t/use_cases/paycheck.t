@@ -89,7 +89,7 @@ workers can also be contractors by taking on extra projects.
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_valid_semester_date {
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->add_to_bucket( {
 		name        => '_is_valid_semester_date',
@@ -113,7 +113,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) }, "invalid semester doesn
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_valid_fall_or_spring_date {
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->add_to_bucket( {
 		name        => '_is_valid_fall_or_spring_date',
@@ -137,7 +137,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) }, "August isn't Fall or S
 }
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_valid_paydate {
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => '_is_valid_paydate',
@@ -161,7 +161,7 @@ ok( ! eval { $sub->( { effective_date => 1970080 } ) },  "invalid paydate doesn'
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_semiannual_payroll_date {
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => '_is_semiannual_payroll_date',
@@ -184,7 +184,7 @@ ok( ! eval { $sub->( { effective_date => 19700801 } ) },  "invalid semiannual do
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_quarterly_payroll_date {
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => '_is_quarterly_payroll_date',
@@ -221,7 +221,7 @@ of the validation instead of a "don't go this way" failure.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_faculty
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_faculty',
@@ -240,7 +240,7 @@ ok( ! $sub->( { worker_type => 'Professional' } ), "invalid worker type doesn't 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_professional
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_professional',
@@ -266,7 +266,7 @@ undef otherwise.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_faculty_21
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_faculty_21',
@@ -286,7 +286,7 @@ ok( ! $sub->( { pay_basis => 'Faculty' }         ), "invalid pay basis doesn't w
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_faculty_26
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_faculty_26',
@@ -306,7 +306,7 @@ ok( ! $sub->( { pay_basis => 'Faculty' }         ), "invalid pay basis doesn't w
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_hourly
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_hourly',
@@ -326,7 +326,7 @@ ok( ! $sub->( { pay_basis => 'Salary'     } ), "invalid pay basis doesn't work" 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_salary
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_salary',
@@ -346,7 +346,7 @@ ok( ! $sub->( { pay_basis => 'Fee'        } ), "invalid pay basis doesn't work" 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_fee_based
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_fee_based',
@@ -366,7 +366,7 @@ ok( ! $sub->( { pay_basis => 'Extra'      } ), "invalid pay basis doesn't work" 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_extra_service
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		name        => 'is_extra_service',
@@ -393,7 +393,7 @@ and undef otherwise.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_quarterly
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->add_to_bucket( {
 		name        => 'is_quarterly',
@@ -413,7 +413,7 @@ ok( ! $sub->( { payments => 'Single'        } ), "invalid payment frequency does
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_semiannually
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->add_to_bucket( {
 		name        => 'is_semiannually',
@@ -433,7 +433,7 @@ ok( ! $sub->( { payments => 'Single'        } ), "invalid payment frequency does
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _is_single_payment
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->add_to_bucket( {
 		name        => 'is_single_payment',
@@ -468,11 +468,11 @@ in the composition if one of them doesn't pass (but without die-ing).
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _faculty_21_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_faculty_21( $hash ), 
-		$bucket->_is_valid_fall_or_spring_date( $hash ),
+		$bucket->_is_faculty_21( $setup ), 
+		$bucket->_is_valid_fall_or_spring_date( $setup ),
 		);
 	}
 
@@ -504,11 +504,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _faculty_26_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_faculty_26( $hash ), 
-		$bucket->_is_valid_paydate( $hash ),
+		$bucket->_is_faculty_26( $setup ), 
+		$bucket->_is_valid_paydate( $setup ),
 		);
 	}
 
@@ -540,11 +540,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _hourly_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_hourly( $hash ), 
-		$bucket->_is_valid_paydate( $hash ),
+		$bucket->_is_hourly( $setup ), 
+		$bucket->_is_valid_paydate( $setup ),
 		);
 	}
 
@@ -577,11 +577,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _salary_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_salary( $hash ), 
-		$bucket->_is_valid_paydate( $hash ),
+		$bucket->_is_salary( $setup ), 
+		$bucket->_is_valid_paydate( $setup ),
 		);
 	}
 
@@ -613,11 +613,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _fee_based_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_fee_based( $hash ), 
-		$bucket->_is_valid_paydate( $hash ),
+		$bucket->_is_fee_based( $setup ), 
+		$bucket->_is_valid_paydate( $setup ),
 		);
 	}
 
@@ -661,11 +661,11 @@ find one that works.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _quarterly_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_quarterly( $hash ), 
-		$bucket->_is_quarterly_payroll_date( $hash ),
+		$bucket->_is_quarterly( $setup ), 
+		$bucket->_is_quarterly_payroll_date( $setup ),
 		);
 	}
 
@@ -698,11 +698,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _semi_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_semiannually( $hash ), 
-		$bucket->_is_semiannual_payroll_date( $hash ), 
+		$bucket->_is_semiannually( $setup ), 
+		$bucket->_is_semiannual_payroll_date( $setup ), 
 		);
 	}
 
@@ -732,11 +732,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _single_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop( 
-		$bucket->_is_single_payment( $hash ), 
-		$bucket->_is_valid_paydate( $hash ),
+		$bucket->_is_single_payment( $setup ), 
+		$bucket->_is_valid_paydate( $setup ),
 		);
 	}
 
@@ -766,12 +766,12 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _extra_pass_or_skip
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_skip( 
-		$bucket->_quarterly_pass_or_stop( $hash ),
-		$bucket->_semi_pass_or_stop( $hash ),
-		$bucket->_single_pass_or_stop( $hash ),	
+		$bucket->_quarterly_pass_or_stop( $setup ),
+		$bucket->_semi_pass_or_stop( $setup ),
+		$bucket->_single_pass_or_stop( $setup ),	
 		);
 	}
 
@@ -821,11 +821,11 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _extra_pass_or_stop
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_stop(
-		$bucket->_is_extra_service( $hash ),
-		$bucket->_extra_pass_or_skip( $hash ),
+		$bucket->_is_extra_service( $setup ),
+		$bucket->_extra_pass_or_skip( $setup ),
 		);
 	}
 
@@ -873,11 +873,11 @@ them into a single subroutine for that worker type.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _faculty_composed
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_skip(
-		$bucket->_faculty_21_pass_or_stop( $hash ),
-		$bucket->_faculty_26_pass_or_stop( $hash ),
+		$bucket->_faculty_21_pass_or_stop( $setup ),
+		$bucket->_faculty_26_pass_or_stop( $setup ),
 		);
 	}
 
@@ -934,13 +934,13 @@ ok( exists $at->{message}, "Key 'message' exists in error hash" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub _professional_composed
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	$bucket->__compose_pass_or_skip(
-		$bucket->_hourly_pass_or_stop( $hash ),
-		$bucket->_salary_pass_or_stop( $hash ),
-		$bucket->_extra_pass_or_stop( $hash ),
-		$bucket->_fee_based_pass_or_stop( $hash ),
+		$bucket->_hourly_pass_or_stop( $setup ),
+		$bucket->_salary_pass_or_stop( $setup ),
+		$bucket->_extra_pass_or_stop( $setup ),
+		$bucket->_fee_based_pass_or_stop( $setup ),
 		);
 	}
 
@@ -1004,14 +1004,14 @@ them into a single subroutine for that for a grand subroutine.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 sub effective_date
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my $grand_composed = $bucket->__compose_pass_or_skip(
-		$bucket->_faculty_composed( $hash ),
-		$bucket->_professional_composed( $hash ),
+		$bucket->_faculty_composed( $setup ),
+		$bucket->_professional_composed( $setup ),
 		);
 
-	$bucket->__make_constraint( $grand_composed, $hash );
+	$bucket->__make_constraint( $grand_composed, $setup );
 	}
 	
 {
@@ -1027,13 +1027,13 @@ my $Input   = {
 	effective_date => 1970091,
 	};
 	
-my $hash    = {
+my $setup    = {
 	required_fields => [ qw(worker_type pay_basis effective_date) ],
 	};
 
 my $Profile = [
-	[ required_input => required_fields => $hash ],
-	[ effective_date => effective_date  => $hash ],
+	[ required_input => required_fields => $setup ],
+	[ effective_date => effective_date  => $setup ],
 	];
 	
 my $lint = $brick->lint( $Profile );
@@ -1046,4 +1046,5 @@ my $results = $brick->apply( $Profile, $Input );
 print STDERR Data::Dumper->Dump( [$results], [qw(results)] ) if $ENV{DEBUG};
 
 isa_ok( $results, ref [], "Results is an array reference" );
-is( scalar @$results, scalar @$Profile, "Results has same number of elements as profile" );
+is( scalar @$results, scalar @$Profile, 
+	"Results has same number of elements as profile" );

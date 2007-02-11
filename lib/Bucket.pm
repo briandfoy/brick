@@ -44,7 +44,6 @@ sub new
 	{
 	my( $class ) = @_;
 
-
 	my $self = bless {}, $class;
 	
 	$self->_init;

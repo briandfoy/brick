@@ -42,13 +42,13 @@ isa_ok( $brick, $class );
 
 sub Brick::Bucket::is_US_local_phone_number
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
-	$hash->{exact_length} = 7; # without separator
+	$setup->{exact_length} = 7; # without separator
 
-	$hash->{filter_fields}        = [ $hash->{field} ];
+	$setup->{filter_fields}        = [ $setup->{field} ];
 	
-	$hash->{regex}         = qr/
+	$setup->{regex}         = qr/
 		\A 
 		(?:\d\d\d)   # prefix
 		(?:\d\d\d\d) # number
@@ -56,12 +56,12 @@ sub Brick::Bucket::is_US_local_phone_number
 		/x;
 
 	my $composed = $bucket->__compose_satisfy_all(
-		$bucket->_remove_non_digits( $hash ),
-		$bucket->_value_length_is_exactly( $hash ),		
-		$bucket->_matches_regex( $hash ),
+		$bucket->_remove_non_digits( $setup ),
+		$bucket->_value_length_is_exactly( $setup ),		
+		$bucket->_matches_regex( $setup ),
 		);
 	
-	$bucket->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $setup );
 	}
 	
 =head2 Create the profile

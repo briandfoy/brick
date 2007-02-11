@@ -45,18 +45,18 @@ package Brick::Bucket;
 
 sub value_format_by_field_name
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my @subs = ();
 	
-	foreach my $field ( @{ $hash->{allowed_fields} } )
+	foreach my $field ( @{ $setup->{allowed_fields} } )
 		{
 		my $method = "_${field}_format";
 		do { warn "Cannot [$method]"; next } unless $bucket->can( $method );
 		
 		my $blank = $bucket->_is_blank( { field => $field } );
 		
-		my $sub = $bucket->$method( { %$hash, field => $field } );
+		my $sub = $bucket->$method( { %$setup, field => $field } );
 		
 		my $either = $bucket->__compose_satisfy_any( $blank, $sub );
 		
@@ -65,79 +65,79 @@ sub value_format_by_field_name
 		
 	my $composed = $bucket->__compose_satisfy_all( @subs );
 	
-	$bucket->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $setup );
 	}
 	
 sub _postal_code_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
-	$hash->{exact_length} = 5;
+	$setup->{exact_length} = 5;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_value_length_is_exactly( $hash ),		
-		$bucket->_is_only_decimal_digits( $hash ),
+		$bucket->_value_length_is_exactly( $setup ),		
+		$bucket->_is_only_decimal_digits( $setup ),
 		);
 	}
 	
 sub _whole_number_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
-	$hash->{exact_length} = 5;
+	$setup->{exact_length} = 5;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_is_only_decimal_digits( $hash ),
+		$bucket->_is_only_decimal_digits( $setup ),
 		);
 	}
 	
 sub _birthday_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_is_YYYYMMDD_date_format( $hash ),
-		$bucket->_is_valid_date( $hash ),
+		$bucket->_is_YYYYMMDD_date_format( $setup ),
+		$bucket->_is_valid_date( $setup ),
 		);
 	}
 
 sub _anniversary_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_is_YYYYMMDD_date_format( $hash ),
-		$bucket->_is_valid_date( $hash ),
+		$bucket->_is_YYYYMMDD_date_format( $setup ),
+		$bucket->_is_valid_date( $setup ),
 		);
 	}
 
 sub _city_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_is_true( $hash ),
+		$bucket->_is_true( $setup ),
 		);
 	}
 
 sub _state_abbr_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
-	$hash->{exact_length} = 2;
+	$setup->{exact_length} = 2;
 
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_value_length_is_exactly( $hash ),
-		$bucket->_is_valid_date( $hash ),
+		$bucket->_value_length_is_exactly( $setup ),
+		$bucket->_is_valid_date( $setup ),
 		);
 	}
 
 sub _country_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_is_true( $hash ),
+		$bucket->_is_true( $setup ),
 		);
 	}
 
@@ -188,17 +188,17 @@ my @required = qw(birthday country state city postal_code);
 
 =cut 
 
-my $hash = {
+my $setup = {
 	allowed_fields  => \@allowed,
 	required_fields => \@required,
 	};
 	
 my $Profile = [
-	[ allowed_fields   => allowed_fields             => $hash ],
+	[ allowed_fields   => allowed_fields             => $setup ],
 	
-	[ required_fields  => required_fields            => $hash ],
+	[ required_fields  => required_fields            => $setup ],
 	
-	[ format_of_values => value_format_by_field_name => $hash ],
+	[ format_of_values => value_format_by_field_name => $setup ],
 
 	];
 	
@@ -240,7 +240,7 @@ my $result = $brick->apply( $Profile, $Input );
 isa_ok( $result, ref [], "Results come back as array reference" );
 is( scalar @$result, scalar @$Profile, "Results has one element per Profile element" );
 
-print STDERR Data::Dumper->Dump( [$result], [qw(result)] );
+print STDERR Data::Dumper->Dump( [$result], [qw(result)] ) if $ENV{DEBUG};
 
 =head2 Check the results
 

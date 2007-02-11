@@ -42,16 +42,16 @@ isa_ok( $brick, $class );
 
 sub Brick::Bucket::is_US_zip_code
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	
-	$hash->{exact_length} = 5;
+	$setup->{exact_length} = 5;
 	
 	my $composed = $bucket->__compose_satisfy_all( 
-		$bucket->_value_length_is_exactly( $hash ),		
-		$bucket->_is_only_decimal_digits( $hash ),
+		$bucket->_value_length_is_exactly( $setup ),		
+		$bucket->_is_only_decimal_digits( $setup ),
 		);
 	
-	$bucket->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $setup );
 	}
 	
 =head2 Create the profile

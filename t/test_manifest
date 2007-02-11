@@ -9,23 +9,29 @@ composers/__compose_satisfy_N_to_M.t
 composers/__compose_pass_or_stop.t
 composers/__compose_pass_or_skip.t
 
+
 bucket/load.t
 bucket/new_bucket.t
 bucket/new_entry.t
 bucket/add_to_bucket.t
 bucket/get_brick_by_name.t
 bucket/unique.t
+bucket/anonymous_brick.t
+
 
 explain.t
 apply.t
 
+
 external/add_validator_packages.t
 external/new-external_packages.t
+
 
 filters/_remove_whitespace.t
 filters/_uppercase.t
 filters/_lowercase.t
 filters/_remove_extra_fields.t
+
 
 general/fields_are_something.t
 general/_exist_fields.t
@@ -34,11 +40,15 @@ general/_value_length_is_equal_to_greater_than.t
 general/_value_length_is_equal_to_less_than.t
 general/_value_length_is_between.t
 
+
 messages/number_range_error.t
+
 
 date/valid_date.t
 date/ranges.t
 
-
 use_cases/zip_code.t
 use_cases/phone_number.t
+use_cases/anonymous_brick.t
+use_cases/paycheck.t
+use_cases/foursquare.t
