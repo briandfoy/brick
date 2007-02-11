@@ -1,4 +1,7 @@
+#!/usr/bin/perl
+
 use Test::More 'no_plan';
+use strict;
 
 my $class = 'Brick';
 use_ok( $class );
@@ -10,7 +13,29 @@ $ENV{DEBUG} ||= 0;
 
 use_ok( 'Brick::General' );
 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# All the fields are there
+# SHOULD FAIL
+{
+my $bucket = Brick->bucket_class->new();
+isa_ok( $bucket, Brick->bucket_class );
+
+my $sub = eval {
+	$bucket->__fields_are_something( 
+		{
+		fields          => 'one',
+		}
+		);
+	};
+
+ok( $@, "croaks when 'fields' is not an array reference" );	
+is( $sub, undef, "Returns undef on failure" );
+
+}
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# INTEGRATION TEST
 my @profile = (
 	[ 'defined' => defined_fields => { 
 		fields  => [ qw(in_number ex_number not_a_number blank_field) ], 

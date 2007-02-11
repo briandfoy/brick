@@ -222,8 +222,7 @@ sub _fields_exist
 	unless( eval { $setup->{fields}->isa( ref [] ) } or
 		UNIVERSAL::isa( $setup->{fields}, ref [] ) )
 		{
-		confess( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
-		return sub {};
+		croak( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
@@ -288,7 +287,6 @@ sub __fields_are_something
 		UNIVERSAL::isa( $setup->{fields}, ref [] ) )
 		{
 		croak( "Argument to $caller[0]{'sub'} must be an anonymous array of field names!" );
-		return sub {};
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
