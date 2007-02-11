@@ -12,13 +12,13 @@ my $bucket = Mock::Bucket->new;
 isa_ok( $bucket, 'Mock::Bucket' );
 isa_ok( $bucket, Mock::Bucket->bucket_class );
 
-my $sub = $bucket->_exist_fields( 
+my $sub = $bucket->_fields_exist( 
 	{
 	fields          => [ qw(one two red blue) ],
 	}
 	);
 	
-isa_ok( $sub, ref sub {}, "_exist_fields returns a code ref" );
+isa_ok( $sub, ref sub {}, "_fields_exist returns a code ref" );
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

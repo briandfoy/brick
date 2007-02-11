@@ -28,6 +28,10 @@ my @profile = (
 		fields  => [ qw(blank_field undef_field) ], 
 		} 
 	],
+	[ present => exist_fields => { 
+		fields  => [ qw(ex_number blank_field in_number) ], 
+		} 
+	],
 	[ some_not_blank => blank_fields => { 
 		fields  => [ qw(in_number blank_field true_field undef_field) ], 
 		} 
@@ -109,7 +113,7 @@ foreach my $index ( 0 .. $#$result )
 	}
 
 
-foreach my $row ( splice @$result, 0, 4 )
+foreach my $row ( splice @$result, 0, 5 )
 	{
 	is( $row->[2], 1, "$row->[0] passes" );
 	}
