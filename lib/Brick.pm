@@ -8,7 +8,7 @@ use vars qw($VERSION);
 use Carp qw( carp croak );
 use Data::Dumper;
 
-$VERSION = sprintf "0.%04d", q$Revision$ =~ m/ (\d+) /xg;
+$VERSION = sprintf "0.%04d_01", q$Revision$ =~ m/ (\d+) /xg;
 
 =head1 NAME
 
