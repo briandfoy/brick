@@ -250,7 +250,7 @@ sub at_least_N_days_between
 				print STDERR "Expected interval: $setup->{number_of_days}\n" if $ENV{DEBUG};
 				
 				my $interval = $bucket->_get_days_between( $start, $end );
-				print STDERR "Interval: $start --> $interval --> $end" if $ENV{DEBUG};
+				print STDERR "Interval: $start --> $interval --> $end\n" if $ENV{DEBUG};
 
 				die {
 					message => 'Dates were not within range',
@@ -265,6 +265,11 @@ sub at_least_N_days_between
 
 Like C<at_least_N_days_between>, but the dates cannot be more than N days
 apart.
+
+At the moment this has the curious result that if the end date in before the
+start date, the duration between them is negative, so that duration is shorter
+than any positive number. This isn't a bug but a loack of a design decision
+if I should require the end date to be after the start date.
 
 =cut
 
@@ -281,12 +286,12 @@ sub at_most_N_days_between
 				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 
 				my $interval = $bucket->_get_days_between( $start, $end );
-				print STDERR "Interval: $start --> $interval --> $end"; # if $ENV{DEBUG};
+				print STDERR "Interval: $start --> $interval --> $end\n" if $ENV{DEBUG};
 
 				die {
 					message => 'Dates were outside the range',
 					handler => 'at_most_N_days_between',
-					} unless $interval >= $setup->{number_of_days};
+					} unless $setup->{number_of_days} >= $interval;
 				}
 			} )
 		);

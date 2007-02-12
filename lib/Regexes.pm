@@ -5,6 +5,7 @@ use strict;
 use subs qw();
 use vars qw($VERSION);
 
+use Carp qw(croak);
 use Storable qw(dclone);
 
 $VERSION = '0.20_01';
@@ -41,10 +42,9 @@ sub _matches_regex
 
 	my @caller = main::__caller_chain_as_list();
 
-  	unless( eval { $hash->{regex}->isa( ref qr// ) } )
-    	{
-    	carp( "Argument to $caller[0]{'sub'} must be a regular expression object" );
-    	return sub {};
+	unless( eval { $hash->{regex}->isa( ref qr// ) } )
+		{
+    	croak( "Argument to $caller[0]{'sub'} must be a regular expression object" );
 		}
 
 	$bucket->add_to_bucket ( {

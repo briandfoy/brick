@@ -44,13 +44,16 @@ numbers/number_within_range.t
 messages/number_range_error.t
 
 
-date/__get_ymd_as_hashref.t
-date/_get_days_between.t
-date/valid_date.t
-date/ranges.t
-date/days_between_dates_within_range.t
-date/days_between_outside_range.t
-date/at_least_N_days_between.t
+dates/__get_ymd_as_hashref.t
+dates/_get_days_between.t
+dates/valid_date.t
+dates/ranges.t
+dates/days_between_dates_within_range.t
+dates/days_between_outside_range.t
+dates/at_least_N_days_between.t
+dates/at_most_N_days_between.t
+
+regexes/_matches_regex.t
 
 use_cases/zip_code.t
 use_cases/phone_number.t
