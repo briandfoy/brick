@@ -16,7 +16,7 @@ foreach my $package ( qw(Numbers Regexes Strings Dates General Composers Filters
 	print STDERR $@ if $@;
 	}
 
-$VERSION = sprint "%d.03d", q$Revision$ =~ m/ (\d+) \. (\d+) /xg;
+$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
 
 =head1 NAME
 

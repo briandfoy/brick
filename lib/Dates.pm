@@ -8,7 +8,7 @@ use vars qw($VERSION);
 use Carp qw(carp croak);
 use DateTime;
 
-$VERSION = '0.20_01';
+$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
 
 =head1 NAME
 

@@ -28,8 +28,6 @@ t/composers/__compose_pass_or_skip.t
 t/composers/__compose_pass_or_stop.t
 t/composers/__compose_satisfy_N_to_M.t
 t/composers/load.t
-t/date/ranges.t
-t/date/valid_date.t
 t/dates/__get_ymd_as_hashref.t
 t/dates/_get_days_between.t
 t/dates/at_least_N_days_between.t
@@ -46,7 +44,6 @@ t/filters/_remove_extra_fields.t
 t/filters/_remove_whitespace.t
 t/filters/_uppercase.t
 t/general/__fields_are_something.t
-t/general/_exist_fields.t
 t/general/_fields_are_defined_and_not_null_string.t
 t/general/_fields_exist.t
 t/general/_is_defined.t
@@ -54,7 +51,6 @@ t/general/_value_length_is_between.t
 t/general/_value_length_is_equal_to_greater_than.t
 t/general/_value_length_is_equal_to_less_than.t
 t/general/fields_are_something.t
-t/general/required_fields.t
 t/lib/Mock/BarValidator.pm
 t/lib/Mock/Bucket.pm
 t/lib/Mock/FooValidator.pm
