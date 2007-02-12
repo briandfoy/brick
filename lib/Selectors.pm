@@ -1,4 +1,4 @@
-# $Id: Constraints.pm 2136 2007-02-09 06:56:55Z comdog $
+# $Id$
 package Brick::Bucket;
 use strict;
 
