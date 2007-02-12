@@ -1,13 +1,16 @@
 # $Id$
+package Brick::General;
+use strict;
+
+use base qw(Exporter);
+use vars qw($VERSION);
+
+$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
+
 package Brick::Bucket;
 use strict;
 
-use subs qw();
-use vars qw($VERSION);
-
 use Carp qw(croak confess);
-
-$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
 
 =head1 NAME
 

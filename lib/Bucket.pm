@@ -2,6 +2,7 @@
 package Brick::Bucket;
 use strict;
 
+use base qw(Exporter);
 use subs qw();
 use vars qw($VERSION);
 
