@@ -25,7 +25,7 @@ Brick - This is the description
 
 =over 4
 
-=item $bucket->number_within_range( HASHREF )
+=item number_within_range( HASHREF )
 
 Hash fields:
 

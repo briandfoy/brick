@@ -19,7 +19,7 @@ Brick::Filters - do something to the input data
 
 =over 4
 
-=item $bucket->_uppercase( HASHREF )
+=item _uppercase( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -52,7 +52,7 @@ sub _uppercase
 		} );
 	}
 
-=item $bucket->_lowercase( HASHREF )
+=item _lowercase( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -85,7 +85,7 @@ sub _lowercase
 		} );
 	}
 
-=item $bucket->_remove_non_digits( HASHREF )
+=item _remove_non_digits( HASHREF )
 
 This modifies the input data permanently. It removes the non-digits
 from the specified value in filter_fields. The value is no longer tainted
@@ -124,7 +124,7 @@ sub _remove_non_digits
 		} );
 	}
 
-=item $bucket->_remove_whitespace( HASHREF )
+=item _remove_whitespace( HASHREF )
 
 This modifies the input data permanently. It removes the whitespace
 from the specified value in filter_fields. The value is still tainted
@@ -155,7 +155,7 @@ sub _remove_whitespace
 		} );
 	}
 
-=item $bucket->_remove_extra_fields( HASHREF )
+=item _remove_extra_fields( HASHREF )
 
 This modifies the input data permanently. It removes any fields in
 the input that are not also in the 'filter_fields' value in HASHREF.

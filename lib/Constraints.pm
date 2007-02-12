@@ -19,7 +19,7 @@ Brick::Constraints - Connect the input data to the closures in the pool
 
 =over 4
 
-=item $bucket->__make_constraint( CODEREF, INPUT_HASH_REF )
+=item __make_constraint( CODEREF, INPUT_HASH_REF )
 
 Turn a closure into a constraint by providing the bridge between the
 input hash and code reference.

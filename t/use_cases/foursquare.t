@@ -4,6 +4,8 @@ use warnings;
 
 use Test::More 'no_plan';
 
+use Carp qw(carp);
+
 =head1 NAME
 
 Brick US Zip Code Use Case
@@ -52,7 +54,7 @@ sub value_format_by_field_name
 	foreach my $field ( @{ $setup->{allowed_fields} } )
 		{
 		my $method = "_${field}_format";
-		do { warn "Cannot [$method]"; next } unless $bucket->can( $method );
+		do { carp("Cannot [$method]"); next } unless $bucket->can( $method );
 		
 		my $blank = $bucket->_is_blank( { field => $field } );
 		

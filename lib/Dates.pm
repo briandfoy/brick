@@ -29,15 +29,15 @@ Brick - This is the description
 
 sub _is_YYYYMMDD_date_format
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name => $caller[0]{'sub'},
 		code => $bucket->_matches_regex( {
-			description  => "The $hash->{field} is in the YYYYMMDD date format",
-			field        => $hash->{field},
+			description  => "The $setup->{field} is in the YYYYMMDD date format",
+			field        => $setup->{field},
 			name         => $caller[0]{'sub'},
 			regex        => qr/
 				\A
@@ -52,7 +52,7 @@ sub _is_YYYYMMDD_date_format
 
 sub _is_valid_date
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
@@ -61,7 +61,7 @@ sub _is_valid_date
 		code => sub {
 			my $eval_error = 'Could not parse YYYYMMMDD date';
 			if( my( $year, $month, $day ) =
-				$_[0]->{$hash->{field}} =~ m/(\d\d\d\d)(\d\d)(\d\d)/g )
+				$_[0]->{$setup->{field}} =~ m/(\d\d\d\d)(\d\d)(\d\d)/g )
 				{
 				$eval_error = '';
 				my $dt = eval {
@@ -85,8 +85,8 @@ sub _is_valid_date
 				};
 
 			die {
-				message => "The value in $hash->{field} [$_[0]->{$hash->{field}}] was not a valid date: $date_error",
-				field   => $hash->{field},
+				message => "The value in $setup->{field} [$_[0]->{$setup->{field}}] was not a valid date: $date_error",
+				field   => $setup->{field},
 				handler => $caller[0]{'sub'},
 				} if $eval_error;
 
@@ -100,46 +100,49 @@ sub _is_valid_date
 
 =cut
 
+=pod
+
 sub _is_in_the_future
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_tomorrow
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_today
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_yesterday
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	croak "Not implemented";
 	}
 
 sub _is_in_the_past
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 	croak "Not implemented";
 	}
 
+=cut
 
 sub _date_is_after
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		description => "Date is after the start date",
 		code        => sub {
-			my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
-			my $in_date = $hash->{input_date} || $_[0]->{$hash->{input_date_field}};
+			my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
+			my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
 			#print STDERR "date after: $start --> $in_date\n";
 			die {
@@ -152,13 +155,13 @@ sub _date_is_after
 
 sub _date_is_before
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
 		description => "Date is before the end date",
 		code        => sub {
-			my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
-			my $in_date = $hash->{input_date} || $_[0]->{$hash->{input_date_field}};
+			my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
+			my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
 			#print STDERR "date before: $in_date --> $end\n";
 			die {
@@ -170,14 +173,14 @@ sub _date_is_before
 
 sub date_within_range  # inclusive, negative numbers indicate past
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $before_sub = $bucket->_date_is_before( $hash );
-	my $after_sub  = $bucket->_date_is_after( $hash );
+	my $before_sub = $bucket->_date_is_before( $setup );
+	my $after_sub  = $bucket->_date_is_after( $setup );
 
 	my $composed   = $bucket->__compose_satisfy_all( $after_sub, $before_sub );
 
-	$bucket->__make_constraint( $composed, $hash );
+	$bucket->__make_constraint( $composed, $setup );
 	}
 
 =item days_between_dates_within_range
@@ -187,16 +190,16 @@ sub date_within_range  # inclusive, negative numbers indicate past
 
 sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
 			name        => "Date within range",
 			description => "",
 			code        => sub {
-				my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
-				my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
-				my $in_date = $hash->{input_date} || $_[0]->{$hash->{input_date_field}};
+				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
+				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
+				my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
 				$start <= $in_date and $in_date <= $end;
 				}
@@ -204,119 +207,174 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 		);
 	}
 
-sub days_between_outside_range
+sub days_between_dates_outside_range
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
 			name        => "Date outside of range",
 			description => "",
 			code        => sub {
-				my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
-				my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
-				my $in_date = $hash->{input_date} || $_[0]->{$hash->{input_date_field}};
+				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
+				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
+				my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
-				my $interval = _get_days_between( $start, $end );
+				my $interval = $bucket->_get_days_between( $start, $end );
 
-				$interval < $start and $end < $interval;
+				die {
+					message => 'Dates were not within range',
+					handler => '',
+					} unless $interval < $start && $end < $interval;
 				}
 			} )
 		);
 	}
+
+=item at_least_N_days_between
+
+=cut
 
 sub at_least_N_days_between
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Date within $hash->{number_of_days} days of base date",
-			description => "",
+			name        => "Dates within $setup->{number_of_days} days",
+			description => "Dates within $setup->{number_of_days} days",
 			code        => sub {
-				my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
-				my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
+				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
+				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 
-				my $interval = _get_days_between( $start, $end );
+				print STDERR "Expected interval: $setup->{number_of_days}\n" if $ENV{DEBUG};
+				
+				my $interval = $bucket->_get_days_between( $start, $end );
+				print STDERR "Interval: $start --> $interval --> $end" if $ENV{DEBUG};
 
-				$hash->{number_of_days} >= $interval;
+				die {
+					message => 'Dates were not within range',
+					handler => 'at_least_N_days_between',
+					} unless $interval >= $setup->{number_of_days};
 				}
 			} )
 		);
 	}
+
+=item at_most_N_days_between
+
+Like C<at_least_N_days_between>, but the dates cannot be more than N days
+apart.
+
+=cut
 
 sub at_most_N_days_between
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Date within $hash->{number_of_days} days of base date",
+			name        => "Date within $setup->{number_of_days} days of base date",
 			description => "",
 			code        => sub {
-				my $start   = $hash->{start_date} || $_[0]->{$hash->{start_date_field}};
-				my $end     = $hash->{end_date}   || $_[0]->{$hash->{end_date_field}};
+				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
+				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 
-				my $interval = _get_days_between( $start, $end );
-				print STDERR "Interval: $start --> $interval --> $end" if $ENV{DEBUG};
-				$interval >= $hash->{number_of_days};
+				my $interval = $bucket->_get_days_between( $start, $end );
+				print STDERR "Interval: $start --> $interval --> $end"; # if $ENV{DEBUG};
+
+				die {
+					message => 'Dates were outside the range',
+					handler => 'at_most_N_days_between',
+					} unless $interval >= $setup->{number_of_days};
 				}
 			} )
 		);
 	}
 
+=pod
+
 sub at_most_N_days_after
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub at_most_N_days_before
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub before_fixed_date
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	croak "Not implemented!";
 	}
 
 sub after_fixed_date
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	croak "Not implemented!";
 	}
 
+=cut
+
 # return negative values if second date is earlier than first date
+
+=item __get_ymd_as_hashref( YYYYMMDD );
+
+Given two dates in YYYYMMDD format, return the number of days between
+them, including the last date.
+
+For the dates 20070101 and 20070103, return 2 because it includes the
+last day.
+
+For the dates 20070101 and 20060101, return -365 because the last date
+is in the past.
+
+=cut
+
 sub _get_days_between
 	{
-	my( $start, $stop ) = @_;
+	my( $bucket, $start, $stop ) = @_;
 
 	my @dates;
 
 	foreach my $date ( $start, $stop )
 		{
-		my( $year, $month, $day ) = _get_ymd_as_hashref( $date );
+		my( $year, $month, $day ) = $bucket->__get_ymd_as_hashref( $date );
 
 		push @dates, DateTime->new(
-			_get_ymd_as_hashref( $date )
+			$bucket->__get_ymd_as_hashref( $date )
 			);
 		}
 
 	my $duration = $dates[1]->delta_days( $dates[0] );
 
+	$duration *= -1 if $dates[1] < $dates[0];
+	
 	my $days = $duration->delta_days;
 	}
 
+=item __get_ymd_as_hashref( YYYYMMDD );
+
+Given a date in YYYYMMDD format, return an anonymous hash with the 
+keys:
+
+	year
+	month
+	day
+	
+=cut
+
 sub __get_ymd_as_hashref
 	{
-	my $date = shift;
+	my( $bucket, $date ) = @_;
 
 	my %hash = eval {
 		die "Could not parse date!"
@@ -336,8 +394,7 @@ sub __get_ymd_as_hashref
 	if( $@ )
 		{
 		$@ =~ s/\s+at\s+$0.*//s;
-		carp( "$@: I got [$date] but was expecting something in YYYYMMDD format!" );
-		return;
+		croak( "$@: I got [$date] but was expecting something in YYYYMMDD format!" );
 		}
 
 	\%hash;

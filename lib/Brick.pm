@@ -97,7 +97,7 @@ sub _set_error { $Error = $_[1] }
 
 =over 4
 
-=item $brick->init
+=item init
 
 Initialize the instance, or return it to a pristine state. Normally
 you don't have to do this because C<new> does it for you, but if you
@@ -123,7 +123,7 @@ sub init
 		}
 	}
 
-=item $brick->add_validator_packages( PACKAGES )
+=item add_validator_packages( PACKAGES )
 
 Load external validator packages into the bucket. Each of these packages
 should export the functions they want to make available. C<add_validator_package>
@@ -139,7 +139,7 @@ sub add_validator_packages
 	}
 
 
-=item my $new_bean = $brick->clone;
+=item clone;
 
 Based on the current instance, create another one just like it but not
 connected to it (in effect forking the instance). After the C<clone>
@@ -159,7 +159,7 @@ sub clone
 	$brick;
 	}
 
-=item my $result_arrayref = $brick->apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
+=item apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
 
 Apply the profile to the data in the input hash reference. It returns an
 array reference whose elements correspond to the elements in the profile.
@@ -218,7 +218,7 @@ sub apply
 	return \@results;
 	}
 
-=item $brick->explain( PROFILE_ARRAYREF )
+=item explain( PROFILE_ARRAYREF )
 
 Turn the profile into a textual description without applying it to any
 data. This does not add the profile to instance and it does not add
@@ -292,7 +292,7 @@ sub explain
 	$str;
 	}
 
-=item $brick->lint
+=item lint
 
 Examine the profile and complain about irregularities in format. This
 only checks the format; it does not try to determine if the profile
@@ -392,7 +392,7 @@ sub lint
 	wantarray ? %$lint : ( scalar keys %$lint );
 	}
 
-=item $brick->create_bucket( PROFILE_ARRAYREF )
+=item create_bucket( PROFILE_ARRAYREF )
 
 This method creates a C<Brick::Bucket> instance (or an instance in
 the package returned by C<$brick->bucket_class> ) based on the profile
@@ -479,7 +479,7 @@ sub create_bucket
 	wantarray ? ( $bucket, \@coderefs ) : $bucket;
 	}
 
-=item $brick->bucket_class
+=item bucket_class
 
 The namespace where the constraint building blocks are defined. By default
 this is C<Brick::Bucket>. If you don't like that, override this in a

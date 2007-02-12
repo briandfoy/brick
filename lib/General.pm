@@ -72,7 +72,7 @@ sub _is_defined
 
 =over 4
 
-=item $bucket->defined_fields( HASHREF )
+=item defined_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for definedness. It takes the same input.
@@ -88,7 +88,7 @@ sub defined_fields
 	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item $bucket->true_fields( HASHREF )
+=item true_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for true values. It takes the same input.
@@ -103,7 +103,7 @@ sub true_fields
 	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item $bucket->false_fields( HASHREF )
+=item false_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field for false values. It takes the same input.
@@ -118,7 +118,7 @@ sub false_fields
 	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item $bucket->blank_fields( HASHREF )
+=item blank_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field has blank values. It takes the same input.
@@ -133,7 +133,7 @@ sub blank_fields
 	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item $bucket->exist_fields( HASHREF )
+=item exist_fields( HASHREF )
 
 A wrapper around __fields_are_something to supply the code reference
 to verify that each field has blank values. It takes the same input.
@@ -148,7 +148,7 @@ sub exist_fields
 	$bucket->__make_constraint( $sub, $setup );
 	}
 
-=item $bucket->allowed_fields( HASHREF )
+=item allowed_fields( HASHREF )
 
 A wrapper around _remove_extra_fields to remove anything not in the
 list of the key 'allowed_fields' in HASHREF.
@@ -173,7 +173,7 @@ sub allowed_fields
 	$bucket->__make_constraint( $filter_sub, $setup );
 	}
 
-=item $bucket->required_fields( HASHREF )
+=item required_fields( HASHREF )
 
 A wrapper around _fields_are_defined_and_not_null_string to check for
 the presence of the required fields. A required field must exist in
