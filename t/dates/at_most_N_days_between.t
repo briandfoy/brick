@@ -113,8 +113,6 @@ my $sub = $bucket->at_most_N_days_between(
 	
 isa_ok( $sub, ref sub {} );
 
-print STDERR "Here I am!\n";
-
 # should work with near date
 {
 my $input = {

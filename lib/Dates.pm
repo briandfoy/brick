@@ -186,8 +186,28 @@ sub date_within_range  # inclusive, negative numbers indicate past
 	$bucket->__make_constraint( $composed, $setup );
 	}
 
-=item days_between_dates_within_range
+=item days_between_dates_within_range( HASHREF )
 
+I can specify any of the dates as part of the setup by supplying them
+as the values for these keys in the setup hash:
+
+	start_date
+	end_date
+	input_date
+	
+Instead of fixed values, I can tell the function to get values from 
+input fields. Put the field names in the values for these keys of
+the setup hash"
+
+	start_date_field
+	end_date_field
+	input_date_field
+
+I can use any combination of these setup fields, although the
+start_date, end_date, and input_date take precedence.
+
+TO DO: Need to validate all the date formats before I use them
+in the comparisons
 
 =cut
 
@@ -204,7 +224,10 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 				my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
-				$start <= $in_date and $in_date <= $end;
+				die {
+					message => 'Dates were not within range',
+					handler => '',
+					} unless $start <= $in_date && $in_date <= $end;
 				}
 			} )
 		);
@@ -223,12 +246,10 @@ sub days_between_dates_outside_range
 				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 				my $in_date = $setup->{input_date} || $_[0]->{$setup->{input_date_field}};
 
-				my $interval = $bucket->_get_days_between( $start, $end );
-
 				die {
-					message => 'Dates were not within range',
+					message => 'Dates were not outside range',
 					handler => '',
-					} unless $interval < $start && $end < $interval;
+					} unless $in_date < $start || $end < $in_date;
 				}
 			} )
 		);

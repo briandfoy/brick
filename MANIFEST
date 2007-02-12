@@ -50,7 +50,6 @@ t/general/_is_defined.t
 t/general/_value_length_is_between.t
 t/general/_value_length_is_equal_to_greater_than.t
 t/general/_value_length_is_equal_to_less_than.t
-t/general/fields_are_something.t
 t/lib/Mock/BarValidator.pm
 t/lib/Mock/Bucket.pm
 t/lib/Mock/FooValidator.pm
