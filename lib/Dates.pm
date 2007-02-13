@@ -93,7 +93,7 @@ sub _is_valid_date
 				handler => $caller[0]{'sub'},
 				} if $eval_error;
 
-				1;
+			#	1;
 				},
 		} );
 

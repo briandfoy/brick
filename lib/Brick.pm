@@ -75,6 +75,10 @@ sub _load_external_packages
 	
 	}
 	
+=item Brick->error( MESSAGE )
+
+The error message from the last things that happened.
+
 =item Brick->error_str
 
 The error message from the last things that happened.
@@ -115,11 +119,19 @@ sub init
 
 	$self->{buckets} = [];
 	
-	if( defined $args->{external_packages} && 
+	if( defined $args->{external_packages} && UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
+		{ # defined and array ref
+		$self->{external_packages} = $args->{external_packages};
+		}
+	elsif( defined $args->{external_packages} && 
 		! UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
-		{
+		{ # defined but not array ref
 		carp "'external_packages' value must be an anonymous array";
-		$args->{external_packages} = [];
+		$self->{external_packages} = [];
+		}
+	else
+		{ # not defined
+		$self->{external_packages} = [];
 		}
 	}
 
@@ -197,6 +209,7 @@ sub apply
 
 		push @results, [ $name, $handler, $result, $@ ];
 
+=pod
 		print STDERR do {
 			if( ref $eval_error )
 				{
@@ -212,6 +225,7 @@ sub apply
 				}
 
 			}, "\n" if $ENV{DEBUG};
+=cut
 
 		}
 

@@ -9,6 +9,7 @@ composers/__compose_satisfy_N_to_M.t
 composers/__compose_pass_or_stop.t
 composers/__compose_pass_or_skip.t
 
+constraints/__make_constraint.t
 
 bucket/load.t
 bucket/new_bucket.t
@@ -17,7 +18,8 @@ bucket/add_to_bucket.t
 bucket/get_brick_by_name.t
 bucket/unique.t
 
-
+error.t
+init.t
 explain.t
 apply.t
 
@@ -40,6 +42,10 @@ general/_value_length_is_equal_to_less_than.t
 general/_value_length_is_between.t
 
 numbers/number_within_range.t
+numbers/_numeric_equal_or_greater_than.t 
+numbers/_numeric_strictly_greater_than.t 
+numbers/_numeric_equal_or_less_than.t 
+numbers/_numeric_strictly_less_than.t
 
 messages/number_range_error.t
 
@@ -49,11 +55,15 @@ dates/_get_days_between.t
 dates/valid_date.t
 dates/ranges.t
 dates/days_between_dates_within_range.t
-dates/days_between_outside_range.t
+dates/days_between_dates_outside_range.t
 dates/at_least_N_days_between.t
 dates/at_most_N_days_between.t
 
 regexes/_matches_regex.t
+
+selectors/_is_even_number.t
+selectors/_is_odd_number.t
+selectors/_is_tuesday.t
 
 use_cases/zip_code.t
 use_cases/phone_number.t

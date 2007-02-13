@@ -130,6 +130,8 @@ sub _is_tuesday
 
 =cut
 
+=pod
+
 sub __normalize_var_name
 	{
 	my $field = shift;
@@ -143,7 +145,7 @@ sub __normalize_var_name
 
 =item __field_has_string_value( FIELD, VALUE )
 
-=cut
+ =cut
 
 sub __field_has_string_value
 	{
@@ -158,11 +160,11 @@ sub __field_has_string_value
 	$bucket->__field_has_value( $setup, $sub );
 	}
 
-=item __field_has_numberic_value( FIELD, VALUE )
+=item __field_has_numeric_value( FIELD, VALUE )
 
-=cut
+ =cut
 
-sub __field_has_numberic_value
+sub __field_has_numeric_value
 	{
 	my( $bucket, $setup ) = @_;
 	
@@ -202,7 +204,9 @@ sub __field_has_value
 		);
 		
 	}
-	
+
+=cut
+
 =back
 
 =head1 TO DO

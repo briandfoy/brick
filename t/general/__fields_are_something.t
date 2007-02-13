@@ -22,6 +22,7 @@ my $bucket = Brick->bucket_class->new();
 isa_ok( $bucket, Brick->bucket_class );
 
 my $sub = eval {
+	no warnings;
 	$bucket->__fields_are_something( 
 		{
 		fields          => 'one',

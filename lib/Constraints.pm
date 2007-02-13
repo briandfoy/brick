@@ -35,38 +35,35 @@ pieces you want.
 
 sub __make_constraint # may need to change name to make generic
 	{
-    my( $bucket, $validator, $hash ) = @_;
+	my( $bucket, $validator, $setup ) = @_;
 
-	$hash ||= {};
+	$setup ||= {};
 
- 	my @callers = main::__caller_chain_as_list();
+	my @callers = main::__caller_chain_as_list();
 
-	if( $callers[1]{'sub'} =~ m/^_/ )
+	#print STDERR Data::Dumper->Dump( [\@callers], [qw(callers)] ); use Data::Dumper;
+
+	if( $#callers >= 1 and exists $callers[1]{'sub'} and  $callers[1]{'sub'} =~ m/^_/ )
 		{
 		carp "$callers[1]{'sub'} called from sub with leading underscore. Are you sure you want that?";
 		}
 
-	my $name = $hash->{profile_name} || $callers[-1]{'sub'} || 'Anonymous';
+	my $name = $setup->{profile_name} || $callers[-1]{'sub'} || 'Anonymous';
 
- 	unless(
- 		eval { $validator->isa( ref sub {} ) }    or
- 		UNIVERSAL::isa( $validator, ref sub {} )
- 		)
-    	{
-    	croak( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
-    	return $bucket->add_to_bucket( {
-    		code        => sub {},
-    		name        => "Null subroutine",
-    		description => "This sub does nothing, because something didn't happen correctly."
-    		} );
+	unless(
+		eval { $validator->isa( ref sub {} ) }    ||
+		UNIVERSAL::isa( $validator, ref sub {} )
+		)
+		{
+		croak( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
 		}
+		
+	my $constraint = $bucket->add_to_bucket( {
+		name        => $name,
+		description => "Brick constraint sub for $name",
 
-    my $constraint = $bucket->add_to_bucket( {
-    	name        => $name,
-    	description => "Brick constraint sub for $name",
-
-    	code        => sub {
-    		my $input_hash = shift;
+		code        => sub {
+		my $input_hash = shift;
 
 			my $result = eval{ $validator->( $input_hash ) };
 			die if $@;
@@ -75,7 +72,7 @@ sub __make_constraint # may need to change name to make generic
 			},
 		} );
 
-    $bucket->comprise( $constraint, $validator );
+	$bucket->comprise( $constraint, $validator );
 
     return $constraint;
 	}
@@ -86,6 +83,8 @@ sub __make_constraint # may need to change name to make generic
 Adapter for Data::FormValidator
 
 =cut
+
+=pod
 
 sub __make_dfv_constraint # may need to change name to make generic
 	{

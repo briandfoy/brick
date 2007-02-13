@@ -12,7 +12,7 @@ BEGIN {
 	);
 	}
 	
-use Test::More tests => 1;
+use Test::More tests => 3;
 use strict;
 
 my @modules = qw(
@@ -23,3 +23,8 @@ foreach my $module ( @modules )
 	{
 	print "BAIL OUT!" unless use_ok( $module );
 	}
+	
+
+# API shims
+ok( defined &Brick::Bucket::add_to_pool );
+ok( ! eval { Brick::Bucket->add_to_pool } );
