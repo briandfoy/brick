@@ -7,6 +7,7 @@ WriteMakefile(
 	'NAME'	       => 'Brick',
 	'VERSION_FROM' => 'lib/Brick.pm',
 	'LICENSE'      => 'perl',
+	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
 	'PREREQ_PM'    => { 
 		'Test::More' => '0',

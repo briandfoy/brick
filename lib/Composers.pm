@@ -117,7 +117,7 @@ sub __compose_satisfy_N_to_M
 	my @caller = main::__caller_chain_as_list();
 
 	my @composers = grep { /^__compose/ } map { $_->{sub} } @caller;
-	
+
 	my $max = @subs;
 
 	my $sub = $bucket->add_to_bucket( {
@@ -306,9 +306,11 @@ sub __compose_pass_or_stop
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 
+TBA
 
 =head1 SOURCE AVAILABILITY
 

@@ -200,8 +200,8 @@ as the values for these keys in the setup hash:
 	start_date
 	end_date
 	input_date
-	
-Instead of fixed values, I can tell the function to get values from 
+
+Instead of fixed values, I can tell the function to get values from
 input fields. Put the field names in the values for these keys of
 the setup hash"
 
@@ -284,7 +284,7 @@ sub at_least_N_days_between
 				my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
 
 				print STDERR "Expected interval: $setup->{number_of_days}\n" if $ENV{DEBUG};
-				
+
 				my $interval = $bucket->_get_days_between( $start, $end );
 				print STDERR "Interval: $start --> $interval --> $end\n" if $ENV{DEBUG};
 
@@ -400,19 +400,19 @@ sub _get_days_between
 	my $duration = $dates[1]->delta_days( $dates[0] );
 
 	$duration *= -1 if $dates[1] < $dates[0];
-	
+
 	my $days = $duration->delta_days;
 	}
 
 =item __get_ymd_as_hashref( YYYYMMDD );
 
-Given a date in YYYYMMDD format, return an anonymous hash with the 
+Given a date in YYYYMMDD format, return an anonymous hash with the
 keys:
 
 	year
 	month
 	day
-	
+
 =cut
 
 sub __get_ymd_as_hashref
@@ -448,9 +448,11 @@ sub __get_ymd_as_hashref
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 
+TBA
 
 =head1 SOURCE AVAILABILITY
 

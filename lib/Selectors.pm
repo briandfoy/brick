@@ -34,24 +34,24 @@ to be greater than 11 and prime. If it's even, it has to be less than
 20 and it has to be a tuesday. Here's the tree of decisions:
 
 							some value
-                              /    \                                                 
-                             /      \                                           
-                           odd       even                                              
-                          /  |       |  \                                                   
-       _is_prime  -------+   |       |   +----- _is_tueday                                   
-                             |       |                                          
-                            /         \                                          
-                           /           \                                          
-                        > 11          < 20                                       			 				
-                                                                                			 				
-                                                                                			 				
+                              /    \
+                             /      \
+                           odd       even
+                          /  |       |  \
+       _is_prime  -------+   |       |   +----- _is_tueday
+                             |       |
+                            /         \
+                           /           \
+                        > 11          < 20
+
+
 Now, I have to compose subroutines that will do the right thing. The
 first step is to decide which side of the tree to process. I'll make
 some selectors. These won't die if they don't pass:
 
 	my $even_selector = $bucket->_is_even_number;
 	my $odd_selector  = $bucket->_is_even_number;
-	
+
 I put the selectors together with the subroutines that should run if
 that selector is true. The selector tells C<__compose_pass_or_stop>
 to skip the rest of the subroutines without die-ing. The branch
@@ -61,7 +61,7 @@ effectively turns into a null operation.
 		$even_selector,
 		$brick->_is_tuesday,
 		);
-	
+
 	my $odd_branch  = $brick->__compose_pass_or_stop(
 		$odd_selector,
 		$brick->_is_prime( { field => 'number_field_name' } ),
@@ -85,7 +85,7 @@ the subroutine in C<$even_branch> and control skips to C<$odd_branch>.
 Returns an anonymous subroutine that returns true it's argument is an
 even number, and return the empty list otherwise.
 
-The anonymous subroutine takes a hash reference as an argument and 
+The anonymous subroutine takes a hash reference as an argument and
 tests the value with the key C<field>.
 
 =cut
@@ -94,13 +94,13 @@ sub _is_even_number
 	{
 	sub{ $_[0]->{field} % 2 ? () : 1 };
 	}
-	
+
 =item _is_odd_number
 
 Returns an anonymous subroutine that returns true if it's argument is
 odd, and return the empty list otherwise.
 
-The anonymous subroutine takes a hash reference as an argument and 
+The anonymous subroutine takes a hash reference as an argument and
 tests the value with the key C<field>.
 
 =cut
@@ -109,7 +109,7 @@ sub _is_odd_number
 	{
 	sub{ $_[0]->{field} % 2 ? 1 : () };
 	}
-	
+
 =item _is_tuesday
 
 Returns an anonymous subroutine that returns true if the system time
@@ -121,7 +121,7 @@ sub _is_tuesday
 	{
 	sub { (localtime)[6] == 2 ? 1 : () };
 	}
-	
+
 =back
 
 =head2 Selector factories
@@ -135,9 +135,9 @@ sub _is_tuesday
 sub __normalize_var_name
 	{
 	my $field = shift;
-	
+
 	$field =~ s/\W/_/g;
-	
+
 	return $field;
 	}
 
@@ -150,13 +150,13 @@ sub __normalize_var_name
 sub __field_has_string_value
 	{
 	my( $bucket, $setup ) = @_;
-	
-	
+
+
 	my $sub = sub {
 		$_[0]->{ $setup->{field} } == $setup->{value} ? 1 : ();
 		};
-		
-		
+
+
 	$bucket->__field_has_value( $setup, $sub );
 	}
 
@@ -167,34 +167,34 @@ sub __field_has_string_value
 sub __field_has_numeric_value
 	{
 	my( $bucket, $setup ) = @_;
-	
-	
+
+
 	my $sub = sub {
 		$_[0]->{ $setup->{field} } == $setup->{value} ? 1 : ();
 		};
-		
-		
+
+
 	$bucket->__field_has_value( $setup, $sub );
 	}
 
 sub __field_has_value
 	{
 	my( $bucket, $setup, $sub ) = @_;
-	
+
 	my $sub_field = __normalize_var_name( $setup->{field} );
 	my $sub_value = __normalize_var_name( $setup->{value} );
-	
+
 	my $bucket_class = Brick->bucket_class;
-	
+
 	my $method_name  = "_${sub_field}_is_${sub_value}";
 
-		
+
 	{
 	no strict 'refs';
 	*{$method_name} = $sub;
 	}
 
-	
+
 	$bucket->add_to_bucket(
 		{
 		name        => $method_name,
@@ -202,7 +202,7 @@ sub __field_has_value
 		code        => $sub,
 		}
 		);
-		
+
 	}
 
 =cut
@@ -211,6 +211,7 @@ sub __field_has_value
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 

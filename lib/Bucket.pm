@@ -46,19 +46,19 @@ sub new
 	my( $class ) = @_;
 
 	my $self = bless {}, $class;
-	
+
 	$self->_init;
-	
+
 	$self;
 	}
 
 sub _init
 	{
 	my $self = shift;
-	
+
 	$self->{_names} = {};
 	}
-	
+
 =item entry_class
 
 
@@ -119,14 +119,14 @@ sub add_to_bucket
 		= @$setup{ qw(code name description args fields unique) };
 
 	$unique ||= 0;
-	
+
 	unless( defined $name )
 		{
 		my $default = '(anonymous)';
 		#carp "Setup does not specify a 'name' key! Using $default";
 		$name   ||= $default;
 		}
-		
+
 	# ensure we have a sub first
 	unless( ref $sub eq ref sub {} )
 		{
@@ -154,7 +154,7 @@ sub add_to_bucket
 
 	$entry->{code}   = $sub;
 	$entry->{unique} = $unique;
-	
+
 	$entry->set_name( do {
 		if( defined $name ) { $name }
 		elsif( defined $entry->get_name ) { $entry->get_name }
@@ -217,21 +217,21 @@ sub get_brick_by_name
 	my( $bucket, $name ) = @_;
 
 	my @found;
-	
+
 	foreach my $key ( $bucket->get_all_keys )
 		{
 		#print STDERR "Got key $key\n";
 		my $brick = $bucket->get_from_bucket( $key );
 		#print STDERR Data::Dumper->Dump( [$brick], [qw(brick)] );
-		
+
 		next unless $brick->get_name eq $name;
-		
+
 		push @found, $brick->get_coderef;
 		}
-		
+
 	wantarray ? @found : scalar @found;
 	}
-	
+
 =item get_all_keys
 
 Returns an unordered list of the keys (entry IDs) in the bucket.
@@ -268,18 +268,18 @@ mostly a debugging tool.
 sub dump_bucket
 	{
 	my $bucket = shift;
-	
+
 	foreach my $key ( $bucket->get_all_keys )
 		{
 		my $brick = $bucket->get_from_bucket( $key );
-		
+
 		print $brick->get_name, " --> $key\n";
 		print $brick->get_description, "\n";
 		}
-	
-	1;	
+
+	1;
 	}
-	
+
 =back
 
 =head1 Brick::Bucket::Entry
@@ -422,7 +422,7 @@ sub add_bit
 	{
 	my $entry = shift;
 	no warnings;
-	
+
 	# can things get in here twice
 	push @{ $entry->{comprises} }, map { "$_" } @_;
 	}
@@ -474,9 +474,11 @@ sub main::__caller_chain_as_list
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 
+TBA
 
 =head1 SOURCE AVAILABILITY
 
@@ -484,7 +486,7 @@ This source is part of a SourceForge project which always has the
 latest sources in SVN, as well as all of the previous releases.
 
 	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
- 
+
 If, for some reason, I disappear from the world, one of the other
 members of the project can shepherd this module appropriately.
 

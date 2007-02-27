@@ -58,7 +58,7 @@ sub __make_constraint # may need to change name to make generic
 		{
 		croak( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
 		}
-		
+
 	my $constraint = $bucket->add_to_bucket( {
 		name        => $name,
 		description => "Brick constraint sub for $name",
@@ -137,9 +137,11 @@ sub __make_dfv_constraint # may need to change name to make generic
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 
+TBA
 
 =head1 SOURCE AVAILABILITY
 

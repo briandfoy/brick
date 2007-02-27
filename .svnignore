@@ -6,3 +6,4 @@ blib
 .lwpcookies
 *.gz
 Makefile
+Brick-*

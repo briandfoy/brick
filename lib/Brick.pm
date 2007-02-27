@@ -52,11 +52,11 @@ Future ideas? Maybe store several buckets or profiles?
 sub new
 	{
 	my( $class, $args ) = @_;
-	
+
 	my $self = bless {}, $class;
 
 	$self->init( $args );
-	
+
 	$self->_load_external_packages( @{ $args->{external_packages} } );
 
 	$self;
@@ -65,16 +65,16 @@ sub new
 sub _load_external_packages
 	{
 	my( $self, @packages ) = @_;
-	
+
 	my $bucket_class = $self->bucket_class;
 
 	foreach my $package ( @packages )
 		{
 		eval "package $bucket_class; require $package; $package->import";
 		}
-	
+
 	}
-	
+
 =item Brick->error( MESSAGE )
 
 The error message from the last things that happened.
@@ -114,16 +114,16 @@ sub init
 	my( $self, $args ) = @_;
 
 	my $bucket_class = $self->bucket_class;
-	
+
 	eval "require $bucket_class";
 
 	$self->{buckets} = [];
-	
+
 	if( defined $args->{external_packages} && UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
 		{ # defined and array ref
 		$self->{external_packages} = $args->{external_packages};
 		}
-	elsif( defined $args->{external_packages} && 
+	elsif( defined $args->{external_packages} &&
 		! UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
 		{ # defined but not array ref
 		carp "'external_packages' value must be an anonymous array";
@@ -146,7 +146,7 @@ C<require>s each package and calls its C<import> routine.
 sub add_validator_packages
 	{
 	my( $self, @packages ) = @_;
-	
+
 	$self->_load_external_packages( @packages );
 	}
 
@@ -210,6 +210,7 @@ sub apply
 		push @results, [ $name, $handler, $result, $@ ];
 
 =pod
+
 		print STDERR do {
 			if( ref $eval_error )
 				{
@@ -225,6 +226,7 @@ sub apply
 				}
 
 			}, "\n" if $ENV{DEBUG};
+
 =cut
 
 		}
@@ -508,9 +510,11 @@ sub bucket_class { 'Brick::Bucket' }
 
 =head1 TO DO
 
+TBA
 
 =head1 SEE ALSO
 
+TBA
 
 =head1 SOURCE AVAILABILITY
 
@@ -518,7 +522,7 @@ This source is part of a SourceForge project which always has the
 latest sources in SVN, as well as all of the previous releases.
 
 	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
- 
+
 If, for some reason, I disappear from the world, one of the other
 members of the project can shepherd this module appropriately.
 
