@@ -48,7 +48,7 @@ sub __make_constraint # may need to change name to make generic
 		carp "$callers[1]{'sub'} called from sub with leading underscore. Are you sure you want that?";
 		}
 
-	my $name = $setup->{profile_name} || $callers[-1]{'sub'} || 'Anonymous';
+	my $name = $setup->{name} || $callers[-1]{'sub'} || 'Anonymous';
 
 	unless(
 		eval { $validator->isa( ref sub {} ) }    ||

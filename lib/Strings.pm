@@ -30,12 +30,12 @@ Brick::General - constraints for domain-nonspecific stuff
 
 sub _value_length_is_exactly
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	$hash->{minimum_length} = $hash->{exact_length};
-	$hash->{maximum_length} = $hash->{exact_length};
+	$setup->{minimum_length} = $setup->{exact_length};
+	$setup->{maximum_length} = $setup->{exact_length};
 
-	$bucket->_value_length_is_between( $hash );
+	$bucket->_value_length_is_between( $setup );
 	}
 
 =item $bucket->value_length_is_greater_than( HASHREF )
@@ -46,18 +46,18 @@ sub _value_length_is_exactly
 
 sub _value_length_is_equal_to_greater_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
-		description => "Length of value in $hash->{field} is greater than or equal to $hash->{minimum_length} characters",
+		name        => $setup->{name} || $caller[0]{'sub'},
+		description => "Length of value in $setup->{field} is greater than or equal to $setup->{minimum_length} characters",
 		code        => sub {
 			die {
-				message => "Length of value in $hash->{field} [$_[0]->{ $hash->{field} }] isn't greater than or equal to $hash->{minimum_length} characters",
+				message => "Length of value in $setup->{field} [$_[0]->{ $setup->{field} }] isn't greater than or equal to $setup->{minimum_length} characters",
 				handler     => $caller[1]{'sub'},
-				} unless $hash->{minimum_length} <= length( $_[0]->{ $hash->{field} } )
+				} unless $setup->{minimum_length} <= length( $_[0]->{ $setup->{field} } )
 			},
 		} );
 	}
@@ -70,18 +70,18 @@ sub _value_length_is_equal_to_greater_than
 
 sub _value_length_is_equal_to_less_than
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
-		description => "Length of value in $hash->{field} is less than or equal to $hash->{maximum_length} characters",
+		name        => $setup->{name} || $caller[0]{'sub'},
+		description => "Length of value in $setup->{field} is less than or equal to $setup->{maximum_length} characters",
 		code        => sub {
 			die {
-				message => "Length of value in $hash->{field} [$_[0]->{ $hash->{field} }] isn't less than or equal to $hash->{maximum_length} characters",
+				message => "Length of value in $setup->{field} [$_[0]->{ $setup->{field} }] isn't less than or equal to $setup->{maximum_length} characters",
 				handler => $caller[1]{'sub'},
-				} unless length( $_[0]->{ $hash->{field} } ) <= $hash->{maximum_length}
+				} unless length( $_[0]->{ $setup->{field} } ) <= $setup->{maximum_length}
 			},
 		} );
 	}
@@ -95,10 +95,10 @@ sub _value_length_is_equal_to_less_than
 
 sub _value_length_is_between
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
-	my $min = $bucket->_value_length_is_equal_to_greater_than( $hash );
-	my $max = $bucket->_value_length_is_equal_to_less_than( $hash );
+	my $min = $bucket->_value_length_is_equal_to_greater_than( $setup );
+	my $max = $bucket->_value_length_is_equal_to_less_than( $setup );
 
 	my $composed = $bucket->__compose_satisfy_all( $min, $max );
 	}

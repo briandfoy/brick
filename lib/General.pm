@@ -229,6 +229,7 @@ sub _fields_exist
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => ( $setup->{description} || "Fields exist" ),
 		#args        => [ dclone $setup ],
 		fields      => [ $setup->{fields} ],
@@ -293,6 +294,7 @@ sub __fields_are_something
 		}
 
 	my $composed = $bucket->add_to_bucket ( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => ( $setup->{description} || "Fields exist" ),
 		#args        => [ dclone $setup ],
 		fields      => [ $setup->{fields} ],

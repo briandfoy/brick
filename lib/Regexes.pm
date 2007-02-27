@@ -41,26 +41,26 @@ Create a code ref to apply a regular expression to the named field.
 
 sub _matches_regex
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	unless( eval { $hash->{regex}->isa( ref qr// ) } )
+	unless( eval { $setup->{regex}->isa( ref qr// ) } )
 		{
     	croak( "Argument to $caller[0]{'sub'} must be a regular expression object" );
 		}
 
 	$bucket->add_to_bucket ( {
-		name        => $caller[0]{'sub'},
-		description => ( $hash->{description} || "Match a regular expression" ),
-		#args        => [ dclone $hash ],
-		fields      => [ $hash->{field} ],
+		name        => $setup->{name} || $caller[0]{'sub'},
+		description => ( $setup->{description} || "Match a regular expression" ),
+		#args       => [ dclone $hash ],
+		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The value in $hash->{field} [$_[0]->{ $hash->{field} }] did not match the pattern",
-				field   => $hash->{field},
+				message => "The value in $setup->{field} [$_[0]->{ $setup->{field} }] did not match the pattern",
+				field   => $setup->{field},
 				handler => $caller[0]{'sub'},
-				} unless $_[0]->{ $hash->{field} } =~ m/$hash->{regex}/;
+				} unless $_[0]->{ $setup->{field} } =~ m/$setup->{regex}/;
 			},
 		} );
 

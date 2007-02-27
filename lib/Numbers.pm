@@ -74,7 +74,7 @@ sub _is_only_decimal_digits
 	my $sub = $bucket->_matches_regex( {
 		description  => "The $setup->{field} value only has decimal digits",
 		field        => $setup->{field},
-		name         => $caller[0]{'sub'},
+		name         => $setup->{name} || $caller[0]{'sub'},
 		regex        => qr/
 			\A
 			\d+  # digits only
@@ -100,7 +100,7 @@ sub _is_decimal_integer
 	my $sub = $bucket->_matches_regex( {
 		description  => "The $setup->{field} is an integer in base 10",
 		field        => $setup->{field},
-		name         => $caller[0]{'sub'},
+		name         => $setup->{name} || $caller[0]{'sub'},
 		regex        => qr/
 			\A
 			(?:[+-])?  # optional leading sign
@@ -124,6 +124,7 @@ sub _inclusive_within_numeric_range
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] inclusively",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
@@ -138,7 +139,10 @@ sub _exclusive_within_numeric_range
 	{
 	my( $bucket, $setup ) = @_;
 
+	my @caller = main::__caller_chain_as_list();
+
 	$bucket->add_to_bucket( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] exclusively",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
@@ -157,6 +161,7 @@ sub _numeric_equal_or_greater_than
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is equal to or greater than $setup->{minimum}",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
@@ -177,6 +182,7 @@ sub _numeric_strictly_greater_than
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is greater than $setup->{minimum}",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
@@ -197,6 +203,7 @@ sub _numeric_equal_or_less_than
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is equal to or less than $setup->{maximum}",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
@@ -217,6 +224,7 @@ sub _numeric_strictly_less_than
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is less than $setup->{maximum}",
 		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],

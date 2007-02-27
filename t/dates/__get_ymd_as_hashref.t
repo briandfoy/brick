@@ -29,6 +29,17 @@ ok( exists $hash->{day}, "Key for year is there" );
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Improper date
 # SHOULD FAIL
+{
 my $result = eval { $bucket->__get_ymd_as_hashref( "2007021" ) };
 ok( $@, "Improper date croaks" );
 ok( ! defined $result, "Improper date returns undef" );
+}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Improper date
+# SHOULD FAIL
+{
+my $result = eval { $bucket->__get_ymd_as_hashref( "20070230" ) };
+ok( $@, "February 30 croaks" );
+ok( ! defined $result, "Improper date returns undef" );
+}

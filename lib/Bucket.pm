@@ -119,8 +119,14 @@ sub add_to_bucket
 		= @$setup{ qw(code name description args fields unique) };
 
 	$unique ||= 0;
-	$name   ||= '(anonymous)';
 	
+	unless( defined $name )
+		{
+		my $default = '(anonymous)';
+		carp "Setup does not specify a 'name' key! Using $default";
+		$name   ||= $default;
+		}
+		
 	# ensure we have a sub first
 	unless( ref $sub eq ref sub {} )
 		{

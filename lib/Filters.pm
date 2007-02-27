@@ -36,15 +36,15 @@ error.
 
 sub _uppercase
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "filter: uppercase the input",
 		code        => sub {
-			foreach my $f ( @{ $hash->{filter_fields} } )
+			foreach my $f ( @{ $setup->{filter_fields} } )
 				{
 				next unless exists $_[0]->{ $f };
 				$_[0]->{ $f } = uc $_[0]->{ $f };
@@ -69,15 +69,15 @@ error.
 
 sub _lowercase
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "filter: uppercase the input",
 		code        => sub {
-			foreach my $f ( @{ $hash->{filter_fields} } )
+			foreach my $f ( @{ $setup->{filter_fields} } )
 				{
 				next unless exists $_[0]->{ $f };
 				$_[0]->{ $f } = lc $_[0]->{ $f };
@@ -102,15 +102,15 @@ error.
 
 sub _remove_non_digits
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "filter: remove non-digits",
 		code        => sub {
-			foreach my $f ( @{ $hash->{filter_fields} } )
+			foreach my $f ( @{ $setup->{filter_fields} } )
 				{
 				next unless exists $_[0]->{ $f };
 				$_[0]->{ $f } =~ tr/0-9//cd;
@@ -140,15 +140,15 @@ This filter always succeeds, so it will not generate an error.
 
 sub _remove_whitespace
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "filter: remove whitespace",
 		code        => sub {
-			foreach my $f ( @{ $hash->{filter_fields} } )
+			foreach my $f ( @{ $setup->{filter_fields} } )
 				{
 				next unless exists $_[0]->{ $f };
 				$_[0]->{ $f } =~ tr/\n\r\t\f //d;
@@ -170,14 +170,14 @@ This filter always succeeds, so it will not generate an error.
 
 sub _remove_extra_fields
 	{
-	my( $bucket, $hash ) = @_;
+	my( $bucket, $setup ) = @_;
 
 	my @caller = main::__caller_chain_as_list();
 
-	my %allowed = map { $_, 1 } @{ $hash->{filter_fields} };
+	my %allowed = map { $_, 1 } @{ $setup->{filter_fields} };
 
 	$bucket->add_to_bucket( {
-		name        => $caller[0]{'sub'},
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "filter: remove extra fields",
 		code        => sub {
 			foreach my $f ( keys % {$_[0] } )

@@ -116,9 +116,12 @@ sub __compose_satisfy_N_to_M
 
 	my @caller = main::__caller_chain_as_list();
 
+	my @composers = grep { /^__compose/ } map { $_->{sub} } @caller;
+	
 	my $max = @subs;
 
 	my $sub = $bucket->add_to_bucket( {
+		name => $composers[-1], # forget the chain of composers
 		code => sub {
 			my $count = 0;
 			my @dies = ();

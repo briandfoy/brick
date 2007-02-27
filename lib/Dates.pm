@@ -37,7 +37,7 @@ sub _is_YYYYMMDD_date_format
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name => $caller[0]{'sub'},
+		name => $setup->{name} || $caller[0]{'sub'},
 		code => $bucket->_matches_regex( {
 			description  => "The $setup->{field} is in the YYYYMMDD date format",
 			field        => $setup->{field},
@@ -60,7 +60,7 @@ sub _is_valid_date
 	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
-		name => $caller[0]{'sub'},
+		name => $setup->{name} || $caller[0]{'sub'},
 		code => sub {
 			my $eval_error = 'Could not parse YYYYMMMDD date';
 			if( my( $year, $month, $day ) =
@@ -142,6 +142,7 @@ sub _date_is_after
 	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Date is after the start date",
 		code        => sub {
 			my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
@@ -161,6 +162,7 @@ sub _date_is_before
 	my( $bucket, $setup ) = @_;
 
 	$bucket->add_to_bucket( {
+		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Date is before the end date",
 		code        => sub {
 			my $end     = $setup->{end_date}   || $_[0]->{$setup->{end_date_field}};
@@ -217,7 +219,7 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Date within range",
+			name        => $setup->{name} || $caller[0]{'sub'},
 			description => "",
 			code        => sub {
 				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
@@ -239,7 +241,7 @@ sub days_between_dates_outside_range
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Date outside of range",
+			name        => $setup->{name} || $caller[0]{'sub'},
 			description => "",
 			code        => sub {
 				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
@@ -265,7 +267,7 @@ sub at_least_N_days_between
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Dates within $setup->{number_of_days} days",
+			name        => $setup->{name} || $caller[0]{'sub'},
 			description => "Dates within $setup->{number_of_days} days",
 			code        => sub {
 				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
@@ -303,7 +305,7 @@ sub at_most_N_days_between
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
-			name        => "Date within $setup->{number_of_days} days of base date",
+			name        => $setup->{name} || $caller[0]{'sub'},
 			description => "",
 			code        => sub {
 				my $start   = $setup->{start_date} || $_[0]->{$setup->{start_date_field}};
