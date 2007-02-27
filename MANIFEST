@@ -51,7 +51,7 @@ t/general/_fields_are_defined_and_not_null_string.t
 t/general/_fields_exist.t
 t/general/_is_defined.t
 t/general/_value_length_is_between.t
-t/general/_value_length_is_equal_to_greater_than.t
+t/general/_vls alue_length_is_equal_to_greater_than.t
 t/general/_value_length_is_equal_to_less_than.t
 t/general/required_fields.t
 t/init.t
