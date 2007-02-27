@@ -123,7 +123,7 @@ sub add_to_bucket
 	unless( defined $name )
 		{
 		my $default = '(anonymous)';
-		carp "Setup does not specify a 'name' key! Using $default";
+		#carp "Setup does not specify a 'name' key! Using $default";
 		$name   ||= $default;
 		}
 		
@@ -421,7 +421,8 @@ entry that composes it.
 sub add_bit
 	{
 	my $entry = shift;
-
+	no warnings;
+	
 	# can things get in here twice
 	push @{ $entry->{comprises} }, map { "$_" } @_;
 	}

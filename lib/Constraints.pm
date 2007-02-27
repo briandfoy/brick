@@ -10,6 +10,7 @@ use strict;
 
 use subs qw();
 
+use Carp qw(croak carp);
 
 =head1 NAME
 

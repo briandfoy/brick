@@ -141,6 +141,8 @@ sub _date_is_after
 	{
 	my( $bucket, $setup ) = @_;
 
+	my @caller = main::__caller_chain_as_list();
+
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Date is after the start date",
@@ -160,6 +162,8 @@ sub _date_is_after
 sub _date_is_before
 	{
 	my( $bucket, $setup ) = @_;
+
+	my @caller = main::__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -217,6 +221,8 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 	{
 	my( $bucket, $setup ) = @_;
 
+	my @caller = main::__caller_chain_as_list();
+
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
 			name        => $setup->{name} || $caller[0]{'sub'},
@@ -238,6 +244,8 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 sub days_between_dates_outside_range
 	{
 	my( $bucket, $setup ) = @_;
+
+	my @caller = main::__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
@@ -264,6 +272,8 @@ sub days_between_dates_outside_range
 sub at_least_N_days_between
 	{
 	my( $bucket, $setup ) = @_;
+
+	my @caller = main::__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
@@ -302,6 +312,8 @@ if I should require the end date to be after the start date.
 sub at_most_N_days_between
 	{
 	my( $bucket, $setup ) = @_;
+
+	my @caller = main::__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
