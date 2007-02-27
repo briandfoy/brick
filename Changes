@@ -1,0 +1,8 @@
+0.2183 - Tue Feb 27 17:25:43 2007
+	* The first CPAN release. Not much to say yet, but its easier for
+	clients to grab this off CPAN than off Subversion.
+	* This is alpha-software. Don't use it for anything because its
+	going to change.
+	* Read that last one again.
+	* No, I really mean it. :)
+
