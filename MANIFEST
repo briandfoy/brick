@@ -73,6 +73,7 @@ t/selectors/_is_odd_number.t
 t/selectors/_is_tuesday.t
 t/test_manifest
 t/use_cases/anonymous_brick.t
+t/use_cases/explain_with_user_defined_name.t
 t/use_cases/foursquare.t
 t/use_cases/paycheck.t
 t/use_cases/phone_number.t

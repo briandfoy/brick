@@ -40,6 +40,10 @@ in programming rather than a failure of the data to validate.
 
 =item __compose_satisfy_all( LIST OF CODEREFS )
 
+This is AND with NO short-circuiting.
+
+	( A && B && C )
+	
 This function creates a new constraint that returns true if all of its
 constraints return true. All constraints are checked so there is no
 short-circuiting. This allows you to get back all of the errors at
@@ -55,6 +59,10 @@ sub __compose_satisfy_all
 
 =item __compose_satisfy_any( LIST OF CODEREFS )
 
+This is OR but with NO short-circuiting.
+
+	( A || B || C )
+	
 This function creates a new constraint that returns true if all of its
 constraints return true. All constraints are checked so there is no
 short-circuiting.
@@ -69,10 +77,13 @@ sub __compose_satisfy_any
 
 =item __compose_satisfy_none( LIST OF CODEREFS )
 
+
+	( NOT A && NOT B && NOT C )
+
 This function creates a new constraint that returns true if all of its
 constraints return false. All constraints are checked so there is no
 short-circuiting.
-
+	
 =cut
 
 sub __compose_satisfy_none
