@@ -13,6 +13,8 @@ lib/Numbers.pm
 lib/Regexes.pm
 lib/Selectors.pm
 lib/Strings.pm
+lib/Tutorial.pm
+lib/UserGuide.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
