@@ -30,7 +30,7 @@ creation.
 
 =over 4
 
-=item matches_regex( HASHREF )
+=item _matches_regex( HASHREF )
 
 Create a code ref to apply a regular expression to the named field.
 

@@ -1,9 +1,9 @@
 # $Id$
 load.t
 #pod.t
-#pod_coverage.t
+pod_coverage.t
 #prereq.t
-
+;skip
 composers/load.t
 composers/__compose_satisfy_N_to_M.t
 composers/__compose_pass_or_stop.t

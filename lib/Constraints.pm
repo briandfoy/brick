@@ -64,7 +64,7 @@ sub __make_constraint # may need to change name to make generic
 		description => "Brick constraint sub for $name",
 
 		code        => sub {
-		my $input_hash = shift;
+			my $input_hash = shift;
 
 			my $result = eval{ $validator->( $input_hash ) };
 			die if $@;

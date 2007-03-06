@@ -82,6 +82,8 @@ sub entry_class { __PACKAGE__ . "::Entry"; }
 
 =item add_to_bucket( HASHREF )
 
+=item add_to_pool # DEPRECATED
+
 You can pass these entries in the HASHREF:
 
 	code        - the coderef to add to the bucket
@@ -201,7 +203,7 @@ sub get_from_bucket
 	return exists $bucket->{$sub} ? $bucket->{$sub} : ();
 	}
 
-=item get_from_bucket_by_name( NAME )
+=item get_brick_by_name( NAME )
 
 Gets the code references for the bricks with the name NAME. Since
 bricks don't have to have a unique name, it might return more than
@@ -438,6 +440,16 @@ sub dump
 	Data::Dumper->Dump( [ $_[0]->entry( $_[1] ) ], [ "$_[1]" ] )
 	}
 
+=item $entry->applies_to_fields
+
+Return a list of fields the brick applies to.
+
+I don't think I've really figured this out, but the composers should be
+the ones to figure it out and add this stuff to the information that the
+bucket tracks.
+
+=cut
+
 sub applies_to_fields
 	{
 	my( $class, $sub, @fields ) = @_;
@@ -448,6 +460,7 @@ sub applies_to_fields
 		$class->registry->{_fields}{$field}{$sub}++;
 		}
 	}
+
 
 sub main::__caller_chain_as_list
 	{

@@ -180,6 +180,12 @@ sub _date_is_before
 		} );
 	}
 
+=item date_within_range
+
+
+
+=cut
+
 sub date_within_range  # inclusive, negative numbers indicate past
 	{
 	my( $bucket, $setup ) = @_;
@@ -240,6 +246,31 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 			} )
 		);
 	}
+
+=item days_between_dates_outside_range( HASHREF )
+
+I can specify any of the dates as part of the setup by supplying them
+as the values for these keys in the setup hash:
+
+	start_date
+	end_date
+	input_date
+
+Instead of fixed values, I can tell the function to get values from
+input fields. Put the field names in the values for these keys of
+the setup hash"
+
+	start_date_field
+	end_date_field
+	input_date_field
+
+I can use any combination of these setup fields, although the
+start_date, end_date, and input_date take precedence.
+
+TO DO: Need to validate all the date formats before I use them
+in the comparisons
+
+=cut
 
 sub days_between_dates_outside_range
 	{

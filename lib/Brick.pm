@@ -410,6 +410,8 @@ sub lint
 
 =item create_bucket( PROFILE_ARRAYREF )
 
+=item create_pool  # DEPRECATED
+
 This method creates a C<Brick::Bucket> instance (or an instance in
 the package returned by C<$brick->bucket_class> ) based on the profile
 and returns the bucket instance. Along the way it affects the args
