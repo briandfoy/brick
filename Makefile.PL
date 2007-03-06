@@ -9,9 +9,10 @@ WriteMakefile(
 	'LICENSE'      => 'perl',
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
-q	'PREREQ_PM'    => { 
-		'Test::More' => '0',
-		'DateTime'   => '0.36',
+	'PREREQ_PM'    => { 
+		'Test::More'     => '0',
+		'DateTime'       => '0.36',
+		'Test::Manifest' => '1.14',
 		},
 
 	'PM'           => {
