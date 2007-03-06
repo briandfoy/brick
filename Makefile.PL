@@ -26,6 +26,10 @@ q	'PREREQ_PM'    => {
 		'lib/Constraints.pm'  => '$(INST_LIBDIR)/Brick/Constraints.pm',
 		'lib/Filters.pm'      => '$(INST_LIBDIR)/Brick/Filters.pm',
 		'lib/Selectors.pm'    => '$(INST_LIBDIR)/Brick/Selectors.pm',
+
+
+		'lib/Tutorial.pm'     => '$(INST_LIBDIR)/Brick/Tutorial.pm',
+		'lib/UserGuide.pm'    => '$(INST_LIBDIR)/Brick/UserGuide.pm',
 		},
 
 	clean  => { FILES    => q|Brick-*| },
