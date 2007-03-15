@@ -196,7 +196,7 @@ sub apply
 		my $e    = $entries[$index];
 		my $name = $profile->[$index][0];
 
-		print STDERR "Checking $name..." if $ENV{DEBUG};
+		print STDERR "Checking $name...\n" if $ENV{DEBUG};
 
 		my $result = eval{ $e->[0]->( $input ) };
 		my $eval_error = $@;
@@ -205,7 +205,7 @@ sub apply
 
 		$result = 0 if ref $eval_error;
 
-		my $handler = ref $@ ? $@->{handler} : $profile->[$index][1];
+		my $handler = $profile->[$index][1];
 
 		push @results, [ $name, $handler, $result, $@ ];
 
@@ -308,6 +308,61 @@ sub explain
 	$str;
 	}
 
+sub bar { 1 }
+
+sub explain_result
+	{
+	my( $brick, $result ) = @_;
+
+	my $str   = '';
+
+	foreach my $element ( @$result )
+		{
+		my $level = 0;
+		
+		$str .= "$$element[0]: ";
+		
+		if( $element->[2] ) 
+			{
+			$str .= "passed $$element[1]\n\n";
+			next;
+			}
+		else
+			{
+			$str .= "failed $$element[1]\n";
+			}
+			
+		my @uses = ( [ $level, $element->[3] ] );
+
+		while( my $pair = shift @uses )
+			{
+			# is it a single error or a composition?
+			unless( ref $pair->[1] )
+				{
+				next;
+				}
+			elsif( exists $pair->[1]->{errors} )
+				{
+				unshift @uses, map {
+					[ $pair->[0] + 1, $_ ]
+					} @{ $pair->[1]->{errors} };
+				}
+			else
+				{
+				# this could come back as an array ref instead of a string
+				$str .=  "\t" . #x $pair->[0] . 
+					
+					join( ": ", @{ $pair->[1] }{qw(failed_field handler message)} ) . "\n";
+				}
+
+			}
+
+		$str.= "\n";
+		}
+
+	$str;
+	}
+	
 =item lint
 
 Examine the profile and complain about irregularities in format. This

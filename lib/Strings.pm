@@ -52,11 +52,13 @@ sub _value_length_is_equal_to_greater_than
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
-		description => "Length of value in $setup->{field} is greater than or equal to $setup->{minimum_length} characters",
+		description => "Length must be $setup->{minimum_length} or more characters",
 		code        => sub {
 			die {
-				message => "Length of value in $setup->{field} [$_[0]->{ $setup->{field} }] isn't greater than or equal to $setup->{minimum_length} characters",
-				handler     => $caller[1]{'sub'},
+				message      => "[$_[0]->{ $setup->{field} }] isn't $setup->{minimum_length} or more characters",
+				handler      => $caller[0]{'sub'},
+				failed_field => $setup->{field},
+				failed_value => $_[0]->{ $setup->{field} },
 				} unless $setup->{minimum_length} <= length( $_[0]->{ $setup->{field} } )
 			},
 		} );
@@ -76,11 +78,13 @@ sub _value_length_is_equal_to_less_than
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
-		description => "Length of value in $setup->{field} is less than or equal to $setup->{maximum_length} characters",
+		description => "Length must be $setup->{minimum_length} or fewer characters",
 		code        => sub {
 			die {
-				message => "Length of value in $setup->{field} [$_[0]->{ $setup->{field} }] isn't less than or equal to $setup->{maximum_length} characters",
-				handler => $caller[1]{'sub'},
+				message      => "[$_[0]->{ $setup->{field} }] isn't $setup->{maximum_length} or fewer characters",
+				handler      => $caller[0]{'sub'},
+				failed_field => $setup->{field},
+				failed_value => $_[0]->{ $setup->{field} },
 				} unless length( $_[0]->{ $setup->{field} } ) <= $setup->{maximum_length}
 			},
 		} );
@@ -97,7 +101,10 @@ sub _value_length_is_between
 	{
 	my( $bucket, $setup ) = @_;
 
+	local $setup->{name} = '';
+	
 	my $min = $bucket->_value_length_is_equal_to_greater_than( $setup );
+
 	my $max = $bucket->_value_length_is_equal_to_less_than( $setup );
 
 	my $composed = $bucket->__compose_satisfy_all( $min, $max );

@@ -10,6 +10,7 @@ WriteMakefile(
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
 	'PREREQ_PM'    => { 
+		'Test::Data'     => '0',
 		'Test::More'     => '0',
 		'DateTime'       => '0.36',
 		'Test::Manifest' => '1.14',
@@ -28,6 +29,7 @@ WriteMakefile(
 		'lib/Filters.pm'      => '$(INST_LIBDIR)/Brick/Filters.pm',
 		'lib/Selectors.pm'    => '$(INST_LIBDIR)/Brick/Selectors.pm',
 
+		'lib/Result.pm'       => '$(INST_LIBDIR)/Brick/Result.pm',
 
 		'lib/Tutorial.pm'     => '$(INST_LIBDIR)/Brick/Tutorial.pm',
 		'lib/UserGuide.pm'    => '$(INST_LIBDIR)/Brick/UserGuide.pm',

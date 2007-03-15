@@ -57,9 +57,10 @@ sub _matches_regex
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
-				message => "The value in $setup->{field} [$_[0]->{ $setup->{field} }] did not match the pattern",
-				field   => $setup->{field},
-				handler => $caller[0]{'sub'},
+				message      => "[$_[0]->{ $setup->{field} }] did not match the pattern",
+				failed_field => $setup->{field},
+				failed_value => $_[0]->{ $setup->{field} },
+				handler      => $caller[0]{'sub'},
 				} unless $_[0]->{ $setup->{field} } =~ m/$setup->{regex}/;
 			},
 		} );

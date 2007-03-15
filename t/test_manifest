@@ -1,9 +1,12 @@
 # $Id$
 load.t
 pod.t
-#pod_coverage.t
-#prereq.t
-#;skip
+
+;skip
+pod_coverage.t
+;unskip
+prereq.t
+
 composers/load.t
 composers/__compose_satisfy_N_to_M.t
 composers/__compose_pass_or_stop.t
@@ -70,3 +73,4 @@ use_cases/phone_number.t
 use_cases/anonymous_brick.t
 use_cases/paycheck.t
 use_cases/foursquare.t
+use_cases/top-level-errors.t

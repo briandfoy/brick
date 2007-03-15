@@ -11,6 +11,7 @@ lib/Filters.pm
 lib/General.pm
 lib/Numbers.pm
 lib/Regexes.pm
+lib/Result.pm
 lib/Selectors.pm
 lib/Strings.pm
 lib/Tutorial.pm
@@ -79,4 +80,5 @@ t/use_cases/explain_with_user_defined_name.t
 t/use_cases/foursquare.t
 t/use_cases/paycheck.t
 t/use_cases/phone_number.t
+t/use_cases/top-level-errors.t
 t/use_cases/zip_code.t

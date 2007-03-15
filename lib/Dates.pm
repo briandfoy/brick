@@ -40,7 +40,7 @@ sub _is_YYYYMMDD_date_format
 		name => $setup->{name} || $caller[0]{'sub'},
 		code => $bucket->_matches_regex( {
 			description  => "The $setup->{field} is in the YYYYMMDD date format",
-			field        => $setup->{field},
+			failed_field => $setup->{field},
 			name         => $caller[0]{'sub'},
 			regex        => qr/
 				\A
@@ -89,7 +89,7 @@ sub _is_valid_date
 
 			die {
 				message => "The value in $setup->{field} [$_[0]->{$setup->{field}}] was not a valid date: $date_error",
-				field   => $setup->{field},
+				failed_field => $setup->{field},
 				handler => $caller[0]{'sub'},
 				} if $eval_error;
 
@@ -153,6 +153,7 @@ sub _date_is_after
 			#print STDERR "date after: $start --> $in_date\n";
 			die {
 				message => "Date [$in_date] is not after start date [$start]",
+				failed_field => $setup->{field},
 				} if $in_date <= $start;
 			1;
 			},
@@ -175,6 +176,8 @@ sub _date_is_before
 			#print STDERR "date before: $in_date --> $end\n";
 			die {
 				message => "Date [$in_date] is not before end date [$end]",
+				failed_field => $setup->{field},
+
 				} if $end <= $in_date;
 			},
 		} );
@@ -241,6 +244,7 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 				die {
 					message => 'Dates were not within range',
 					handler => '',
+					failed_field => $setup->{field},
 					} unless $start <= $in_date && $in_date <= $end;
 				}
 			} )
@@ -290,6 +294,7 @@ sub days_between_dates_outside_range
 				die {
 					message => 'Dates were not outside range',
 					handler => '',
+					failed_field => $setup->{field},
 					} unless $in_date < $start || $end < $in_date;
 				}
 			} )
@@ -322,6 +327,8 @@ sub at_least_N_days_between
 				die {
 					message => 'Dates were not within range',
 					handler => 'at_least_N_days_between',
+					failed_field => $setup->{field},
+
 					} unless $interval >= $setup->{number_of_days};
 				}
 			} )
@@ -360,6 +367,8 @@ sub at_most_N_days_between
 				die {
 					message => 'Dates were outside the range',
 					handler => 'at_most_N_days_between',
+					failed_field => $setup->{field},
+
 					} unless $setup->{number_of_days} >= $interval;
 				}
 			} )
