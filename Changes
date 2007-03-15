@@ -6,6 +6,12 @@
 	* Read that last one again.
 	* No, I really mean it. :)
 
+0.2193 - Wed Mar 14 23:43:20 2007
+	* Trying out some ways to extract the interesting error messages
+	* Added failed_field and failed_value to die() hashes
+	* Check out ./t/use_cases/top-level-errors.t for interface options
+	for reporting errors.
+
 0.2191 - Tue Mar  6 11:38:06 2007
 	* Updated docs
 
