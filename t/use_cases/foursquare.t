@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Test::More 'no_plan';
+use Test::Output;
 
 use Carp qw(carp);
 
@@ -122,7 +123,7 @@ sub _city_format
 		);
 	}
 
-sub _state_abbr_format
+sub _state_format
 	{
 	my( $bucket, $setup ) = @_;
 	
@@ -225,8 +226,15 @@ it on for debugging.
 
 =cut
 
+{
+my $string;
+stderr_like { $string = $brick->explain( $Profile ) } qr/Cannot/, 
+	"Error message for input lacking format brick";
+ok( $string, "explain() returns something" );
+
 print STDERR "\nExplaining $0 profile:\n", 
-	$brick->explain( $Profile ) if $ENV{DEBUG};
+	$string if $ENV{DEBUG};
+}
 
 =head2 Validate the data with apply()
 
@@ -237,9 +245,12 @@ it on for debugging.
 
 =cut
 
-my $result = $brick->apply( $Profile, $Input );
+my $result;
+stderr_like { $result = $brick->apply( $Profile, $Input ) } qr/Cannot/,
+	"Error message for input lacking format brick";
 
 isa_ok( $result, ref [], "Results come back as array reference" );
+isa_ok( $result, Brick->result_class, "Results come back as array reference" );
 is( scalar @$result, scalar @$Profile, "Results has one element per Profile element" );
 
 print STDERR Data::Dumper->Dump( [$result], [qw(result)] ) if $ENV{DEBUG};

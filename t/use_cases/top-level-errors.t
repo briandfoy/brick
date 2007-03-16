@@ -85,6 +85,7 @@ sub Brick::Bucket::twofer
 	{
 	my( $bucket, $setup ) = @_;
 	
+	$setup->{exact_length}  = 3;
 	$setup->{filter_fields} = $setup->{fields};
 	
 	$setup->{name} = "Remove non-digits";
@@ -155,7 +156,7 @@ it on for debugging.
 
 =cut
 
-print STDERR "=" x 73, "\n";
+print STDERR "=" x 73, "\n" if $ENV{DEBUG};
 print STDERR "\nExplaining profile:\n", $brick->explain( $Profile ) if $ENV{DEBUG};
 
 
@@ -177,6 +178,7 @@ my %Input = (
 =cut
 	
 my $result =  $brick->apply( $Profile, \%Input );
+ok( $result, Brick->result_class );
 
 #print STDERR Data::Dumper->Dump( [$result], [qw($result)] ) if $ENV{DEBUG};
 
@@ -186,106 +188,29 @@ Grab the top level errors
 
 =cut
 
-print STDERR "=" x 73, "\n";
-print STDERR "\nExplaining result:\n",  $brick->explain_result( $result );
+print STDERR "=" x 73, "\n" if $ENV{DEBUG};
+print STDERR "\nExplaining result:\n",  $result->explain if $ENV{DEBUG};
 
 
 {
-my $flatten = $brick->flatten_result( $result );
-print STDERR "=" x 73, "\n";
+my $flatten = $result->flatten;
+ok( $flatten );
+print STDERR "=" x 73, "\n" if $ENV{DEBUG};
 print STDERR Data::Dumper->Dump( [$flatten], [qw($flatten)] ) if $ENV{DEBUG};
 }
 
 {
-my $flatten = $brick->order_by_field( $result );
-print STDERR "=" x 73, "\n";
+my $flatten = $result->flatten_by_field;
+ok( $flatten );
+print STDERR "=" x 73, "\n" if $ENV{DEBUG};
 print STDERR Data::Dumper->Dump( [$flatten], [qw($flatten)] ) if $ENV{DEBUG};
 }
 
-BEGIN {
-
-sub Brick::flatten_result
-	{
-	my( $brick, $result ) = @_;
-
-	my $str   = '';
-
-	my @flatten;
-	
-	foreach my $element ( @$result ) # one element per profile element
-		{
-		next if $element->[2];
-		my $constraint = $element->[1];
-		
-		my @uses = ( $element->[3]);
-
-		while( my $hash = shift @uses )
-			{
-			# is it a single error or a composition?
-			unless( ref $hash  )
-				{
-				next;
-				}
-			elsif( exists $hash->{errors} )
-				{
-				unshift @uses, @{ $hash->{errors} };
-				}
-			else
-				{
-				push @flatten, { %$hash, constraint => $constraint };
-				}
-
-			}
-
-		}
-
-	\@flatten;
-	}
-
-
-sub Brick::order_by_field
-	{
-	my( $brick, $result ) = @_;
-
-	my $str   = '';
-
-	my %flatten;
-	my %Seen;
-	
-	foreach my $element ( @$result ) # one element per profile element
-		{
-		next if $element->[2];
-		my $constraint = $element->[1];
-		
-		my @uses = ( $element->[3] );
-
-		while( my $hash = shift @uses )
-			{
-			# is it a single error or a composition?
-			unless( ref $hash  )
-				{
-				next;
-				}
-			elsif( exists $hash->{errors} )
-				{
-				unshift @uses, @{ $hash->{errors} };
-				}
-			else
-				{
-				my $field = $hash->{failed_field};
-				next if $Seen{$field}{$hash->{handler}}++;
-				$flatten{ $field } = [] unless exists $flatten{ $field };
-				push @{ $flatten{ $field } }, 
-					{ %$hash, constraint => $constraint };
-				$Seen{$field}{$hash->{handler}}++;
-				}
-
-			}
-
-		}
-
-	\%flatten;
-	}
-
+{
+my $flatten = $result->flatten_by( 'handler' );
+ok( $flatten );
+print STDERR "=" x 73, "\n" if $ENV{DEBUG};
+print STDERR Data::Dumper->Dump( [$flatten], [qw($flatten)] ) if $ENV{DEBUG};
 }
+
 

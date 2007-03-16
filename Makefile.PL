@@ -12,6 +12,7 @@ WriteMakefile(
 	'PREREQ_PM'    => { 
 		'Test::Data'     => '0',
 		'Test::More'     => '0',
+		'Test::Output'   => '0',
 		'DateTime'       => '0.36',
 		'Test::Manifest' => '1.14',
 		},

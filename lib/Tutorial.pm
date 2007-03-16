@@ -69,14 +69,15 @@ case, I want to ensure that the input hash has a key named 'cat'. If
 it does I return true, and C<die> with a hash reference otherwise.
 I'll talk about that C<die> later.
 
-	my $brick = sub {
+	my $sub = sub {
 		my $input = shift;
 		
 		return 1 if exists $input->{cat};
 		
 		die { 
-			handler => 'Cat key check',
-			message => "The input didn't have a field named 'cat'",
+			handler      => 'Cat key check',
+			failed_field => 'cat'
+			message      => "The input didn't have a field named 'cat'",
 			};
 		}
 			
@@ -89,7 +90,7 @@ details.
 	$brick = $bucket->add_to_bucket( {
 		name        => 'cat key checker',
 		description => "The input didn't have a field named 'cat'",
-		code        => $brick
+		code        => $sub
 		} );
 
 The bucket has two major functions: it keeps track of the

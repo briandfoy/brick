@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use Test::More 'no_plan';
+use Test::Output;
 
 use_ok( 'Brick::General' );
 use_ok( 'Brick::Bucket' );
@@ -23,7 +24,9 @@ sub _leading_underscore
 	$bucket->__make_constraint( sub {} );
 	}
 	
-my $result = eval { _leading_underscore() };	
+my $result;
+stderr_like { eval { _leading_underscore() } } qr/leading underscore/,
+	"Making a constraint from a leading underscore carps";
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # call it without a sub argument
@@ -31,7 +34,7 @@ my $result = eval { _leading_underscore() };
 {
 my $obj = bless {}, 'Foo';
 
-sub Foo::isa { print STDERR "Here I am!\n"; 0 }
+sub Foo::isa { 0 }
 
 my $result = eval { $bucket->__make_constraint( $obj ) };	
 is( $result, undef, "Result is undefined" );

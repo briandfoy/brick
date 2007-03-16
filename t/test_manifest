@@ -4,8 +4,8 @@ pod.t
 
 ;skip
 pod_coverage.t
-;unskip
 prereq.t
+;unskip
 
 composers/load.t
 composers/__compose_satisfy_N_to_M.t
@@ -35,6 +35,7 @@ filters/_remove_whitespace.t
 filters/_uppercase.t
 filters/_lowercase.t
 filters/_remove_extra_fields.t
+
 
 general/__fields_are_something.t
 general/_is_defined.t

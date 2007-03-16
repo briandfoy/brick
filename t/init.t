@@ -2,6 +2,7 @@
 use strict;
 
 use Test::More 'no_plan';
+use Test::Output;
 
 my $class = 'Brick';
 
@@ -40,7 +41,11 @@ my $brick = bless {}, 'Brick';
 
 ok( ! exists $brick->{external_packages} );
 ok( ! exists $brick->{buckets} );
-$brick->init( { external_packages => 'Mock::FooValidator' } );
+stderr_like 
+	{ $brick->init( { external_packages => 'Mock::FooValidator' } ) }
+	qr/must be an anonymous array/,
+	"String value for external_pacakges carps"
+	;
 ok( exists $brick->{buckets} );
 ok( exists $brick->{external_packages} );
 isa_ok( $brick->{external_packages}, ref [] );

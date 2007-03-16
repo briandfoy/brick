@@ -1,4 +1,8 @@
+#!/usr/bin/perl
+use strict;
+
 use Test::More 'no_plan';
+use Test::Output;
 
 my $class = 'Brick';
 use_ok( $class );
@@ -80,7 +84,10 @@ my $lint = eval { $brick->lint( \@profile ) };
 
 is( $lint, 1, "Profile is formatted correctly\n" );
 
-my $str = eval { $brick->explain( \@profile ) };
+my $str;
+stderr_like { $str = eval { $brick->explain( \@profile ) } }
+	qr/did not validate/,
+	"Bad profile carps";
 
 is( $str, undef, "Profile is formatted correctly\n" );
 

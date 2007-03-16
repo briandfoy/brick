@@ -71,6 +71,7 @@ sub _load_external_packages
 	foreach my $package ( @packages )
 		{
 		eval "package $bucket_class; require $package; $package->import";
+		carp "Could not load $package: $@" if $@;
 		}
 
 	}
@@ -100,6 +101,95 @@ sub _set_error { $Error = $_[1] }
 =head2 Instance methods
 
 =over 4
+
+=item create_bucket( PROFILE_ARRAYREF )
+
+=item create_pool  # DEPRECATED
+
+This method creates a C<Brick::Bucket> instance (or an instance in
+the package returned by C<$brick->bucket_class> ) based on the profile
+and returns the bucket instance. Along the way it affects the args
+hashref in each profile element to add the element name as the key
+C<profile_name> and the actual coderef (not just the method name) as
+the key C<code>. The closure generators are allowed to use those keys.
+For instance, C<__make_constraint>, which is usually the top level
+closure, uses it to name the closure in the bucket.
+
+If the profile doesn't pass C<lint> test, this method croaks. You
+might want to safeguard that by calling C<lint> first.
+
+	my $bucket = do {
+		if( my( $lint ) = $brick->lint( $profile ) )
+			{
+			$brick->create_bucket( $profile );
+			}
+		else
+			{
+			Data::Dumper->Dump( [ $lint ], [qw(lint)] );
+			undef;
+			}
+		};
+
+From the profile it extracts the method name to create the closure for
+it based on its arguments. If the method item is already a code
+reference it uses it add is, but still adds it to the bucket. This could
+be handy for using closures from other classes, but I haven't
+investigated the consequences of that.
+
+In scalar context this returns a new bucket instance. If the profile might
+be bad, use an eval to catch the croak:
+
+	my $bucket = eval{ $brick->create_bucket( \@profile ) };
+
+In list context, it returns the C<$bucket> instance and an anonymous array
+reference with the stringified closures (which are also the keys in the
+bucket). The elements in the anonymous array correspond to the elements in
+the profile. This is handy in C<explain> which needs to find the bucket
+entries for each profile elements. You probably won't need the second
+argument most of the time.
+
+	my( $bucket, $refs ) = eval { $brick->create_bucket( \@profile ) };
+
+=cut
+
+sub create_pool { croak "create_pool is now create_bucket!" }
+
+sub create_bucket
+	{
+	my( $brick, $profile ) = @_;
+
+	unless( 0 == $brick->lint( $profile || [] ) ) # zero but true!
+		{
+		croak "Bad profile for create_bucket! Perhaps you need to check it with lint"
+		};
+
+	my $bucket = $brick->bucket_class->new;
+
+	my @coderefs = ();
+	foreach my $entry ( @$profile )
+		{
+		my( $name, $method, $args ) = @$entry;
+
+		$args->{profile_name} = $name;
+
+		$args->{code} = do {
+			if( eval { $method->isa( ref {} ) } or
+				UNIVERSAL::isa( $method, ref sub {} ) )
+				{
+				$method;
+				}
+			elsif( my $code = eval{ $bucket->$method( $args ) } )
+				{
+				$code;
+				}
+			elsif( $@ ) { croak $@ }
+			};
+
+		push @coderefs, map { "$_" } $bucket->add_to_bucket( $args );
+		}
+
+	wantarray ? ( $bucket, \@coderefs ) : $bucket;
+	}
 
 =item init
 
@@ -150,7 +240,6 @@ sub add_validator_packages
 	$self->_load_external_packages( @packages );
 	}
 
-
 =item clone;
 
 Based on the current instance, create another one just like it but not
@@ -171,198 +260,6 @@ sub clone
 	$brick;
 	}
 
-=item apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
-
-Apply the profile to the data in the input hash reference. It returns an
-array reference whose elements correspond to the elements in the profile.
-
-=cut
-
-sub apply
-	{
-	my( $brick, $profile, $input ) = @_;
-
-	my( $bucket, $refs ) = $brick->create_bucket( $profile );
-
-	my @entries = map {
-		my $e = $bucket->get_from_bucket( $_ );
-		[ map { $e->$_ } qw(get_coderef get_name) ]
-		} @$refs;
-
-	my @results = ();
-
-	foreach my $index ( 0 .. $#entries )
-		{
-		my $e    = $entries[$index];
-		my $name = $profile->[$index][0];
-
-		print STDERR "Checking $name...\n" if $ENV{DEBUG};
-
-		my $result = eval{ $e->[0]->( $input ) };
-		my $eval_error = $@;
-
-		#print STDERR Data::Dumper->Dump( [$eval_error], [qw(eval_error)] );
-
-		$result = 0 if ref $eval_error;
-
-		my $handler = $profile->[$index][1];
-
-		push @results, [ $name, $handler, $result, $@ ];
-
-=pod
-
-		print STDERR do {
-			if( ref $eval_error )
-				{
-				"failed";
-				}
-			elsif( defined $eval_error and $eval_error )
-				{
-				'unknown';
-				}
-			elsif( $result == 1 )
-				{
-				"passed";
-				}
-
-			}, "\n" if $ENV{DEBUG};
-
-=cut
-
-		}
-
-	return \@results;
-	}
-
-=item explain( PROFILE_ARRAYREF )
-
-Turn the profile into a textual description without applying it to any
-data. This does not add the profile to instance and it does not add
-the constraints to the bucket.
-
-If everything goes right, this returns a single string that represents
-the profile.
-
-If the profile does not pass the C<lint> test, this returns undef or the
-empty list.
-
-If you want to do something with a datastructure, you probably want to
-write a different method very similar to this instead of trying to parse
-the output.
-
-Future notes: maybe this is just really a dispatcher to things that do
-it in different ways (text output, hash output).
-
-=cut
-
-sub explain
-	{
-	my( $brick, $profile ) = @_;
-
-	my $temp_bean = $brick->clone;
-
-	if( $temp_bean->lint( $profile ) )
-		{
-		carp "Profile did not validate!";
-		return;
-		}
-
-	my( $bucket, $refs ) = $temp_bean->create_bucket( $profile );
-		#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(bucket)] );
-		#print STDERR Data::Dumper->Dump( [ $refs ], [qw(refs)] );
-
-	my @entries = map {
-		my $e = $bucket->get_from_bucket( $_ );
-		[ map { $e->$_ } qw(get_coderef get_name) ]
-		} @$refs;
-
-	#print STDERR Data::Dumper->Dump( [ \@entries ], [qw(entries)] );
-
-	my $level = 0;
-	my $str   = '';
-	foreach my $index ( 0 .. $#entries )
-		{
-		my $tuple = $entries[$index];
-
-		my @uses = ( [ $level, $tuple->[0] ] );
-
-		#print STDERR Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
-
-		while( my $pair = shift @uses )
-			{
-			my $entry = $bucket->get_from_bucket( $pair->[1] );
-			#print Data::Dumper->Dump( [ $entry ], [qw(entry)] );
-			next unless $entry;
-
-			$str .=  "\t" x $pair->[0] . $entry->get_name . "\n";
-
-			unshift @uses, map {
-				[ $pair->[0] + 1, $_ ]
-				} @{ $entry->get_comprises( $pair->[1] ) };
-			#print Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
-			}
-
-		$str.= "\n";
-		}
-
-	$str;
-	}
-
-sub bar { 1 }
-
-sub explain_result
-	{
-	my( $brick, $result ) = @_;
-
-	my $str   = '';
-
-	foreach my $element ( @$result )
-		{
-		my $level = 0;
-		
-		$str .= "$$element[0]: ";
-		
-		if( $element->[2] ) 
-			{
-			$str .= "passed $$element[1]\n\n";
-			next;
-			}
-		else
-			{
-			$str .= "failed $$element[1]\n";
-			}
-			
-		my @uses = ( [ $level, $element->[3] ] );
-
-		while( my $pair = shift @uses )
-			{
-			# is it a single error or a composition?
-			unless( ref $pair->[1] )
-				{
-				next;
-				}
-			elsif( exists $pair->[1]->{errors} )
-				{
-				unshift @uses, map {
-					[ $pair->[0] + 1, $_ ]
-					} @{ $pair->[1]->{errors} };
-				}
-			else
-				{
-				# this could come back as an array ref instead of a string
-				$str .=  "\t" . #x $pair->[0] . 
-					
-					join( ": ", @{ $pair->[1] }{qw(failed_field handler message)} ) . "\n";
-				}
-
-			}
-
-		$str.= "\n";
-		}
-
-	$str;
-	}
-	
 =item lint
 
 Examine the profile and complain about irregularities in format. This
@@ -463,95 +360,128 @@ sub lint
 	wantarray ? %$lint : ( scalar keys %$lint );
 	}
 
-=item create_bucket( PROFILE_ARRAYREF )
+=item explain( PROFILE_ARRAYREF )
 
-=item create_pool  # DEPRECATED
+Turn the profile into a textual description without applying it to any
+data. This does not add the profile to instance and it does not add
+the constraints to the bucket.
 
-This method creates a C<Brick::Bucket> instance (or an instance in
-the package returned by C<$brick->bucket_class> ) based on the profile
-and returns the bucket instance. Along the way it affects the args
-hashref in each profile element to add the element name as the key
-C<profile_name> and the actual coderef (not just the method name) as
-the key C<code>. The closure generators are allowed to use those keys.
-For instance, C<__make_constraint>, which is usually the top level
-closure, uses it to name the closure in the bucket.
+If everything goes right, this returns a single string that represents
+the profile.
 
-If the profile doesn't pass C<lint> test, this method croaks. You
-might want to safeguard that by calling C<lint> first.
+If the profile does not pass the C<lint> test, this returns undef or the
+empty list.
 
-	my $bucket = do {
-		if( my( $lint ) = $brick->lint( $profile ) )
-			{
-			$brick->create_bucket( $profile );
-			}
-		else
-			{
-			Data::Dumper->Dump( [ $lint ], [qw(lint)] );
-			undef;
-			}
-		};
+If you want to do something with a datastructure, you probably want to
+write a different method very similar to this instead of trying to parse
+the output.
 
-From the profile it extracts the method name to create the closure for
-it based on its arguments. If the method item is already a code
-reference it uses it add is, but still adds it to the bucket. This could
-be handy for using closures from other classes, but I haven't
-investigated the consequences of that.
-
-In scalar context this returns a new bucket instance. If the profile might
-be bad, use an eval to catch the croak:
-
-	my $bucket = eval{ $brick->create_bucket( \@profile ) };
-
-In list context, it returns the C<$bucket> instance and an anonymous array
-reference with the stringified closures (which are also the keys in the
-bucket). The elements in the anonymous array correspond to the elements in
-the profile. This is handy in C<explain> which needs to find the bucket
-entries for each profile elements. You probably won't need the second
-argument most of the time.
-
-	my( $bucket, $refs ) = eval { $brick->create_bucket( \@profile ) };
+Future notes: maybe this is just really a dispatcher to things that do
+it in different ways (text output, hash output).
 
 =cut
 
-sub create_pool { croak "create_pool is now create_bucket!" }
-
-sub create_bucket
+sub explain
 	{
 	my( $brick, $profile ) = @_;
 
-	unless( 0 == $brick->lint( $profile || [] ) ) # zero but true!
+	my $temp_bean = $brick->clone;
+
+	if( $temp_bean->lint( $profile ) )
 		{
-		croak "Bad profile for create_bucket! Perhaps you need to check it with lint"
-		};
-
-	my $bucket = $brick->bucket_class->new;
-
-	my @coderefs = ();
-	foreach my $entry ( @$profile )
-		{
-		my( $name, $method, $args ) = @$entry;
-
-		$args->{profile_name} = $name;
-
-		$args->{code} = do {
-			if( eval { $method->isa( ref {} ) } or
-				UNIVERSAL::isa( $method, ref sub {} ) )
-				{
-				$method;
-				}
-			elsif( my $code = eval{ $bucket->$method( $args ) } )
-				{
-				$code;
-				}
-			elsif( $@ ) { croak $@ }
-			};
-
-		push @coderefs, map { "$_" } $bucket->add_to_bucket( $args );
+		carp "Profile did not validate!";
+		return;
 		}
 
-	wantarray ? ( $bucket, \@coderefs ) : $bucket;
-	}
+	my( $bucket, $refs ) = $temp_bean->create_bucket( $profile );
+		#print STDERR Data::Dumper->Dump( [ $bucket ], [qw(bucket)] );
+		#print STDERR Data::Dumper->Dump( [ $refs ], [qw(refs)] );
 
+	my @entries = map {
+		my $e = $bucket->get_from_bucket( $_ );
+		[ map { $e->$_ } qw(get_coderef get_name) ]
+		} @$refs;
+
+	#print STDERR Data::Dumper->Dump( [ \@entries ], [qw(entries)] );
+
+	my $level = 0;
+	my $str   = '';
+	foreach my $index ( 0 .. $#entries )
+		{
+		my $tuple = $entries[$index];
+
+		my @uses = ( [ $level, $tuple->[0] ] );
+
+		#print STDERR Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
+
+		while( my $pair = shift @uses )
+			{
+			my $entry = $bucket->get_from_bucket( $pair->[1] );
+			#print Data::Dumper->Dump( [ $entry ], [qw(entry)] );
+			next unless $entry;
+
+			$str .=  "\t" x $pair->[0] . $entry->get_name . "\n";
+
+			unshift @uses, map {
+				[ $pair->[0] + 1, $_ ]
+				} @{ $entry->get_comprises( $pair->[1] ) };
+			#print Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
+			}
+
+		$str.= "\n";
+		}
+
+	$str;
+	}
+	
+=item apply(  PROFILE_ARRAYREF, INPUT_DATA_HASHREF )
+
+Apply the profile to the data in the input hash reference. It returns an
+array reference whose elements correspond to the elements in the profile.
+
+=cut
+
+sub apply
+	{
+	my( $brick, $profile, $input ) = @_;
+
+	my( $bucket, $refs ) = $brick->create_bucket( $profile );
+
+	my @entries = map {
+		my $e = $bucket->get_from_bucket( $_ );
+		[ map { $e->$_ } qw(get_coderef get_name) ]
+		} @$refs;
+
+	my @results = ();
+
+	foreach my $index ( 0 .. $#entries )
+		{
+		my $e    = $entries[$index];
+		my $name = $profile->[$index][0];
+
+		print STDERR "Checking $name...\n" if $ENV{DEBUG};
+
+		my $result = eval{ $e->[0]->( $input ) };
+		my $eval_error = $@;
+
+		#print STDERR Data::Dumper->Dump( [$eval_error], [qw(eval_error)] );
+
+		$result = 0 if ref $eval_error;
+
+		my $handler = $profile->[$index][1];
+
+		push @results, [ $name, $handler, $result, $@ ];
+		}
+
+	eval { eval "use " . $brick->result_class };
+	if( $@ ) 
+		{ 
+		carp "Couldn not load Result class " . $brick->result_class . "\n" 
+		}
+	
+	return bless \@results, $brick->result_class;
+	}
+	
 =item bucket_class
 
 The namespace where the constraint building blocks are defined. By default
@@ -562,6 +492,15 @@ subclass.
 
 sub bucket_class { 'Brick::Bucket' }
 
+=item result_class
+
+The namespace that C<apply> uses for its result object. By default
+this is C<Brick::Result>. If you don't like that, override this in a
+subclass.
+
+=cut
+
+sub result_class { 'Brick::Result' }
 
 =back
 

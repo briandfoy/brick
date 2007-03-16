@@ -50,6 +50,7 @@ sub _value_length_is_equal_to_greater_than
 
 	my @caller = main::__caller_chain_as_list();
 
+
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Length must be $setup->{minimum_length} or more characters",
@@ -78,7 +79,7 @@ sub _value_length_is_equal_to_less_than
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
-		description => "Length must be $setup->{minimum_length} or fewer characters",
+		description => "Length must be $setup->{maximum_length} or fewer characters",
 		code        => sub {
 			die {
 				message      => "[$_[0]->{ $setup->{field} }] isn't $setup->{maximum_length} or fewer characters",

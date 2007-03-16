@@ -18,7 +18,7 @@ my $lint = $brick->lint( \@profile );
 is( $lint, 0, "Profile is formatted correctly\n" );
 
 my $result = $brick->apply( \@profile, \%input || {} );
-#print STDERR $result || '';
+isa_ok( $result, $class->result_class );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
