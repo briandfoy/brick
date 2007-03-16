@@ -6,6 +6,11 @@
 	* Read that last one again.
 	* No, I really mean it. :)
 
+0.2195 - Thu Mar 15 17:37:33 2007
+	Added Brick::Result to handle methods to transform and format the
+	data structure that comes back from apply()
+	* Cleansed many tests to capture intentionally triggered warnings
+
 0.2193 - Wed Mar 14 23:43:20 2007
 	* Trying out some ways to extract the interesting error messages
 	* Added failed_field and failed_value to die() hashes
