@@ -3,8 +3,8 @@ load.t
 pod.t
 
 ;skip
-pod_coverage.t
-prereq.t
+#pod_coverage.t
+#prereq.t
 ;unskip
 
 composers/load.t
