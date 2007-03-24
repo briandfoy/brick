@@ -11,7 +11,6 @@ package Brick::Bucket;
 use strict;
 
 use Carp qw(croak);
-use Storable qw(dclone);
 
 =head1 NAME
 
@@ -53,7 +52,6 @@ sub _matches_regex
 	$bucket->add_to_bucket ( {
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => ( $setup->{description} || "Match a regular expression" ),
-		#args       => [ dclone $hash ],
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {

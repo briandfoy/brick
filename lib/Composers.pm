@@ -11,8 +11,6 @@ package Brick::Bucket;
 use strict;
 
 use Carp qw(carp);
-use Storable qw(dclone);
-
 
 =head1 NAME
 
@@ -154,7 +152,7 @@ sub __compose_satisfy_N_to_M
 			die {
 				message => "Satisfied $count of $max sub-conditions, needed to satisfy $range",
 				handler => $caller[0]{'sub'},
-				errors  => dclone \@dies,
+				errors  => \@dies,
 				} unless $n <= $count and $count <= $m;
 			},
 		});
@@ -231,7 +229,7 @@ sub __compose_pass_or_skip
 			die {
 				message => "Nothing worked! Unexpected failure of all branches",
 				handler => $caller[0]{'sub'},
-				errors  => dclone \@dies,
+				errors  => \@dies,
 				};
 			},
 		});

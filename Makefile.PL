@@ -15,6 +15,7 @@ WriteMakefile(
 		'Test::Output'   => '0',
 		'DateTime'       => '0.36',
 		'Test::Manifest' => '1.14',
+		'Storable'       => '0',
 		},
 
 	'PM'           => {
@@ -26,8 +27,12 @@ WriteMakefile(
 		'lib/Regexes.pm'      => '$(INST_LIBDIR)/Brick/Regexes.pm',
 		'lib/Dates.pm'        => '$(INST_LIBDIR)/Brick/Dates.pm',
 		'lib/General.pm'      => '$(INST_LIBDIR)/Brick/General.pm',
+		'lib/File.pm'         => '$(INST_LIBDIR)/Brick/General.pm',
+
 		'lib/Constraints.pm'  => '$(INST_LIBDIR)/Brick/Constraints.pm',
+
 		'lib/Filters.pm'      => '$(INST_LIBDIR)/Brick/Filters.pm',
+
 		'lib/Selectors.pm'    => '$(INST_LIBDIR)/Brick/Selectors.pm',
 
 		'lib/Result.pm'       => '$(INST_LIBDIR)/Brick/Result.pm',

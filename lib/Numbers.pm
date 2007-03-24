@@ -10,8 +10,6 @@ $VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
 package Brick::Bucket;
 use strict;
 
-use Storable qw(dclone);
-
 
 =head1 NAME
 
@@ -126,7 +124,6 @@ sub _inclusive_within_numeric_range
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] inclusively",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => $bucket->__compose_satisfy_all(
 			$bucket->_numeric_equal_or_greater_than( $setup ),
@@ -144,7 +141,6 @@ sub _exclusive_within_numeric_range
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "Find number within the range [$setup->{minimum}, $setup->{maximum}] exclusively",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => $bucket->__compose_satisfy_all(
 			$bucket->_numeric_strictly_greater_than( $setup ),
@@ -163,7 +159,6 @@ sub _numeric_equal_or_greater_than
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is equal to or greater than $setup->{minimum}",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
@@ -184,7 +179,6 @@ sub _numeric_strictly_greater_than
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is greater than $setup->{minimum}",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
@@ -205,7 +199,6 @@ sub _numeric_equal_or_less_than
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is equal to or less than $setup->{maximum}",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {
@@ -226,7 +219,6 @@ sub _numeric_strictly_less_than
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
 		description => "The number is less than $setup->{maximum}",
-		args        => [ dclone $setup ],
 		fields      => [ $setup->{field} ],
 		code        => sub {
 			die {

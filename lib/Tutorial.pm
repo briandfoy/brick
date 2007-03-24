@@ -112,6 +112,11 @@ came from the input to C<_input_key_exists>.
 	
 	my $dog_brick = $bucket->_input_key_exists( { field => 'dog' } );
 	
+Somewhere I defined the C<_input_key_exists> method so it shows
+up in the Bucket class:
+
+	package Brick::Bucket;
+	
 	sub _input_key_exists
 		{
 		my( $bucket, $setup ) = @_;
