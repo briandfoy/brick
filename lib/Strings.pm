@@ -48,7 +48,7 @@ sub _value_length_is_equal_to_greater_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 
 	$bucket->add_to_bucket( {
@@ -75,7 +75,7 @@ sub _value_length_is_equal_to_less_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},

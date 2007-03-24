@@ -34,7 +34,7 @@ sub _is_YYYYMMDD_date_format
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name => $setup->{name} || $caller[0]{'sub'},
@@ -57,7 +57,7 @@ sub _is_valid_date
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name => $setup->{name} || $caller[0]{'sub'},
@@ -141,7 +141,7 @@ sub _date_is_after
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -164,7 +164,7 @@ sub _date_is_before
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -230,7 +230,7 @@ sub days_between_dates_within_range  # inclusive, negative numbers indicate past
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
@@ -280,7 +280,7 @@ sub days_between_dates_outside_range
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
@@ -309,7 +309,7 @@ sub at_least_N_days_between
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {
@@ -351,7 +351,7 @@ sub at_most_N_days_between
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->__make_constraint(
 		$bucket->add_to_bucket( {

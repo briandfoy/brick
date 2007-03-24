@@ -113,7 +113,7 @@ sub add_to_pool { croak "add_to_pool is now add_to_bucket" }
 sub add_to_bucket
 	{
 	require B;
-	my @caller = main::__caller_chain_as_list();
+	my @caller = __caller_chain_as_list();
 	# print STDERR Data::Dumper->Dump( [\@caller],[qw(caller)] );
 	my( $bucket, $setup ) = @_;
 
@@ -282,6 +282,28 @@ sub dump_bucket
 	1;
 	}
 
+
+sub __caller_chain_as_list
+	{
+	my $level = 0;
+	my @Callers = ();
+
+	while( 1 )
+		{
+		my @caller = caller( ++$level );
+		last unless @caller;
+
+		push @Callers, {
+			level   => $level,
+			package => $caller[0],
+			'sub'   => $caller[3] =~ m/(?:.*::)?(.*)/,
+			};
+		}
+
+	#print STDERR Data::Dumper->Dump( [\@Callers], [qw(callers)] ), "-" x 73, "\n";
+	@Callers;
+	}
+	
 =back
 
 =head1 Brick::Bucket::Entry
@@ -461,27 +483,6 @@ sub applies_to_fields
 		}
 	}
 
-
-sub main::__caller_chain_as_list
-	{
-	my $level = 0;
-	my @Callers = ();
-
-	while( 1 )
-		{
-		my @caller = caller( ++$level );
-		last unless @caller;
-
-		push @Callers, {
-			level   => $level,
-			package => $caller[0],
-			'sub'   => $caller[3] =~ m/(?:.*::)?(.*)/,
-			};
-		}
-
-	#print STDERR Data::Dumper->Dump( [\@Callers], [qw(callers)] ), "-" x 73, "\n";
-	@Callers;
-	}
 
 =back
 

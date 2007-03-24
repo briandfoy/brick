@@ -40,7 +40,7 @@ sub __make_constraint # may need to change name to make generic
 
 	$setup ||= {};
 
-	my @callers = main::__caller_chain_as_list();
+	my @callers = $bucket->__caller_chain_as_list();
 
 	#print STDERR Data::Dumper->Dump( [\@callers], [qw(callers)] ); use Data::Dumper;
 

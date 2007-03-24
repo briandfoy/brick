@@ -67,7 +67,7 @@ sub _is_only_decimal_digits
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	my $sub = $bucket->_matches_regex( {
 		description  => "The $setup->{field} value only has decimal digits",
@@ -92,7 +92,7 @@ sub _is_decimal_integer
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	no warnings 'uninitialized';
 	my $sub = $bucket->_matches_regex( {
@@ -119,7 +119,7 @@ sub _inclusive_within_numeric_range
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -136,7 +136,7 @@ sub _exclusive_within_numeric_range
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket( {
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -154,7 +154,7 @@ sub _numeric_equal_or_greater_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -174,7 +174,7 @@ sub _numeric_strictly_greater_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -194,7 +194,7 @@ sub _numeric_equal_or_less_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},
@@ -214,7 +214,7 @@ sub _numeric_strictly_less_than
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	$bucket->add_to_bucket({
 		name        => $setup->{name} || $caller[0]{'sub'},

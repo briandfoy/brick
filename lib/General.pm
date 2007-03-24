@@ -218,7 +218,7 @@ sub _fields_exist
 	{
 	my( $bucket, $setup, $sub ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	#print STDERR Data::Dumper->Dump( [\@caller], [qw(caller)] );
 
@@ -284,7 +284,7 @@ sub __fields_are_something
 	{
 	my( $bucket, $setup, $sub ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	unless( eval { $setup->{fields}->isa( ref [] ) } or
 		UNIVERSAL::isa( $setup->{fields}, ref [] ) )

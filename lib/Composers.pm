@@ -125,7 +125,7 @@ sub __compose_satisfy_N_to_M
 		return sub {};
 		}
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	my @composers = grep { /^__compose/ } map { $_->{sub} } @caller;
 
@@ -203,7 +203,7 @@ sub __compose_pass_or_skip
 		return sub {};
 		}
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	my $max = @subs;
 
@@ -277,7 +277,7 @@ sub __compose_pass_or_stop
 		return sub {};
 		}
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	my $max = @subs;
 

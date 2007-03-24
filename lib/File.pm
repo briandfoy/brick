@@ -1,5 +1,5 @@
 # $Id: Regexes.pm 2193 2007-03-15 06:41:50Z comdog $
-package Brick::Regexes;
+package Brick::File;
 use strict;
 
 use base qw(Exporter);
@@ -115,23 +115,23 @@ sub is_file_format {
     };
 }
 
-=item is_file_extension
+=item has_file_extension( ARRAY_REF )
 
 This constraint checks the extension against a list of extensions
-passed as arguments
+which are the elements of ARRAY_REF.
 
 =cut
 
 sub Brick::_get_file_extension # just a sub, not a method
 	{ 
-	lc ( split /\./, $_[0] )[-1];
+	lc +( split /\./, $_[0] )[-1];
 	}
 	
-sub file_extension
+sub has_file_extension
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list;
 
 	my %extensions = map { lc $_, 1 } @{ $setup->{extensions} };
 	

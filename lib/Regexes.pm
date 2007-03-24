@@ -42,7 +42,7 @@ sub _matches_regex
 	{
 	my( $bucket, $setup ) = @_;
 
-	my @caller = main::__caller_chain_as_list();
+	my @caller = $bucket->__caller_chain_as_list();
 
 	unless( eval { $setup->{regex}->isa( ref qr// ) } )
 		{
