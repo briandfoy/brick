@@ -282,6 +282,37 @@ sub dump_bucket
 	1;
 	}
 
+=item
+
+=cut
+
+{
+my %field_labels = ();
+
+sub set_field_labels
+	{
+	my( $bucket, $hash ) = @_;
+	
+	%field_hash = %$hash;	
+	}
+
+sub get_field_label
+	{
+	my( $bucket, $key ) = @_;
+	
+	$field_label{ $key };
+	}
+	
+sub set_field_label
+	{
+	my( $bucket, $key, $value ) = @_;
+	
+	$field_label{ $key } = $value;	
+	}
+	
+}
+
+
 
 sub __caller_chain_as_list
 	{

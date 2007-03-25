@@ -37,6 +37,7 @@ foreach my $extension ( @good_extensions )
 	ok( $result, "Sub returns true for good extension" );
 	}
 
+
 foreach my $extension ( @bad_extensions )
 	{
 	my $result = eval {

@@ -63,6 +63,8 @@ dates/days_between_dates_outside_range.t
 dates/at_least_N_days_between.t
 dates/at_most_N_days_between.t
 
+files/has_file_extension.t
+
 regexes/_matches_regex.t
 
 selectors/_is_even_number.t
