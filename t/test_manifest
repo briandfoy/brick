@@ -25,7 +25,7 @@ error.t
 init.t
 explain.t
 apply.t
-
+field_labels.t
 
 external/add_validator_packages.t
 external/new-external_packages.t

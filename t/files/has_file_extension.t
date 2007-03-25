@@ -5,7 +5,7 @@ use Test::More 'no_plan';
 
 use_ok( 'Brick' );
 use_ok( 'Brick::Bucket' );
-use_ok( 'Brick::File' );
+use_ok( 'Brick::Files' );
 
 ok( defined &Brick::Bucket::__caller_chain_as_list, "Caller sub is there" );
 

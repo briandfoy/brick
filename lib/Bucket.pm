@@ -10,7 +10,8 @@ use Carp;
 
 use Brick::Constraints;
 
-foreach my $package ( qw(Numbers Regexes Strings Dates General Composers Filters Selectors) )
+foreach my $package ( qw(Numbers Regexes Strings Dates General 
+	Composers Filters Selectors Files) )
 	{
 	# print STDERR "Requiring $package\n";
 	eval "require Brick::$package";
@@ -56,7 +57,8 @@ sub _init
 	{
 	my $self = shift;
 
-	$self->{_names} = {};
+	$self->{_names}        = {};
+	$self->{_field_labels} = {};
 	}
 
 =item entry_class
@@ -282,37 +284,55 @@ sub dump_bucket
 	1;
 	}
 
-=item
+=back
+
+=head2 Field labels
+
+The bucket can store a dictionary that maps field names to arbitrary
+strings. This way, a brick can translate and input parameter name
+(e.g. a CGI input field name) into a more pleasing string for humans
+for its error messages. By providing methods in the bucket class,
+every brick has a chance to call them.
+
+=over 4
+
+=item use_field_labels( HASHREF )
+
+Set the hash that C<get_field_label> uses to map field names to 
+field labels.
+
+This method croaks if its argument isn't a hash reference. 
 
 =cut
 
-{
-my %field_labels = ();
-
-sub set_field_labels
+sub use_field_labels
 	{
-	my( $bucket, $hash ) = @_;
-	
-	%field_hash = %$hash;	
+	croak "Not a hash reference!" unless UNIVERSAL::isa( $_[1], ref {} );
+	$_[0]->{_field_labels} = { %{$_[1]} };	
 	}
+
+=item get_field_label( FIELD )
+
+Retrieve the label for FIELD.
+
+=cut
 
 sub get_field_label
 	{
-	my( $bucket, $key ) = @_;
-	
-	$field_label{ $key };
+	no warnings 'uninitialized';
+	$_[0]->{_field_labels}{ $_[1] };
 	}
 	
+=item set_field_label( FIELD, VALUE )
+
+Set the label for FIELD to VALUE. It returns VALUE.
+
+=cut
+
 sub set_field_label
 	{
-	my( $bucket, $key, $value ) = @_;
-	
-	$field_label{ $key } = $value;	
+	$_[0]->{_field_labels}{ $_[1] } = $_[2];
 	}
-	
-}
-
-
 
 sub __caller_chain_as_list
 	{
@@ -483,6 +503,8 @@ sub add_bit
 	}
 
 =item $entry->dump
+
+Print a text version of the entry.
 
 =cut
 

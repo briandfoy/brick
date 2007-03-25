@@ -27,7 +27,7 @@ WriteMakefile(
 		'lib/Regexes.pm'      => '$(INST_LIBDIR)/Brick/Regexes.pm',
 		'lib/Dates.pm'        => '$(INST_LIBDIR)/Brick/Dates.pm',
 		'lib/General.pm'      => '$(INST_LIBDIR)/Brick/General.pm',
-		'lib/File.pm'         => '$(INST_LIBDIR)/Brick/File.pm',
+		'lib/Files.pm'        => '$(INST_LIBDIR)/Brick/Files.pm',
 
 		'lib/Constraints.pm'  => '$(INST_LIBDIR)/Brick/Constraints.pm',
 
