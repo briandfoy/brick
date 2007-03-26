@@ -1,10 +1,5 @@
-0.2183 - Tue Feb 27 17:25:43 2007
-	* The first CPAN release. Not much to say yet, but its easier for
-	clients to grab this off CPAN than off Subversion.
-	* This is alpha-software. Don't use it for anything because its
-	going to change.
-	* Read that last one again.
-	* No, I really mean it. :)
+0.220 - Mon Mar 26 01:57:57 2007
+	* made __and, __or, __none aliases for composers
 
 0.220 - Sun Mar 25 23:34:19 2007
 	* Added a feature to set field labels and allow bricks to access
@@ -24,4 +19,13 @@
 
 0.2191 - Tue Mar  6 11:38:06 2007
 	* Updated docs
+
+0.2183 - Tue Feb 27 17:25:43 2007
+	* The first CPAN release. Not much to say yet, but its easier for
+	clients to grab this off CPAN than off Subversion.
+	* This is alpha-software. Don't use it for anything because its
+	going to change.
+	* Read that last one again.
+	* No, I really mean it. :)
+
 
