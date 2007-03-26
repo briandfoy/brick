@@ -134,22 +134,26 @@ sub has_file_extension
 	my @caller = $bucket->__caller_chain_as_list;
 
 	my %extensions = map { lc $_, 1 } @{ $setup->{extensions} };
-	
-	$bucket->add_to_bucket ( {
-		name        => $setup->{name} || $caller[0]{'sub'},
-		description => ( $setup->{description} || "Match a file extension" ),
-		fields      => [ $setup->{field} ],
-		code        => sub {
-			my $extension = Brick::_get_file_extension( $_[0]->{ $setup->{field} } );
+		
+	my $hash = {
+			name        => $setup->{name} || $caller[0]{'sub'},
+			description => ( $setup->{description} || "Match a file extension" ),
+			fields      => [ $setup->{field} ],
+			code        => sub {
+				my $extension = Brick::_get_file_extension( $_[0]->{ $setup->{field} } );
+				
+				die {
+					message      => "[$_[0]->{ $setup->{field} }] did not have the right extension",
+					failed_field => $setup->{field},
+					failed_value => $_[0]->{ $setup->{field} },
+					handler      => $caller[0]{'sub'},
+					} unless exists $extensions{ $extension };
+				},
+			};
 			
-			die {
-				message      => "[$_[0]->{ $setup->{field} }] did not have the right extension",
-				failed_field => $setup->{field},
-				failed_value => $_[0]->{ $setup->{field} },
-				handler      => $caller[0]{'sub'},
-				} unless exists $extensions{ $extension };
-			},
-		} );
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket ( $hash )
+		);
 
 	}
 
