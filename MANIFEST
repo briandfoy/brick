@@ -7,6 +7,7 @@ lib/Bucket.pm
 lib/Composers.pm
 lib/Constraints.pm
 lib/Dates.pm
+lib/Files.pm
 lib/Filters.pm
 lib/General.pm
 lib/Numbers.pm
@@ -19,6 +20,7 @@ lib/UserGuide.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
+perf/bucket_memory.t
 README
 t/apply.t
 t/bucket/add_to_bucket.t
@@ -44,6 +46,8 @@ t/error.t
 t/explain.t
 t/external/add_validator_packages.t
 t/external/new-external_packages.t
+t/field_labels.t
+t/files/has_file_extension.t
 t/filters/_lowercase.t
 t/filters/_remove_extra_fields.t
 t/filters/_remove_whitespace.t

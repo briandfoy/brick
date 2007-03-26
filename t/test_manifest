@@ -9,6 +9,9 @@ pod.t
 
 composers/load.t
 composers/__compose_satisfy_N_to_M.t
+composers/__compose_satisfy_none.t
+composers/__compose_satisfy_all.t
+composers/__compose_satisfy_any.t
 composers/__compose_pass_or_stop.t
 composers/__compose_pass_or_skip.t
 

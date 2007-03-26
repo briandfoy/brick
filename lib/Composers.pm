@@ -36,6 +36,8 @@ in programming rather than a failure of the data to validate.
 
 =over 4
 
+=item __and( LIST OF CODEREFS )
+
 =item __compose_satisfy_all( LIST OF CODEREFS )
 
 This is AND with NO short-circuiting.
@@ -55,6 +57,12 @@ sub __compose_satisfy_all
 	$bucket->__compose_satisfy_N( scalar @_, @_ );
 	}
 
+BEGIN {
+*__and = *__compose_satisfy_all;
+}
+
+=item __or( LIST OF CODEREFS )
+
 =item __compose_satisfy_any( LIST OF CODEREFS )
 
 This is OR but with NO short-circuiting.
@@ -72,6 +80,12 @@ sub __compose_satisfy_any
 	my $bucket = shift;
 	$bucket->__compose_satisfy_N_to_M( 1, scalar @_, @_ );
 	}
+
+BEGIN {
+*__or = *__compose_satisfy_any;
+}
+
+=item __none( LIST OF CODEREFS )
 
 =item __compose_satisfy_none( LIST OF CODEREFS )
 
@@ -91,6 +105,10 @@ sub __compose_satisfy_none
 	my $bucket = shift;
 	$bucket->__compose_satisfy_N_to_M( 0, 0, @_ );
 	}
+
+BEGIN {
+*__none = *__compose_satisfy_none;
+}
 
 =item __compose_satisfy_N( SCALAR, LIST OF CODEREFS )
 
@@ -138,7 +156,7 @@ sub __compose_satisfy_N_to_M
 			my @dies = ();
 			foreach my $sub ( @subs )
 				{
-				eval { $sub->( @_ ) };
+				my $result = eval { $sub->( @_ ) };
 				my $at = $@;
 				$count++ unless $at;
 				#print STDERR "\n!!!!Sub died!!!!\n" if ref $at;
@@ -148,12 +166,14 @@ sub __compose_satisfy_N_to_M
 				};
 
 			my $range = $n == $m ? "exactly $n" : "between $n and $m";
-
+			
 			die {
 				message => "Satisfied $count of $max sub-conditions, needed to satisfy $range",
 				handler => $caller[0]{'sub'},
 				errors  => \@dies,
 				} unless $n <= $count and $count <= $m;
+				
+			return 1;
 			},
 		});
 
@@ -162,12 +182,15 @@ sub __compose_satisfy_N_to_M
 	return $sub;
 	}
 
+=item __not( CODEREF )
+
 =item __compose_not( CODEREF )
  
 This composers negates the sense of the code ref. If the code ref returns
 true, this composer makes it false, and vice versa.
 
 =cut
+
 
 sub __compose_not
 	{

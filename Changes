@@ -6,6 +6,11 @@
 	* Read that last one again.
 	* No, I really mean it. :)
 
+0.220 - Sun Mar 25 23:34:19 2007
+	* Added a feature to set field labels and allow bricks to access
+	them
+	* Added the start of a module for bricks to deal with Files
+
 0.2195 - Thu Mar 15 17:37:33 2007
 	Added Brick::Result to handle methods to transform and format the
 	data structure that comes back from apply()

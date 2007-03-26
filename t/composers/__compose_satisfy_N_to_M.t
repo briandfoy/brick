@@ -13,7 +13,6 @@ my $bucket = Mock::Bucket->new;
 isa_ok( $bucket, 'Mock::Bucket' );
 isa_ok( $bucket, Mock::Bucket->bucket_class );
 
-
 my $false_sub = sub { 0 };
 my $true_sub  = sub { 1 };
 my $undef_sub = sub { return };
