@@ -21,6 +21,9 @@ WriteMakefile(
 	'PM'           => {
 		'lib/Brick.pm'        => '$(INST_LIBDIR)/Brick.pm',
 		'lib/Bucket.pm'       => '$(INST_LIBDIR)/Brick/Bucket.pm',
+
+		'lib/Profile.pm'      => '$(INST_LIBDIR)/Brick/Profile.pm',
+
 		'lib/Composers.pm'    => '$(INST_LIBDIR)/Brick/Composers.pm',
 		'lib/Numbers.pm'      => '$(INST_LIBDIR)/Brick/Numbers.pm',
 		'lib/Strings.pm'      => '$(INST_LIBDIR)/Brick/Strings.pm',

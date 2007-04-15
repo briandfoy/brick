@@ -33,6 +33,8 @@ creation.
 
 =cut
 
+=for comment
+
 sub is_file_format {
     my ( $params ) = @_;
     return sub {

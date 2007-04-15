@@ -22,13 +22,13 @@ $VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
 
 =head1 NAME
 
-Brick - This is the description
+Brick::Bucket - The thing that keeps everything straight
 
 =head1 SYNOPSIS
 
-	use Brick::Constraints::Bucket;
+	use Brick::Bucket;
 
-	my $bucket = Brick::Constraints::Bucket->new();
+	my $bucket = Brick::Bucket->new();
 
 =head1 DESCRIPTION
 

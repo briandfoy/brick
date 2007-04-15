@@ -204,11 +204,12 @@ sub __compose_not
 	}
 
 
+=item __compose_until_pass
 
 =item __compose_pass_or_skip
 
 Go through the list of closures, trying each one until one suceeds. If a closure
-doesn't suceed, don't fail, just move on. Return true for the first one that
+doesn't succeed, don't fail, just move on. Return true for the first one that
 passes, short-circuited the rest. If none of the closures pass, die with an
 error noting that nothing passed.
 
@@ -261,6 +262,12 @@ sub __compose_pass_or_skip
 
 	return $sub;
 	}
+
+BEGIN {
+*__compose_until_pass = *__compose_pass_or_skip;
+}
+
+=item __compose_until_fail
 
 =item __compose_pass_or_stop
 
@@ -338,6 +345,10 @@ sub __compose_pass_or_stop
 
 	return $sub;
 	}
+
+BEGIN {
+*__compose_until_fail = *__compose_pass_or_stop;
+}
 
 =back
 

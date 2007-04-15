@@ -2,10 +2,8 @@
 load.t
 pod.t
 
-;skip
 #pod_coverage.t
 #prereq.t
-;unskip
 
 composers/load.t
 composers/__compose_satisfy_N_to_M.t

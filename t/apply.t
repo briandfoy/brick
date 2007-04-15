@@ -13,7 +13,7 @@ isa_ok( $brick, $class );
 my @profile = ();
 my %input   = ();
 
-my $lint = $brick->lint( \@profile );
+my $lint = $brick->profile_class->lint( \@profile );
 
 is( $lint, 0, "Profile is formatted correctly\n" );
 
