@@ -208,10 +208,13 @@ sub __compose_not
 
 =item __compose_pass_or_skip
 
-Go through the list of closures, trying each one until one suceeds. If a closure
-doesn't succeed, don't fail, just move on. Return true for the first one that
-passes, short-circuited the rest. If none of the closures pass, die with an
+Go through the list of closures, trying each one until one suceeds. If
+a closure doesn't die, but doesn't return true, this doesn't fail but
+just moves on. Return true for the first one that passes,
+short-circuited the rest. If none of the closures pass, die with an
 error noting that nothing passed.
+
+If one of the subs dies, this composer still dies.
 
 This can still die for programming (not logic) errors.
 
