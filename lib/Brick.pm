@@ -8,6 +8,8 @@ use vars qw($VERSION);
 use Carp qw( carp croak );
 use Data::Dumper;
 
+use Brick::Profile;
+
 $VERSION = '0.222';
 	#sprintf "0.%04d_01", q$Revision$ =~ m/(\d+)/g;
 
@@ -23,7 +25,7 @@ Brick - Complex business rule data validation
 		external_packages => [ qw(Foo::Validator Bar::Validator) ]
 		} );
 
-	my @profile = (
+	my $profile = Brick::Profile->new( $brick,
 		[ required  => sub { .... }    => $hash ],
 		[ optional  => optional_fields => $hash ],
 
@@ -32,7 +34,12 @@ Brick - Complex business rule data validation
 		[ outside   => ex_number       => $hash ],
 		);
 
-	my $results = $brick->apply( \@profile, \%input );
+	my %input_from_app = (
+		name => 'Joe Snuffy',
+		...
+		);
+		
+	my $results = $brick->apply( $profile, \%%input_from_app );
 
 =head1 DESCRIPTION
 
@@ -159,7 +166,7 @@ sub create_bucket
 	{
 	my( $brick, $profile ) = @_;
 
-	unless( 0 == $brick->lint( $profile || [] ) ) # zero but true!
+	unless( 0 == $brick->profile_class->lint( $profile || [] ) ) # zero but true!
 		{
 		croak "Bad profile for create_bucket! Perhaps you need to check it with lint"
 		};
@@ -245,12 +252,12 @@ sub add_validator_packages
 
 Based on the current instance, create another one just like it but not
 connected to it (in effect forking the instance). After the C<clone>
-you can change new instance without affecting the old one. This is handy
-in C<explain>, for instance, where I want a deep copy for a moment. At least
-I think I want a deep copy.
+you can change new instance without affecting the old one. This is
+handy in C<explain>, for instance, where I want a deep copy for a
+moment. At least I think I want a deep copy.
 
-That's the idea. Right now this just returns the instance. When not using
-a copy breaks, I'll fix that.
+That's the idea. Right now this just returns the same instance. When
+not using a copy breaks, I'll fix that.
 
 =cut
 
@@ -261,107 +268,7 @@ sub clone
 	$brick;
 	}
 
-=item lint
-
-Examine the profile and complain about irregularities in format. This
-only checks the format; it does not try to determine if the profile
-works or makes sense. It returns a hash whose key is the index of the
-profile element and whose value is an anonymous hash to indicate what
-had the error:
-
-	format  -   the element is an arrayref
-	name    -   the name is a scalar
-	method  -   is a code ref or can be found in the package
-					$brick->bucket_class returns
-	args    -   the last element is a hash reference
-
-If the profile is not an array reference, C<lint> immediately returns
-undef or the empty list. In scalar context, C<lint> returns 0 for
-format success and the number of errors (so true) for format failures.
-If there is a format error (e.g. an element is not an array ref), it
-immediately returns the number of errors up to that point.
-
-	my $lint = $brick->lint( \@profile );
-
-	print do {
-		if( not defined $lint ) { "Profile must be an array ref\n" }
-		elsif( $lint )          { "Did not validate, had $lint problems" }
-		else                    { "Woo hoo! Everything's good!" }
-		};
-
-In list context, it returns a hash (a list of one element). The result
-will look something like this hash, which has keys for the elements
-that lint thinks are bad, and the values are anonymous hashes with
-keys for the parts that failed:
-
-	%lint = (
-		1 => {
-			method => "Could not find method foo in package",
-			},
-		4 => {
-			args => "Arguments should be a hash ref, but it was a scalar",
-			}
-		);
-
-If you are using C<AUTOLOAD> to generate some of the methods at
-runtime (i.e. after C<lint> has a chance to check for it), use a
-C<can> method to let C<lint> know that it will be available later.
-
-TO DO:
-
-Errors for duplicate names?
-
-=cut
-
-sub lint
-	{
-	my( $brick, $profile ) = @_;
-
-	return unless(
-		eval { $profile->isa( ref [] ) } or
-		UNIVERSAL::isa( $profile, ref [] )
-		);
-
-	my $lint = {};
-
-	foreach my $index ( 0 .. $#$profile )
-		{
-		my $h = $lint->{$index} = {};
-
-		unless( eval { $profile->[$index]->isa( ref [] ) } or
-			UNIVERSAL::isa(  $profile->[$index], ref [] )
-			)
-			{
-			$h->{format} = "Not an array reference!";
-			last;
-			}
-
-		my( $name, $method, $args ) = @{ $profile->[$index] };
-
-		$h->{name} = "Profile name is not a simple scalar!" if ref $name;
-
-		$h->{args} = "Couldn't find method [$method]" unless
-			eval { $method->isa( ref sub {} ) } or
-			UNIVERSAL::isa( $method, sub {} )    or
-			eval { $brick->bucket_class->can( $method ) }; #XXX which class though?
-
-		$h->{args} = "Args is not a hash reference" unless
-			eval { $args->isa( ref {} ) } or
-			UNIVERSAL::isa( $args, ref {} );
-
-		# args needs what?
-
-		delete $lint->{$index} if 0 == keys %{$lint->{$index}};
-		}
-
-#print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
-#use Data::Dumper;
-
-	# set errors;
-	wantarray ? %$lint : ( scalar keys %$lint );
-	}
-
-=item explain( PROFILE_ARRAYREF )
+=item explain( PROFILE || PROFILE_ARRAYREF )
 
 Turn the profile into a textual description without applying it to any
 data. This does not add the profile to instance and it does not add
@@ -552,7 +459,7 @@ a factory method, will use the return value of this method.
 
 =cut
 
-sub profile_class { 'Brick::Profile' }
+sub profile_class { require Brick::Profile; 'Brick::Profile' }
 
 =back
 

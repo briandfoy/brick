@@ -49,7 +49,7 @@ my %input = (
 	end_of_time    => 20380714,
 	);
 	
-my( $lint ) = $brick->lint( \@profile );
+my( $lint ) = $brick->profile_class->lint( \@profile );
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
 #	print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] ) if $ENV{DEBUG};
 #	use Data::Dumper;

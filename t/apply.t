@@ -7,6 +7,7 @@ use_ok( $class );
 my $brick = $class->new();
 isa_ok( $brick, $class );
 
+use Brick::Profile;
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
@@ -46,7 +47,7 @@ my %input = (
 	ex_number => 0,
 	);
 	
-my( $lint ) = $brick->lint( \@profile );
+my( $lint ) = $brick->profile_class->lint( \@profile );
 
 #print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
 #use Data::Dumper;

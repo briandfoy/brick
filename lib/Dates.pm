@@ -40,7 +40,7 @@ sub _is_YYYYMMDD_date_format
 		name => $setup->{name} || $caller[0]{'sub'},
 		code => $bucket->_matches_regex( {
 			description  => "The $setup->{field} is in the YYYYMMDD date format",
-			failed_field => $setup->{field},
+			field        => $setup->{field},
 			name         => $caller[0]{'sub'},
 			regex        => qr/
 				\A

@@ -214,7 +214,7 @@ it on for debugging.
 
 =cut
 
-my $lint = $brick->lint( $Profile );
+my $lint = $brick->profile_class->lint( $Profile );
 is( $lint, 0, "Profile has no errors" );
 
 =head2 Dump the profile with explain()

@@ -139,10 +139,10 @@ it on for debugging.
 
 =cut
 
-my $lint = $brick->lint( $Profile );
+my $lint = $brick->profile_class->lint( $Profile );
 unless( is( $lint, 0, "Profile has no errors" ) )
 	{
-	my %lint = $brick->lint( $Profile );
+	my %lint = $brick->profile_class->lint( $Profile );
 	
  	diag( Data::Dumper->Dumper( \%lint ) );
  	}

@@ -57,6 +57,7 @@ messages/number_range_error.t
 
 dates/__get_ymd_as_hashref.t
 dates/_get_days_between.t
+dates/_is_YYYYMMDD_date_format.t
 dates/valid_date.t
 dates/ranges.t
 dates/days_between_dates_within_range.t

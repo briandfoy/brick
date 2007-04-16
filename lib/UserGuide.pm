@@ -5,35 +5,47 @@
 
 =head1 NAME
 
-Brick::User - How to use Brick
+Brick::UserGuide - How to use Brick
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-Some one told you to use this module to validate data, and you need to know
-the shortest way to get that done. Someone else has created all the validation
-routines, or "bricks", already and you just have to use them.
+Some one told you to use this module to validate data, and you need to
+know the shortest way to get that done. Someone else has created all
+the validation routines, or "bricks", already and you just have to use
+them.
 
 =head2 Construct your profile
 
-Your profile describes the business rules that you want to apply to your input.
-It's just a list of anonymous arrays that tell Brick what to do:
+Your validation description is the business rules that you want to
+apply to your input. It's just a list of anonymous arrays that tell
+Brick what to do (see L<Brick::Profile>):
 
-	@Profile = (
+	@Description = (
 		[ label => constraint_name => { setup hash } ],
 		...
 		);
 	
-When I C<apply> this profile, Brick does it's magic.
-
 	my $Brick = Brick->new();
 	
-	my $result = $Brick->apply( \@Profile, \%Input );
+	my $profile = $Brick->profile_class->new( \@Description );
+	
+When you C<apply> this profile, Brick does it's magic.
+
+	my $result = $Brick->apply( $profile, \%Input );
 
 Brick goes through the profile one anonymous array at a time, and in order.
 It validates one row of the anonymous array, saves the result, and moves on
-to the next anonymous array. At the end, I have an anonymous array in C<$result>.
+to the next anonymous array. At the end, you have the results in C<$result>,
+which is a C<Brick::Results> object.
+
+
+
+
+
+
+
 That anonymous array's elements correspond item for item to the elements in 
 the profile. The first element in C<$result> goes with the first element
 in C<@Profile>.
@@ -77,3 +89,5 @@ Copyright (c) 2007, brian d foy, All Rights Reserved.
 You may redistribute this under the same terms as Perl itself.
 
 =cut
+
+1;

@@ -1036,7 +1036,7 @@ my $Profile = [
 	[ effective_date => effective_date  => $setup ],
 	];
 	
-my $lint = $brick->lint( $Profile );
+my $lint = $brick->profile_class->lint( $Profile );
 is( $lint, 0, "Profile passes lint" );
 
 print STDERR $brick->explain( $Profile ) if $ENV{DEBUG};

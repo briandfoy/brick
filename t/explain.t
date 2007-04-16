@@ -17,7 +17,7 @@ $ENV{DEBUG} ||= 0;
 my @profile = (
 );
 
-my $lint = $brick->lint( \@profile );
+my $lint = $brick->profile_class->lint( \@profile );
 
 is( $lint, 0, "Profile is formatted correctly\n" );
 
@@ -46,7 +46,7 @@ my @profile = (
 
 	);
 
-my( $lint ) = $brick->lint( \@profile );
+my( $lint ) = $brick->profile_class->lint( \@profile );
 
 #print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
 #use Data::Dumper;
@@ -80,7 +80,7 @@ my @profile = (
 
 	);
 
-my $lint = eval { $brick->lint( \@profile ) };
+my $lint = eval { $brick->profile_class->lint( \@profile ) };
 
 is( $lint, 1, "Profile is formatted correctly\n" );
 

@@ -43,7 +43,7 @@ my %input = (
 	not_a_number => 'NaN',
 	);
 	
-my( $lint ) = $brick->lint( \@profile );
+my( $lint ) = $brick->profile_class->lint( \@profile );
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
 my $result = $brick->apply( \@profile, \%input );
