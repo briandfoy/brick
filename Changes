@@ -1,6 +1,16 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.222 - Tue Apr 17 13:12:19 2007
+	* The validation profile stuff now lives in it's own module,
+	Brick::Profile. The methods that work on the profile (lint,
+	explain) aren't in the Brick class anymore, so you need to
+	either call them on a Profile object or use the Profile
+	class name ( probably $brick->profile_class->lint( ... )
+	* lint() still just takes an Array of Arrays because you 
+	can't make a Profile object without passing lint. explain()
+	still works with an object or an array.
+
 0.221 - Mon Mar 26 02:04:40 2007
 
 0.220 - Sun Mar 25 23:34:19 2007
