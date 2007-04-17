@@ -11,6 +11,7 @@ lib/Files.pm
 lib/Filters.pm
 lib/General.pm
 lib/Numbers.pm
+lib/Profile.pm
 lib/Regexes.pm
 lib/Result.pm
 lib/Selectors.pm
@@ -20,7 +21,9 @@ lib/UserGuide.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
+perf/brick_hash.t
 perf/bucket_memory.t
+perf/get_brick_by_name.t
 README
 t/apply.t
 t/bucket/add_to_bucket.t
@@ -31,11 +34,15 @@ t/bucket/new_entry.t
 t/bucket/unique.t
 t/composers/__compose_pass_or_skip.t
 t/composers/__compose_pass_or_stop.t
+t/composers/__compose_satisfy_all.t
+t/composers/__compose_satisfy_any.t
 t/composers/__compose_satisfy_N_to_M.t
+t/composers/__compose_satisfy_none.t
 t/composers/load.t
 t/constraints/__make_constraint.t
 t/dates/__get_ymd_as_hashref.t
 t/dates/_get_days_between.t
+t/dates/_is_YYYYMMDD_date_format.t
 t/dates/at_least_N_days_between.t
 t/dates/at_most_N_days_between.t
 t/dates/days_between_dates_outside_range.t
