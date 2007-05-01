@@ -1,6 +1,9 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.223 - Tue May  1 17:48:27 2007
+	* croak if we can't find a validator package, instead of just croaking
+
 0.222 - Tue Apr 17 13:12:19 2007
 	* The validation profile stuff now lives in it's own module,
 	Brick::Profile. The methods that work on the profile (lint,
