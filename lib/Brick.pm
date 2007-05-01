@@ -10,7 +10,7 @@ use Data::Dumper;
 
 use Brick::Profile;
 
-$VERSION = '0.222';
+$VERSION = '0.223';
 	#sprintf "0.%04d_01", q$Revision$ =~ m/(\d+)/g;
 
 =head1 NAME
@@ -79,7 +79,7 @@ sub _load_external_packages
 	foreach my $package ( @packages )
 		{
 		eval "package $bucket_class; require $package; $package->import";
-		carp "Could not load $package: $@" if $@;
+		croak "Could not load $package: $@" if $@;
 		}
 
 	}

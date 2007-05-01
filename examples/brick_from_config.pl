@@ -35,7 +35,7 @@ BEGIN {
 use Brick::Bucket;
 use Scalar::Util;
 
-sub main::length_is_three { return 1 if length $_[0] }
+sub main::length_is_three { return 1 if length $_[0] == 3 }
 	
 sub Brick::Bucket::create_brick
 	{

@@ -80,3 +80,20 @@ ok( defined &{ "${bucket_class}::_is_even_number" },
 	"_is_the_letter_e is not in $bucket_class after add_validator_packages"
 	);
 isa_ok( $bucket->_is_even_number, ref sub {} );	
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# Try it with packages that don't exist
+
+eval { eval "use Mock::Please::Dont::Be::There::No::Really" };
+ok( defined $@, 
+	"Mock::Please::Dont::Be::There::No::Really is not there (good)"  );
+	
+eval { 
+	$brick->add_validator_packages( 
+		"Mock::Please::Dont::Be::There::No::Really" ) };
+my $at = $@;
+ok( defined $at, "Adding non-existent validator package" ); 
+
+
+
+
