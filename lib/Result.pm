@@ -26,6 +26,24 @@ Brick::Result - the result of applying a profile
 This class provides methods to turn the data structure returned
 by apply() into a useable form for particular situations.
 
+
+=head2 Class methods
+
+=over 4
+
+=item result_item_class
+
+Loads and returns the class name to use for the elements of the Results
+data structure.
+
+=cut
+
+sub result_item_class { require Brick::Result::Item; 'Brick::Result::Item' };
+
+=back
+
+=head2 Instance methods
+
 =over
 
 =item explain
@@ -39,7 +57,6 @@ Create a string the shows the result in an outline form.
 use constant LEVEL   => 0;
 use constant MESSAGE => 1;
 
-sub result_item_class { require Brick::Result::Item; 'Brick::Result::Item' };
 
 sub explain
 	{
@@ -262,7 +279,36 @@ What should this do?
 
 sub dump { croak "Not yet implemented" }
 
+=back
 
+=head1 TO DO
 
+TBA
+
+=head1 SEE ALSO
+
+L<Brick::Tutorial>, L<Brick::UserGuide>
+
+=head1 SOURCE AVAILABILITY
+
+This source is part of a SourceForge project which always has the
+latest sources in SVN, as well as all of the previous releases.
+
+	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
+
+If, for some reason, I disappear from the world, one of the other
+members of the project can shepherd this module appropriately.
+
+=head1 AUTHOR
+
+brian d foy, C<< <bdfoy@cpan.org> >>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2007, brian d foy, All Rights Reserved.
+
+You may redistribute this under the same terms as Perl itself.
+
+=cut
 
 1;

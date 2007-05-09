@@ -58,7 +58,7 @@ is( (localtime)[6], 3, "Overrode localtime" );
 
 # How do I test this?
 my $result = eval { $sub->() };
-is( $result, undef, "Failed (expected)" );
+is( $result, 0, "Failed (expected)" );
 }
 
 }

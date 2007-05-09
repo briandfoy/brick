@@ -198,8 +198,9 @@ really just another factory to create bricks.
 =head2 Selectors
 
 Selectors are a special sort of brick that doesn't C<die>. When it
-fails, it just returns false. I can use these with composers to decide
-if I want to continue with the rest of the bricks in that composition.
+fails, it just returns C<0> (not just false, but specifically 0). I
+can use these with composers to decide if I want to continue with the
+rest of the bricks in that composition.
 
 The composer C<__compose_pass_or_stop> can use a selector to stop
 processing. It won't C<die>, so it doesn't fail. It doesn't keep

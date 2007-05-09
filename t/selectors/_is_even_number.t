@@ -28,6 +28,6 @@ is( $result, 1, "Even number validates" );
 
 $result = $sub->( { field => 3 } );
 
-ok( ! defined $result, "Result fails (as expected)" );
+is( $result, 0, "Result fails (as expected)" );
 ok( ! $@, "Failure isn't fatal" );
 }

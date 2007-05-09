@@ -40,12 +40,6 @@ It validates one row of the anonymous array, saves the result, and moves on
 to the next anonymous array. At the end, you have the results in C<$result>,
 which is a C<Brick::Results> object.
 
-
-
-
-
-
-
 That anonymous array's elements correspond item for item to the elements in 
 the profile. The first element in C<$result> goes with the first element
 in C<@Profile>.

@@ -60,7 +60,7 @@ until you C<apply> it.
 
 =item new( BRICK, ARRAY_OF_ARRAYS )
 
-Create a new profile object tied to the BRICK object.
+Create a new profile object tied to the Brick object.
 
 =cut
 
@@ -86,6 +86,22 @@ sub new
 	
 	return $self;
 	}
+
+=item brick_class()
+
+Return the class name to use to access class methods (such as
+bucket_class) in the Brick namespace. If you want to provide
+an alternate Brick class for your profile, override this method.
+
+=cut
+
+sub brick_class { require Brick; 'Brick' }
+
+=back
+
+=head2 Instance methods
+
+=over
 
 =item lint( PROFILE_ARRAYREF );
 
@@ -169,8 +185,8 @@ sub lint
 		$h->{args} = "Couldn't find method [$method]" unless
 			eval { $method->isa( ref sub {} ) } or
 			UNIVERSAL::isa( $method, sub {} )    or
-			eval { Brick->bucket_class->can( $method ) }; #XXX which class though?
-
+			eval { __PACKAGE__->brick_class->bucket_class->can( $method ) };
+			
 		$h->{args} = "Args is not a hash reference" unless
 			eval { $args->isa( ref {} ) } or
 			UNIVERSAL::isa( $args, ref {} );
