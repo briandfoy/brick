@@ -257,12 +257,6 @@ sub __compose_pass_or_skip
 				# die for everything else - validation error
 				die if( ref $eval_error );  
 				};
-
-			die {
-				message => "Nothing worked! Unexpected failure of all branches",
-				handler => $caller[0]{'sub'},
-				errors  => \@dies,
-				} if @dies;
 				
 			return 0;
 			},
