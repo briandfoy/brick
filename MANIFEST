@@ -1,6 +1,8 @@
 Changes
 dev_hints/error_message_hints
 examples/apply_constraints.pl
+examples/brick_from_config.ini
+examples/brick_from_config.pl
 examples/placeholder.pl
 lib/Brick.pm
 lib/Bucket.pm
@@ -13,6 +15,7 @@ lib/General.pm
 lib/Numbers.pm
 lib/Profile.pm
 lib/Regexes.pm
+lib/Result-Item.pm
 lib/Result.pm
 lib/Selectors.pm
 lib/Strings.pm
@@ -91,5 +94,6 @@ t/use_cases/explain_with_user_defined_name.t
 t/use_cases/foursquare.t
 t/use_cases/paycheck.t
 t/use_cases/phone_number.t
+t/use_cases/programming-error-in-brick.t
 t/use_cases/top-level-errors.t
 t/use_cases/zip_code.t
