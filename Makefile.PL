@@ -39,6 +39,7 @@ WriteMakefile(
 		'lib/Selectors.pm'    => '$(INST_LIBDIR)/Brick/Selectors.pm',
 
 		'lib/Result.pm'       => '$(INST_LIBDIR)/Brick/Result.pm',
+		'lib/Result-Item.pm'  => '$(INST_LIBDIR)/Brick/Result/Item.pm',
 
 		'lib/Tutorial.pm'     => '$(INST_LIBDIR)/Brick/Tutorial.pm',
 		'lib/UserGuide.pm'    => '$(INST_LIBDIR)/Brick/UserGuide.pm',

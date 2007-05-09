@@ -152,6 +152,7 @@ sub _date_is_after
 
 			#print STDERR "date after: $start --> $in_date\n";
 			die {
+				handler => $setup->{name} || $caller[0]{'sub'},
 				message => "Date [$in_date] is not after start date [$start]",
 				failed_field => $setup->{field},
 				} if $in_date <= $start;
@@ -175,6 +176,7 @@ sub _date_is_before
 
 			#print STDERR "date before: $in_date --> $end\n";
 			die {
+				handler => $setup->{name} || $caller[0]{'sub'},
 				message => "Date [$in_date] is not before end date [$end]",
 				failed_field => $setup->{field},
 

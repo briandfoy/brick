@@ -79,3 +79,4 @@ use_cases/anonymous_brick.t
 use_cases/paycheck.t
 use_cases/foursquare.t
 use_cases/top-level-errors.t
+use_cases/programming-error-in-brick.t

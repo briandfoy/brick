@@ -135,9 +135,9 @@ foreach my $index ( 0 .. $#$result )
 	
 	print STDERR "----- $entry->[0] ----------------------------\n" if $ENV{DEBUG};
 	
-	do { print STDERR "\tpassed\n\n" if $ENV{DEBUG}; next } if $entry->[2];
+	do { print STDERR "\tpassed\n\n" if $ENV{DEBUG}; next } if $entry->passed;
 	
-	my @data = ( $entry->[3] );
+	my @data = ( $entry->get_messages );
 	my @errors = ();
 	my $iterations = 0;
 	while( my $error = shift @data )
@@ -157,7 +157,7 @@ foreach my $index ( 0 .. $#$result )
 
 	#print STDERR "$entry->[0] checked by $entry->[1] which returned:\n\t$message\n";
 	
-	next unless ref $entry->[3] and @{ $entry->[3]{errors} } > 0;
+	next unless ref $entry->get_messages and @{ $entry->get_messages->{errors} } > 0;
 	
 	foreach my $error ( @errors )
 		{
@@ -169,10 +169,10 @@ foreach my $index ( 0 .. $#$result )
 
 {
 my $row = shift @$result;
-is( $row->[2], 1, "zip_code passes" );
+is( $row->passed, 1, "zip_code passes" );
 }
 
 foreach my $row ( @$result )
 	{
-	is( $row->[2], 0, "$row->[0] fails (as expected)" );
+	is( $row->is_validation_error, 1, "$row->[0] fails (as expected)" );
 	}

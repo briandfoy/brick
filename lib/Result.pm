@@ -4,7 +4,8 @@ use strict;
 
 use vars qw($VERSION);
 
-use Carp qw(croak);
+use Carp qw(carp croak);
+use UNIVERSAL qw(isa);
 
 $VERSION = sprintf "1.%04d", q$Revision: 2183 $ =~ m/ (\d+) /xg;
 
@@ -33,49 +34,65 @@ Create a string the shows the result in an outline form.
 
 =cut
 
+
+# for the $pair thing in explain
+use constant LEVEL   => 0;
+use constant MESSAGE => 1;
+
+sub result_item_class { require Brick::Result::Item; 'Brick::Result::Item' };
+
 sub explain
 	{
-	my( $result ) = @_;
+	my( $result_set ) = @_;
 
 	my $str   = '';
 
-	foreach my $element ( @$result )
-		{
+	foreach my $element ( @$result_set )
+		{		
 		my $level = 0;
 		
-		$str .= "$$element[0]: ";
+		$str .= "$$element[0]: " . do {
+			if( $element->passed )                  { "passed " }
+			elsif( $element->is_validation_error )  { "failed " }
+			elsif( $element->is_code_error )        { "code error in " }
+			};
+			
+		$str .= $element->get_method() . "\n";
 		
-		if( $element->[2] ) 
+		if( $element->passed )
 			{
-			$str .= "passed $$element[1]\n\n";
+			$str .= "\n";
 			next;
 			}
-		else
-			{
-			$str .= "failed $$element[1]\n";
-			}
-			
-		my @uses = ( [ $level, $element->[3] ] );
+		
+		# this descends into the error tree (without using recursion
+		my @uses = ( [ $level, $element->get_messages ] );
 
 		while( my $pair = shift @uses )
 			{
 			# is it a single error or a composition?
-			unless( ref $pair->[1] )
+			if( ! ref $pair->[ MESSAGE ] )
+				{
+				$str .= $pair->[ MESSAGE ] . "foo";
+				}
+			elsif( ! UNIVERSAL::isa( $pair->[ MESSAGE ], ref {} ) )
 				{
 				next;
 				}
-			elsif( exists $pair->[1]->{errors} )
+			elsif( exists $pair->[ MESSAGE ]->{errors} )
 				{
+				# something else to process, but put it back into @uses
 				unshift @uses, map {
-					[ $pair->[0] + 1, $_ ]
-					} @{ $pair->[1]->{errors} };
+					[ $pair->[ LEVEL ] + 1, $_ ]
+					} @{ $pair->[ MESSAGE ]->{errors} };
 				}
 			else
 				{
 				# this could come back as an array ref instead of a string
-				$str .=  "\t" . #x $pair->[0] . 
-					
-					join( ": ", @{ $pair->[1] }{qw(failed_field handler message)} ) . "\n";
+				no warnings 'uninitialized';
+				$str .=  "\t" . #x $pair->[ LEVEL ] . 
+					join( ": ", @{ $pair->[ MESSAGE ] 
+						}{qw(failed_field handler message)} ) . "\n";
 				}
 
 			}
@@ -94,21 +111,28 @@ Collapse the result structure to an array of flat hashes.
 
 sub flatten
 	{
-	my( $result ) = @_;
+	my( $result_set ) = @_;
 
 	my $str   = '';
 
 	my @flatten;
 	
-	foreach my $element ( @$result ) # one element per profile element
+	foreach my $element ( @$result_set ) # one element per profile element
 		{
-		next if $element->[2];
-		my $constraint = $element->[1];
+		bless $element, $result_set->result_item_class;
+		next if $element->passed;
+		my $constraint = $element->get_method;
 		
-		my @uses = ( $element->[3]);
+		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
 			{
+			if( ! isa $hash, ref {} )
+				{
+				carp "Non-hash reference in messages result key! Skipping";
+				next;
+				}
+				
 			# is it a single error or a composition?
 			unless( ref $hash  )
 				{
@@ -138,19 +162,19 @@ Similar to flatten, but keyed by the field that failed the constraint.
 
 sub flatten_by_field
 	{
-	my( $result ) = @_;
+	my( $result_set ) = @_;
 
 	my $str   = '';
 
 	my %flatten;
 	my %Seen;
 	
-	foreach my $element ( @$result ) # one element per profile element
+	foreach my $element ( @$result_set ) # one element per profile element
 		{
-		next if $element->[2];
-		my $constraint = $element->[1];
+		next if $element->passed;
+		my $constraint = $element->get_method;
 		
-		my @uses = ( $element->[3] );
+		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
 			{
@@ -188,19 +212,19 @@ Similar to flatten, but keyed by the hash key named in the argument list.
 
 sub flatten_by
 	{
-	my( $result, $key ) = @_;
+	my( $result_set, $key ) = @_;
 
 	my $str   = '';
 
 	my %flatten;
 	my %Seen;
 	
-	foreach my $element ( @$result ) # one element per profile element
+	foreach my $element ( @$result_set ) # one element per profile element
 		{
-		next if $element->[2];
-		my $constraint = $element->[1];
+		next if $element->passed;
+		my $constraint = $element->get_method;
 		
-		my @uses = ( $element->[3] );
+		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
 			{
@@ -240,35 +264,5 @@ sub dump { croak "Not yet implemented" }
 
 
 
-=back
-
-=head1 TO DO
-
-TBA
-
-=head1 SEE ALSO
-
-
-=head1 SOURCE AVAILABILITY
-
-This source is part of a SourceForge project which always has the
-latest sources in SVN, as well as all of the previous releases.
-
-	svn co https://brian-d-foy.svn.sourceforge.net/svnroot/brian-d-foy brian-d-foy
-
-If, for some reason, I disappear from the world, one of the other
-members of the project can shepherd this module appropriately.
-
-=head1 AUTHOR
-
-brian d foy, C<< <bdfoy@cpan.org> >>
-
-=head1 COPYRIGHT
-
-Copyright (c) 2007, brian d foy, All Rights Reserved.
-
-You may redistribute this under the same terms as Perl itself.
-
-=cut
 
 1;

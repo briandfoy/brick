@@ -34,10 +34,10 @@ isa_ok( $sub, ref sub {}, "__compose_pass_or_skip returns a hash ref" );
 
 my $result = eval { $sub->({}) };
 my $at = $@;
+print STDERR Data::Dumper->Dump( [$at], [qw(at)] );
+ok( ! defined $at, "\$@ is undef" );
 
-is( $result, undef, "Satisfied none" );
-isa_ok( $at, ref {}, "\$@ is a reference" );
-
+is( $result, 0, "Satisfied none" );
 }
 
 }
@@ -97,7 +97,7 @@ foreach my $animal ( qw(llama camel) )
 	{
 	my $result = eval { $sub->( { animal => $animal } ) };
 	my $at = $@;
-	#print STDERR Data::Dumper->Dump( [$at], [qw(at)] );
+	print STDERR Data::Dumper->Dump( [$at], [qw(at)] );
 	isa_ok( $at, ref {}, "\$@" );
 	ok( exists $at->{message}, "Key 'message' exists in die ref" );
 	ok( exists $at->{handler}, "Key 'handler' exists in die ref" );

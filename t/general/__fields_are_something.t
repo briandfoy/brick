@@ -125,6 +125,7 @@ foreach my $index ( 0 .. $#$result )
 		}
 		
 	print STDERR Data::Dumper->Dump( [\@errors], [qw(errors)] ) if $ENV{DEBUG};
+	print STDERR Data::Dumper->Dump( [$entry], [qw(entry)] ) if $ENV{DEBUG};
 
 	#print STDERR "$entry->[0] checked by $entry->[1] which returned:\n\t$message\n";
 	

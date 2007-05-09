@@ -97,7 +97,10 @@ sub _is_valid_semester_date {
 		code        => sub {
 			print STDERR "Running _is_valid_semester_date with $_[0]->{effective_date}\n" if $ENV{DEBUG};  
 			$_[0]->{effective_date} =~ m/\d\d\d\d0(1|6|9)01/ 
-				or die { message => 'Not a valid semester date' };
+				or die { 
+					handler => '_is_valid_semester_date',
+					message => 'Not a valid semester date' 
+					};
 			}
 		} );
 	}
@@ -122,7 +125,10 @@ sub _is_valid_fall_or_spring_date {
 		code        => sub {
 			print STDERR "Running _is_valid_fall_or_spring_date with $_[0]->{effective_date}\n" if $ENV{DEBUG};  
 			$_[0]->{effective_date} =~ m/\d\d\d\d0(1|9)01/ 
-				or die { message => 'Not a valid semester date' };
+				or die { 
+					handler => '_is_valid_fall_or_spring_date',
+					message => 'Not a valid semester date' 
+					};
 			}
 		} );
 	}
@@ -914,17 +920,16 @@ ok( ! eval { $sub->(
 	payments       => 'Single',
 	effective_date => '19700714', 
 	} ) }, 
-	"hourly pay_basis doesn't work for Extra type" 
+	"hourly pay_basis doesn't work for Faculty type" 
 	);
 	
 my $result = eval { $sub->( 
 	{ 
-	pay_basis      => 'Extra',
-	payments       => 'Quarterly',
+	pay_basis      => 'Faculty 21',
 	effective_date => '1700201', 
 	} ) };
 my $at = $@;
-	
+
 ok( ! $result, "Single invalid effective date doesn't work" );
 isa_ok( $at, ref {} );
 ok( exists $at->{message}, "Key 'message' exists in error hash" );

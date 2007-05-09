@@ -208,15 +208,20 @@ sub __compose_not
 
 =item __compose_pass_or_skip
 
-Go through the list of closures, trying each one until one suceeds. If
+Go through the list of closures, trying each one until one suceeds. Once
+something succeeds, it returns the name of the subroutine that passed.
+
+If
 a closure doesn't die, but doesn't return true, this doesn't fail but
 just moves on. Return true for the first one that passes,
-short-circuited the rest. If none of the closures pass, die with an
-error noting that nothing passed.
+short-circuited the rest. 
 
-If one of the subs dies, this composer still dies.
+If none of the closures pass (and none of them die), return 0. This might
+be the odd case of a several selectors (see L<Brick::Selector>), none of 
+which pass.
 
-This can still die for programming (not logic) errors.
+If one of the subs dies, this composer still dies. This can also die
+for programming (not logic) errors.
 
 =cut
 
@@ -232,8 +237,6 @@ sub __compose_pass_or_skip
 
 	my @caller = $bucket->__caller_chain_as_list();
 
-	my $max = @subs;
-
 	my $sub = $bucket->add_to_bucket( {
 		code => sub {
 			my $count = 0;
@@ -242,22 +245,26 @@ sub __compose_pass_or_skip
 			foreach my $sub ( @subs )
 				{
 				my $result = eval { $sub->( @_ ) };
-				my $at = $@;
-				#print STDERR "\tskip: Returned result: $result\n";
-				#print STDERR "\tskip: Returned undef!\n" unless defined $result;
-				#print STDERR "\tskip: Returned ref!\n" if ref $at;
-				return "$sub" if $result;   # we know we passed
-				return if ( ! defined $result and ! defined $at );  # we're a selector: failed with no error
-				#print STDERR "skip: Still going!\n";
+				my $eval_error = $@;
 
-				die if( ref $at and $at );  # die for everything else
+				# all true values are success
+				return "$sub" if $result;   # we know we passed
+				
+				
+				# we're a selector: failed with no error
+				return if ( ! defined $result and ! defined $eval_error );  
+
+				# die for everything else - validation error
+				die if( ref $eval_error );  
 				};
 
 			die {
 				message => "Nothing worked! Unexpected failure of all branches",
 				handler => $caller[0]{'sub'},
 				errors  => \@dies,
-				};
+				} if @dies;
+				
+			return 0;
 			},
 		});
 

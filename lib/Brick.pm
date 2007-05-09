@@ -7,6 +7,7 @@ use vars qw($VERSION);
 
 use Carp qw( carp croak );
 use Data::Dumper;
+use UNIVERSAL qw(isa);
 
 use Brick::Profile;
 
@@ -403,25 +404,45 @@ sub apply
 		{
 		my $e    = $entries[$index];
 		my $name = $array->[$index][0];
-
-		print STDERR "Checking $name...\n" if $ENV{DEBUG};
-
+		
+		my $bucket_entry = $bucket->get_from_bucket( "$e->[0]" );
+		my $sub_name     = $bucket_entry->get_name;
+		
 		my $result = eval{ $e->[0]->( $input ) };
 		my $eval_error = $@;
+		
+		carp "Brick: $sub_name: eval error \$\@ is not a string or hash reference"
+			unless( ! ref $eval_error or UNIVERSAL::isa( $eval_error, ref {} ) );
 
-		#print STDERR Data::Dumper->Dump( [$eval_error], [qw(eval_error)] );
-
-		$result = 0 if ref $eval_error;
-
+		if( defined $eval_error and isa( $eval_error, ref {} ) )
+			{
+			$result = 0;
+			carp "Brick: $sub_name died with reference, but didn't define 'handler' key"
+				unless exists $eval_error->{handler};
+				
+			carp "Brick: $sub_name died with reference, but didn't define 'message' key"
+				unless exists $eval_error->{message};	
+			}
+		elsif( defined $eval_error ) # but not a reference
+			{
+			$eval_error = {
+				handler       => 'program_error',
+				message       => $eval_error,
+				program_error => 1,
+				errors        => [],
+				};
+			}
+			
 		my $handler = $array->[$index][1];
 
-		push @results, [ $name, $handler, $result, $@ ];
-		}
-
-	eval { eval "use " . $brick->result_class };
-	if( $@ ) 
-		{ 
-		carp "Couldn not load Result class " . $brick->result_class . "\n" 
+		my $result_item = $brick->result_class->result_item_class->new(
+			label    => $name,
+			method   => $handler,
+			result   => $result,
+			messages => $eval_error,
+			);
+			
+		push @results, $result_item;
 		}
 	
 	return bless \@results, $brick->result_class;
@@ -435,9 +456,12 @@ this in a subclass. Things that need to work with the bucket class
 name, such as a factory method, will use the return value of this
 method.
 
+This method also loads the right class, so if you override it, 
+remember to load the class too!
+
 =cut
 
-sub bucket_class { 'Brick::Bucket' }
+sub bucket_class { require Brick::Bucket; 'Brick::Bucket' }
 
 =item result_class
 
@@ -446,9 +470,12 @@ this is C<Brick::Result>. If you don't like that, override this in a
 subclass. Things that need to work with the result class name, such as
 a factory method, will use the return value of this method.
 
+This method also loads the right class, so if you override it, 
+remember to load the class too!
+
 =cut
 
-sub result_class { 'Brick::Result' }
+sub result_class { require Brick::Result; 'Brick::Result' }
 
 =item profile_class
 
@@ -456,6 +483,9 @@ The namespace for the profile object. By default this is
 C<Brick::Profile>. If you don't like that, override this in a
 subclass. Things that need to work with the result class name, such as
 a factory method, will use the return value of this method.
+
+This method also loads the right class, so if you override it, 
+remember to load the class too!
 
 =cut
 
