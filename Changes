@@ -1,6 +1,15 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.24 - Wed May  9 11:53:22 2007
+	* Added a Brick::Result::Item class to provide methods to query
+	the results
+	* Programming errors caught by eval are now full-fledged errors,
+	instead of silently ignoring. You can ask the result item if the
+	error is a validation or programming error.
+	* There are some broken composer things now that I've made these 
+	changes, but I'm working on those.
+
 0.223 - Tue May  1 17:48:27 2007
 	* croak if we can't find a validator package, instead of just croaking
 
