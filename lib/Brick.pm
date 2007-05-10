@@ -269,81 +269,9 @@ sub clone
 	$brick;
 	}
 
-=item explain( PROFILE || PROFILE_ARRAYREF )
-
-Turn the profile into a textual description without applying it to any
-data. This does not add the profile to instance and it does not add
-the constraints to the bucket.
-
-If everything goes right, this returns a single string that represents
-the profile.
-
-If the profile does not pass the C<lint> test, this returns undef or the
-empty list.
-
-If you want to do something with a datastructure, you probably want to
-write a different method very similar to this instead of trying to parse
-the output.
-
-Future notes: maybe this is just really a dispatcher to things that do
-it in different ways (text output, hash output).
-
-=cut
-
 sub explain
 	{
-
 	croak "Who's calling Brick::explain? That's in Brick::Profile now!";
-	
-=for comment
-
-my( $brick, $profile ) = @_;
-
-	croak "Did not get a profile object!\n" 
-		unless eval { $profile->isa( $brick->profile_class ) };
-
-	my $bucket   = $profile->get_bucket;
-	my $coderefs = $profile->get_coderefs;
-	my $array    = $profile->get_array;
-
-	my @entries = map {
-		my $e = $bucket->get_from_bucket( $_ );
-		[ map { $e->$_ } qw(get_coderef get_name) ]
-		} @$coderefs;
-
-	#print STDERR Data::Dumper->Dump( [ \@entries ], [qw(entries)] );
-
-	my $level = 0;
-	my $str   = '';
-	foreach my $index ( 0 .. $#entries )
-		{
-		my $tuple = $entries[$index];
-
-		my @uses = ( [ $level, $tuple->[0] ] );
-
-		#print STDERR Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
-
-		while( my $pair = shift @uses )
-			{
-			my $entry = $bucket->get_from_bucket( $pair->[1] );
-			#print Data::Dumper->Dump( [ $entry ], [qw(entry)] );
-			next unless $entry;
-
-			$str .=  "\t" x $pair->[0] . $entry->get_name . "\n";
-
-			unshift @uses, map {
-				[ $pair->[0] + 1, $_ ]
-				} @{ $entry->get_comprises( $pair->[1] ) };
-			#print Data::Dumper->Dump( [ \@uses ], [qw(uses)] );
-			}
-
-		$str.= "\n";
-		}
-
-	$str;
-
-=cut
-
 	}
 	
 =item apply(  PROFILE OBJECT, INPUT_DATA_HASHREF )

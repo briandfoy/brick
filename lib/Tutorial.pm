@@ -284,17 +284,19 @@ To apply the profile, I pass it along with the input hash to C<apply>:
 	
 	my $Brick = Brick->new;
 	
-	$Brick->apply( \@Profile, \%input );
+	my $profile = $Brick->profile_class->new( \@Profile );
+	
+	$Brick->apply( $profile, \%input );
 
 Before I apply a profile, I might want to use C<lint> to check it for
-errors:
+errors. It's a class method since it hasn't created an object yet:
 
-	$Brick->lint( \@Profile );
+	$Brick->profile_class->lint( \@Profile );
 	
 I can dump the profile in a handy text format with C<explain> to see
 if it does what I want:
 
-	$Brick->explain( \@profile )
+	$profile->explain;
 
 
 =head1 SOURCE AVAILABILITY

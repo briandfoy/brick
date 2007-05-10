@@ -130,7 +130,7 @@ format success and the number of errors (so true) for format failures.
 If there is a format error (e.g. an element is not an array ref), it
 immediately returns the number of errors up to that point.
 
-	my $lint = $brick->lint( \@profile );
+	my $lint = $brick->profile_class->lint( \@profile );
 
 	print do {
 		if( not defined $lint ) { "Profile must be an array ref\n" }
