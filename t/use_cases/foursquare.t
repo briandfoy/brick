@@ -235,9 +235,9 @@ it on for debugging.
 =cut
 
 {
-my $string;
-stderr_like { $string = $profile->explain } qr/Cannot/, 
-	"Error message for input lacking format brick";
+my $string = $profile->explain;
+#stderr_like { $string = $profile->explain } qr/Cannot/, 
+#	"Error message for input lacking format brick";
 ok( $string, "explain() returns something" );
 
 print STDERR "\nExplaining $0 profile:\n", 
@@ -253,9 +253,9 @@ it on for debugging.
 
 =cut
 
-my $result;
-stderr_like { $result = $brick->apply( $profile, $Input ) } qr/Cannot/,
-	"Error message for input lacking format brick";
+my $result = $brick->apply( $profile, $Input );
+#stderr_like { $result = $brick->apply( $profile, $Input ) } qr/Cannot/,
+#	"Error message for input lacking format brick";
 
 isa_ok( $result, ref [], "Results come back as array reference" );
 isa_ok( $result, Brick->result_class, "Results come back as array reference" );
