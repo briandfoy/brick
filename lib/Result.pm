@@ -207,7 +207,7 @@ sub flatten_by_field
 			else
 				{
 				my $field = $hash->{failed_field};
-				next if $Seen{$field}{$hash->{handler}}++;
+				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;				
 				$flatten{ $field } = [] unless exists $flatten{ $field };
 				push @{ $flatten{ $field } }, 
 					{ %$hash, constraint => $constraint };
@@ -257,7 +257,7 @@ sub flatten_by
 			else
 				{
 				my $field = $hash->{$key};
-				next if $Seen{$field}{$hash->{handler}}++;
+				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;				
 				$flatten{ $field } = [] unless exists $flatten{ $field };
 				push @{ $flatten{ $field } }, 
 					{ %$hash, constraint => $constraint };
