@@ -147,6 +147,14 @@ unless( is( $lint, 0, "Profile has no errors" ) )
  	diag( Data::Dumper->Dumper( \%lint ) );
  	}
 
+=head2 Make the profile object
+
+
+=cut
+
+my $profile = $brick->profile_class->new( $brick, $Profile );
+isa_ok( $profile, $brick->profile_class );
+
 =head2 Dump the profile with explain()
 
 This isn't a necessary step, but it's nice to know that the profile
@@ -157,8 +165,7 @@ it on for debugging.
 =cut
 
 print STDERR "=" x 73, "\n" if $ENV{DEBUG};
-print STDERR "\nExplaining profile:\n", $brick->explain( $Profile ) if $ENV{DEBUG};
-
+print STDERR "\nExplaining profile:\n", $profile->explain if $ENV{DEBUG};
 
 =head2 Make some input data
 
@@ -177,7 +184,7 @@ my %Input = (
 
 =cut
 	
-my $result =  $brick->apply( $Profile, \%Input );
+my $result =  $brick->apply( $profile, \%Input );
 ok( $result, Brick->result_class );
 
 #print STDERR Data::Dumper->Dump( [$result], [qw($result)] ) if $ENV{DEBUG};

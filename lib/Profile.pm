@@ -68,6 +68,13 @@ sub new
 	{
 	my( $class, $brick, $array_ref ) = @_;
 	
+	unless( $brick->isa( __PACKAGE__->brick_class ) )
+		{
+		carp "First argument to " . __PACKAGE__ . " must be a brick object. " .
+			"Got [$brick]\n";
+		return;
+		}
+		
 	my $self = bless {}, $class;
 	
 	my $lint_errors = $class->lint( $array_ref );
@@ -158,12 +165,12 @@ Errors for duplicate names?
 sub lint
 	{
 	my( $class, $array ) = @_;
-
+	
 	return unless(
 		eval { $array->isa( ref [] ) } or
 		UNIVERSAL::isa( $array, ref [] )
 		);
-
+	
 	my $lint = {};
 
 	foreach my $index ( 0 .. $#$array )

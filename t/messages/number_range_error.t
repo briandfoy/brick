@@ -46,7 +46,10 @@ my %input = (
 my( $lint ) = $brick->profile_class->lint( \@profile );
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
-my $result = $brick->apply( \@profile, \%input );
+my $profile = $brick->profile_class->new( $brick, \@profile );
+isa_ok( $profile, $brick->profile_class );
+
+my $result = $brick->apply( $profile, \%input );
 
 isa_ok( $result, ref [], "apply() returns an array reference" );
 

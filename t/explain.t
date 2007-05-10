@@ -14,15 +14,16 @@ $ENV{DEBUG} ||= 0;
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 {
-my @profile = (
-);
+my @profile = ();
 
 my $lint = $brick->profile_class->lint( \@profile );
+is( $lint, 0, "Profile is formatted correctly" );
 
-is( $lint, 0, "Profile is formatted correctly\n" );
+my $profile = $brick->profile_class->new( $brick, \@profile );
+isa_ok( $profile, $brick->profile_class );
 
-my $str = $brick->explain( \@profile );
-print STDERR $str if $ENV{DEBUG};
+my $str = $profile->explain;
+print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -46,16 +47,15 @@ my @profile = (
 
 	);
 
-my( $lint ) = $brick->profile_class->lint( \@profile );
+my $lint = $brick->profile_class->lint( \@profile );
+is( $lint, 0, "Profile is formatted correctly" );
 
-#print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
-#use Data::Dumper;
+my $profile = $brick->profile_class->new( $brick, \@profile );
+isa_ok( $profile, $brick->profile_class );
 
-is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
-my $str = $brick->explain( \@profile );
-
-#print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
+my $str = $profile->explain;
+print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -81,15 +81,18 @@ my @profile = (
 	);
 
 my $lint = eval { $brick->profile_class->lint( \@profile ) };
-
-is( $lint, 1, "Profile is formatted correctly\n" );
+is( $lint, 1, "Profile is formatted correctly" );
 
 my $str;
-stderr_like { $str = eval { $brick->explain( \@profile ) } }
+
+stderr_like 
+	{ $str = eval { 
+		$brick->profile_class->new( $brick, \@profile ) } 
+		}
 	qr/did not validate/,
 	"Bad profile carps";
 
-is( $str, undef, "Profile is formatted correctly\n" );
+is( $str, undef, "Profile is formatted correctly" );
 
-#print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
+print STDERR "\n", "-" x 50, "\n", $str, "-" x 50,  "\n"  if $ENV{DEBUG};
 }

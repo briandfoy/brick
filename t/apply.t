@@ -15,10 +15,12 @@ my @profile = ();
 my %input   = ();
 
 my $lint = $brick->profile_class->lint( \@profile );
+is( $lint, 0, "Profile is formatted correctly" );
 
-is( $lint, 0, "Profile is formatted correctly\n" );
+my $profile = $brick->profile_class->new( $brick, \@profile );
+isa_ok( $profile, $brick->profile_class );
 
-my $result = $brick->apply( \@profile, \%input || {} );
+my $result = $brick->apply( $profile, \%input || {} );
 isa_ok( $result, $class->result_class );
 }
 
@@ -48,16 +50,18 @@ my %input = (
 	);
 	
 my( $lint ) = $brick->profile_class->lint( \@profile );
+is( keys %$lint, 0, "Profile is formatted correctly" );
 
-#print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
-#use Data::Dumper;
+use Data::Dumper;
+print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] ) if $ENV{DEBUG};
 
-is( keys %$lint, 0, "Profile is formatted correctly\n" );
 
 if( $ENV{DEBUG} )
 	{
+	my $profile = $brick->profile_class->new( $brick, \@profile );
+
 	print STDERR "\n", "-" x 50, "\n";
-	my $result = $brick->apply( \@profile, \%input || {} );
+	my $result = $brick->apply( $profile, \%input || {} );
 	print STDERR "\n", "-" x 50, "\n";
 	}
 }

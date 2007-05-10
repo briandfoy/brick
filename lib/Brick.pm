@@ -292,26 +292,15 @@ it in different ways (text output, hash output).
 
 sub explain
 	{
-	my( $brick, $profile_or_array ) = @_;
 
-	my $profile = do {
-		unless( eval { $profile_or_array->isa( $brick->profile_class ) } )
-			{
-			use Brick::Profile;
-			
-			eval "require " . $brick->profile_class;
-			
-			my $profile = $brick->profile_class->new( $brick, $profile_or_array );
+	croak "Who's calling Brick::explain? That's in Brick::Profile now!";
+	
+=for comment
 
-			return unless eval { $profile->isa( $brick->profile_class ) };
-			
-			$profile;
-			}
-		else
-			{
-			$profile_or_array;
-			}
-		};
+my( $brick, $profile ) = @_;
+
+	croak "Did not get a profile object!\n" 
+		unless eval { $profile->isa( $brick->profile_class ) };
 
 	my $bucket   = $profile->get_bucket;
 	my $coderefs = $profile->get_coderefs;
@@ -352,9 +341,12 @@ sub explain
 		}
 
 	$str;
+
+=cut
+
 	}
 	
-=item apply(  PROFILE_ARRAYREF | PROFILE OBJECT, INPUT_DATA_HASHREF )
+=item apply(  PROFILE OBJECT, INPUT_DATA_HASHREF )
 
 Apply the profile to the data in the input hash reference. The profile
 can either be a profile object or an array ref that apply() will use to
@@ -368,26 +360,10 @@ that, you can override it in your own subclass.
 
 sub apply
 	{
-	my( $brick, $profile_or_array, $input ) = @_;
+	my( $brick, $profile, $input ) = @_;
 
-	my $profile = do {
-		unless( eval { $profile_or_array->isa( $brick->profile_class ) } )
-			{
-			use Brick::Profile;
-			
-			eval "require " . $brick->profile_class;
-			
-			my $profile = $brick->profile_class->new( $brick, $profile_or_array );
-						
-			return unless eval { $profile->isa( $brick->profile_class ) };
-			
-			$profile;
-			}
-		else
-			{
-			$profile_or_array;
-			}
-		};
+	croak "Did not get a profile object in Brick::apply()!\n" 
+		unless eval { $profile->isa( $brick->profile_class ) };
 	
 	my $bucket   = $profile->get_bucket;
 	my $coderefs = $profile->get_coderefs;

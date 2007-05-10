@@ -90,6 +90,14 @@ it on for debugging.
 my $lint = $brick->profile_class->lint( $Profile );
 is( $lint, 0, "Profile has no errors" );
 
+=head2 Make the profile object
+
+
+=cut
+
+my $profile = $brick->profile_class->new( $brick, $Profile );
+isa_ok( $profile, $brick->profile_class );
+
 =head2 Dump the profile with explain()
 
 This isn't a necessary step, but it's nice to know that the profile
@@ -100,7 +108,7 @@ it on for debugging.
 =cut
 
 print STDERR "\nExplaining zip code profile:\n", 
-	$brick->explain( $Profile ) if $ENV{DEBUG};
+	$profile->explain if $ENV{DEBUG};
 
 =head2 Get some input data
 
@@ -127,7 +135,7 @@ it on for debugging.
 
 =cut
 
-my $result = $brick->apply( $Profile, $Input );
+my $result = $brick->apply( $profile, $Input );
 
 =head2 Check the results
 

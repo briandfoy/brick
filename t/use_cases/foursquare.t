@@ -217,6 +217,14 @@ it on for debugging.
 my $lint = $brick->profile_class->lint( $Profile );
 is( $lint, 0, "Profile has no errors" );
 
+=head2 Make the profile object
+
+
+=cut
+
+my $profile = $brick->profile_class->new( $brick, $Profile );
+isa_ok( $profile, $brick->profile_class );
+
 =head2 Dump the profile with explain()
 
 This isn't a necessary step, but it's nice to know that the profile
@@ -228,7 +236,7 @@ it on for debugging.
 
 {
 my $string;
-stderr_like { $string = $brick->explain( $Profile ) } qr/Cannot/, 
+stderr_like { $string = $profile->explain } qr/Cannot/, 
 	"Error message for input lacking format brick";
 ok( $string, "explain() returns something" );
 
@@ -246,7 +254,7 @@ it on for debugging.
 =cut
 
 my $result;
-stderr_like { $result = $brick->apply( $Profile, $Input ) } qr/Cannot/,
+stderr_like { $result = $brick->apply( $profile, $Input ) } qr/Cannot/,
 	"Error message for input lacking format brick";
 
 isa_ok( $result, ref [], "Results come back as array reference" );

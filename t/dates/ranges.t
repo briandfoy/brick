@@ -54,12 +54,15 @@ is( keys %$lint, 0, "Profile is formatted correctly\n" );
 #	print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] ) if $ENV{DEBUG};
 #	use Data::Dumper;
 
+my $profile = $brick->profile_class->new( $brick, \@profile );
+isa_ok( $profile, $brick->profile_class );
+
 if( $ENV{DEBUG} )
 	{
-	print STDERR $brick->explain( \@profile );
+	print STDERR $profile->explain;
 	}
 	
-my $result = $brick->apply( \@profile, \%input );
+my $result = $brick->apply( $profile, \%input );
 
 isa_ok( $result, ref [], "apply() returns an array reference" );
 

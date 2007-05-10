@@ -1044,10 +1044,13 @@ my $Profile = [
 my $lint = $brick->profile_class->lint( $Profile );
 is( $lint, 0, "Profile passes lint" );
 
-print STDERR $brick->explain( $Profile ) if $ENV{DEBUG};
+my $profile = $brick->profile_class->new( $brick, $Profile );
+isa_ok( $profile, $brick->profile_class );
+
+print STDERR $profile->explain if $ENV{DEBUG};
 
 
-my $results = $brick->apply( $Profile, $Input );
+my $results = $brick->apply( $profile, $Input );
 print STDERR Data::Dumper->Dump( [$results], [qw(results)] ) if $ENV{DEBUG};
 
 isa_ok( $results, ref [], "Results is an array reference" );
