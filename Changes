@@ -1,6 +1,11 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.225 - Wed May 16 15:21:31 2007
+	* fix to Brick::Profile to allow subclassing. For the quick
+	prototyping I had some __PACKAGE__s laying around, and those
+	are now gone since the interface has evolved.
+
 0.224 - Thu May 10 14:26:15 2007
 	* Result.pm: check for handler key before using it
 
