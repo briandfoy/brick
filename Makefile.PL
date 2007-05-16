@@ -1,7 +1,7 @@
 # $Id$
 use ExtUtils::MakeMaker;
 
-eval "use Test::Manifest 1.14";
+#eval "use Test::Manifest 1.14";
 
 WriteMakefile(
 	'NAME'	       => 'Brick',

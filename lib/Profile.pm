@@ -68,9 +68,9 @@ sub new
 	{
 	my( $class, $brick, $array_ref ) = @_;
 	
-	unless( $brick->isa( __PACKAGE__->brick_class ) )
+	unless( $brick->isa( $class->brick_class ) )
 		{
-		carp "First argument to " . __PACKAGE__ . " must be a brick object. " .
+		carp "First argument to \$class->new() must be a brick object. " .
 			"Got [$brick]\n";
 		return;
 		}
@@ -192,7 +192,7 @@ sub lint
 		$h->{args} = "Couldn't find method [$method]" unless
 			eval { $method->isa( ref sub {} ) } or
 			UNIVERSAL::isa( $method, sub {} )    or
-			eval { __PACKAGE__->brick_class->bucket_class->can( $method ) };
+			eval { $class->brick_class->bucket_class->can( $method ) };
 			
 		$h->{args} = "Args is not a hash reference" unless
 			eval { $args->isa( ref {} ) } or
