@@ -65,7 +65,11 @@ dates/days_between_dates_outside_range.t
 dates/at_least_N_days_between.t
 dates/at_most_N_days_between.t
 
+
+files/_file_magic_type.t                      
 files/has_file_extension.t
+files/_get_file_extensions_by_mime_type.t     
+files/is_mime_type.t
 
 regexes/_matches_regex.t
 

@@ -33,89 +33,107 @@ creation.
 
 =cut
 
-=for comment
 
-sub is_file_format {
-    my ( $params ) = @_;
-    return sub {
-        my $dfv = shift;
-        $dfv->name_this('file_format');
-        my $q = $dfv->get_input_data;
+# returns MIME type from File::MMagic on success, undef otherwise
+sub _file_magic_type 
+	{
+	my( $bucket, $file ) = @_;
+		
+	require File::MMagic;
+	
+	my $mm = File::MMagic->new; 
+	
+	my $format = $mm->checktype_filename( $file || '' );
+	
+	## File::MMagic returns the illegal "application/msword" for all
+	## microsoft junk.
+	## We map this to either application/x-msword (default)
+	## or application/vnd.ms-excel, depending on the extension
+	
+	my( $uploaded_ext ) = $file =~ m/\.(\w*)?$/g;
 
-        require UNIVERSAL;
-        $q->UNIVERSAL::can('param')||
-            die 'valid_file_format: data object missing param() method';
+	if( $format eq "application/msword" ) 
+		{
+		no warnings 'uninitialized';
+		
+		$format = ($uploaded_ext =~ /^xl[st]$/)
+			? 
+			"application/vnd.ms-excel" 
+				: 
+			"application/x-msword";
+		}
+	elsif( $format =~ m|x-system/x-error| )
+		{
+		$format = undef;
+		}
+		
+	return $format;
+	}
 
-        my $field = $dfv->get_current_constraint_field;
+sub _get_file_extensions_by_mime_type
+	{
+	my( $bucket, $type ) = @_;
+	
+	require MIME::Types;
+       
+	my $mime_types = MIME::Types->new;
+	my $t          = $mime_types->type( $type || '' );
+	my @extensions = $t ? $t->extensions : ();
+	}
 
-        my $img = $q->upload($field);
-        if (!$img && $q->cgi_error) {
-            warn $q->cgi_error && return undef;
-        }
-        my $tmp_file = $q->tmpFileName($q->param($field)) || 
-            (warn "$0: can't find tmp file for field named $field"
-                 and return undef);
 
-        require File::MMagic;
-        my $mm = File::MMagic->new; 
-        my $fm_mt = $mm->checktype_filename($tmp_file);
+sub is_mime_type {
+	my( $bucket, $setup ) = @_;
 
-        ## File::MMagic returns the illegal "application/msword" for all
-        ## microsoft junk.
-        ## We map this to either application/x-msword (default)
-        ## or application/vnd.ms-excel, depending on the extension
+	my @caller = $bucket->__caller_chain_as_list;
 
-        my ($uploaded_ext) = ($img =~ m/\.([\w\d]*)?$/); # moved from later
-        if ($fm_mt eq "application/msword") {
-            $fm_mt = ($uploaded_ext =~ /^xl[st]$/)
-                ? "application/vnd.ms-excel" : "application/x-msword";
-        }
+	unless( UNIVERSAL::isa( $setup->{mime_types}, ref [] ) )
+		{
+    	croak( "The mime_types key must be an array reference!" );
+		}
+	
+	my $hash = {
+			name        => $setup->{name} || $caller[0]{'sub'},
+			description => ( $setup->{description} || "Match a file extension" ),
+			fields      => [ $setup->{field} ],
+			code        => sub {
+				my( $input ) = @_;
+				
+				die {
+					message      => "[$input->{ $setup->{file_field} }] did not exist.",
+					failed_field => $setup->{file_field},
+					failed_value => $input->{ $setup->{file_field} },
+					handler      => $caller[0]{'sub'},
+					} unless -e $input->{ $setup->{file_field} };
 
-        my $uploaded_mt = q();
-        $uploaded_mt
-            = $q->uploadInfo($img)->{'Content-Type'} if $q->uploadInfo($img);
+				my $mime_type = $bucket->_file_magic_type( $input->{ $setup->{file_field} } );
 
-        # XXX perhaps this should be in a global variable so it's easier
-        # for other apps to change the defaults;
-        $params->{mime_types} ||= [qw!image/jpeg  image/pjpeg image/gif image/png!];
-        my %allowed_types = map { $_ => 1 } @{ $params->{mime_types} };
+				die {
+					message      => "[$input->{ $setup->{file_field} }] did not yeild a mime type.",
+					failed_field => $setup->{file_field},
+					failed_value => $input->{ $setup->{file_field} },
+					handler      => $caller[0]{'sub'},
+					} unless $mime_type;
+				
+				foreach my $expected_type ( @{ $setup->{mime_types} } )
+					{
+					return 1 if lc $mime_type eq lc $expected_type;
+					}
 
-        # try the File::MMagic,
-        ## then the uploaded field, then return undef we find neither
-        my $mt = ($fm_mt || $uploaded_mt) or return undef;
-
-        # figure out an extension
-
-        use MIME::Types;
-        my $mimetypes = MIME::Types->new;
-        my MIME::Type $t = $mimetypes->type($mt);
-        my @mt_exts = $t ? $t->extensions : ();
-
-        my $ext;
-        if (scalar @mt_exts) {
-            # If the upload extension is one recognized by MIME::Type, use it.
-            # otherwise, use one from MIME::Type, just to be safe
-            $ext = (grep {/^$uploaded_ext$/} @mt_exts)
-                ? $uploaded_ext : $mt_exts[0];
-        }
-        else {
-            # If is a provided extension but no MIME::Type extension, use that.
-            # It's possible that there no extension uploaded or found)
-            $ext = $uploaded_ext;
-        }
-
-        # Add the mime_type and extension to the valid data set
-        my $info = $dfv->meta($field) || {};
-
-        ## and here's the fix
-        ## (why use the broken MIME type when we know correct?)
-        ## $info = { %$info, mime_type => $uploaded_mt, extension => ".$ext" };
-        $info = { %$info, mime_type => $mt, extension => ".$ext" };
-        $dfv->meta($field,$info);
-
-        return $allowed_types{$mt};
-    };
-}
+				die {
+					message      => "[$input->{ $setup->{file_field} }] did not have the right mime type. I think it's $mime_type.",
+					failed_field => $setup->{filename},
+					failed_value => $input->{ $setup->{file_field} },
+					handler      => $caller[0]{'sub'},
+					};
+				},
+			};
+			
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket ( $hash )
+		);	
+	
+	}
 
 =item has_file_extension( ARRAY_REF )
 
