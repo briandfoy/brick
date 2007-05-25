@@ -48,7 +48,11 @@ my $file = "t/files/files_to_test/word.doc";
 ok( -e $file, "Target file exists" );
 
 my $result = eval { $sub->( { filename => $file } ) };
+my $at = $@;
+
 ok( ! defined $result, "Word doc is not an Excel file" );
+ok( defined $at, "\$\@ is defined" );
+isa_ok( $at, ref {}, "\$\@ is a hash ref" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -58,5 +62,10 @@ my $file = "t/files/files_to_test/not_there.txt";
 ok( ! -e $file, "Target file doesn't exist (good)" );
 
 my $result = eval { $sub->( { filename => $file } ) };
+my $at = $@;
+
 ok( ! defined $result, "Non-existent file fails" );
+ok( defined $at, "\$\@ is defined" );
+isa_ok( $at, ref {}, "\$\@ is a hash ref" );
 }
+
