@@ -1,6 +1,12 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.226 - Fri May 25 04:40:54 2007
+	* Added is_mime_test to Brick::Files. Check that a file is a particular
+	type.
+	* Brick now requires 5.8 because I don't want to fix the FAILs from
+	5.6.
+
 0.225 - Wed May 16 15:21:31 2007
 	* fix to Brick::Profile to allow subclassing. For the quick
 	prototyping I had some __PACKAGE__s laying around, and those
