@@ -7,7 +7,7 @@ eval "use Test::Manifest 1.14";
 
 WriteMakefile(
 	'NAME'	       => 'Brick',
-	'VERSION'      => '0.226_01',
+	'VERSION'      => '0.226_02',
 	'LICENSE'      => 'perl',
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	

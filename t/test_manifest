@@ -70,6 +70,7 @@ files/_file_magic_type.t
 files/has_file_extension.t
 files/_get_file_extensions_by_mime_type.t     
 files/is_mime_type.t
+files/is_clamav_clean.t
 
 regexes/_matches_regex.t
 

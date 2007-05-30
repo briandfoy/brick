@@ -37,8 +37,6 @@ foreach my $file ( sort keys %files )
 	
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # These things should work but don't
-TODO: {
-local $TODO = "File::MMagic has trouble testing some excel files";
 
 my %files = qw(
 	excel		application/vnd.ms-excel
@@ -50,11 +48,13 @@ foreach my $file ( sort keys %files )
 	my $path = File::Spec->catfile( qw( t files files_to_test ), $file );
 	ok( -e $path, "File $file exists" );
 
-	my $mime_type = $bucket->_file_magic_type( $path );
-	is( $mime_type, $files{$file}, "Magic type for $file is right" );
+	TODO: {
+	local $TODO = "File::MMagic has trouble testing some excel files";
+		my $mime_type = $bucket->_file_magic_type( $path );
+		is( $mime_type, $files{$file}, "Magic type for $file is right" );
+		}
 	}
 
-}
 
 
 

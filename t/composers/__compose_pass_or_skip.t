@@ -40,9 +40,9 @@ TODO: {
 	local $TODO = "Should this return undef?";
 	
 	ok( ! defined $at, "\$@ is undef" );
-
-	is( $result, 0, "Satisfied none" );
 	}
+	
+	is( $result, 0, "Satisfied none" );
 }
 
 }
