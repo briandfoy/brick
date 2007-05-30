@@ -1,6 +1,9 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.226 - Tue May 29 20:39:32 2007
+	* Added is_clamav_clean to Brick::File
+
 0.226 - Fri May 25 04:40:54 2007
 	* Added is_mime_test to Brick::Files. Check that a file is a particular
 	type.
