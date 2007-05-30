@@ -29,10 +29,7 @@ creation.
 
 =over 4
 
-=item is_file_format
-
 =cut
-
 
 # returns MIME type from File::MMagic on success, undef otherwise
 sub _file_magic_type 
@@ -81,6 +78,14 @@ sub _get_file_extensions_by_mime_type
 	my @extensions = $t ? $t->extensions : ();
 	}
 
+=item is_mime_type( HASH_REF )
+
+Passes if the file matches one of the listed MIME types.
+
+	mime_types		array reference of possible MIME types
+	file_field		the name of the file to check
+	
+=cut
 
 sub is_mime_type {
 	my( $bucket, $setup ) = @_;
@@ -135,10 +140,13 @@ sub is_mime_type {
 	
 	}
 
-=item has_file_extension( ARRAY_REF )
+=item has_file_extension( HASH_REF )
 
-This constraint checks the extension against a list of extensions
+This constraint checks the filename against a list of extensions
 which are the elements of ARRAY_REF.
+
+	field			the name of the field holding the filename 
+	extensions		an array reference of possible extensions
 
 =cut
 
@@ -152,6 +160,11 @@ sub has_file_extension
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list;
+
+	unless( UNIVERSAL::isa( $setup->{extensions}, ref [] ) )
+		{
+    	croak( "The extensions key must be an array reference!" );
+		}
 
 	my %extensions = map { lc $_, 1 } @{ $setup->{extensions} };
 		
@@ -177,9 +190,74 @@ sub has_file_extension
 
 	}
 
-=item
+=item is_clamav_clean( HASH_REF )
+
+Passes if ClamAV doesn't complain about the file.
+
+	clamscan_location	the location of ClamAV, or /usr/local/bin/clamscan
+	filename			the filename to check
+
+The filename can only contain word characters or a period.
 
 =cut
+
+sub is_clamav_clean {
+	my( $bucket, $setup ) = @_;
+
+	my @caller = $bucket->__caller_chain_as_list;
+
+    my $clamscan = $setup->{clamscan_location} || "/usr/local/bin/clamscan";
+
+	my $hash = {
+			name        => $setup->{name} || $caller[0]{'sub'},
+			description => ( $setup->{description} || "Check for viruses" ),
+			fields      => [ $setup->{field} ],
+			code        => sub {
+				my( $input ) = @_;
+				
+				die {
+					message      => "Could not find clamscan",
+					failed_field => $setup->{clamscan_location},
+					failed_value => $_[0]->{ $setup->{clamscan_location} },
+					handler      => $caller[0]{'sub'},
+					} unless -x $clamscan;
+
+				die {
+					message      => "File name has odd characters",
+					failed_field => $setup->{filename},
+					failed_value => $_[0]->{ $setup->{filename} },
+					handler      => $caller[0]{'sub'},
+					} unless $setup->{filename} =~ m/^[\w.]+\z/;
+
+				die {
+					message      => "Could not find file to check for viruses",
+					failed_field => $setup->{filename},
+					failed_value => $_[0]->{ $setup->{filename} },
+					handler      => $caller[0]{'sub'},
+					} unless -f $setup->{filename};
+				
+				my $results = do {
+					local $ENV{PATH} = '';
+					
+					`$clamscan --no-summary -i --stdout $setup->{filename}`;
+					};
+     			
+				die {
+					message      => "ClamAV complained: $results",
+					failed_field => $setup->{filename},
+					failed_value => $_[0]->{ $setup->{filename} },
+					handler      => $caller[0]{'sub'},
+					} if $results;
+					
+				1;
+				},
+			};
+			
+	$bucket->__make_constraint(
+		$bucket->add_to_bucket ( $hash )
+		);
+
+	}
 
 =pod
 
