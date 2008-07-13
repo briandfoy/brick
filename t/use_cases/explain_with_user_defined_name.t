@@ -80,12 +80,12 @@ sub Brick::Bucket::odd_even_alternates
 
 =cut 
 
-my $Profile = [
+my $Profile = Brick::Profile->new( $brick, [
 	[ short       => odd_even_alternates => { field => 'short_number'  } ],
 	[ long        => odd_even_alternates => { field => 'long_number'   } ],
 	[ medium      => odd_even_alternates => { field => 'medium_number' } ],
 	[ should_fail => odd_even_alternates => { field => 'bad_number'    } ],
-	];
+	] );
 	
 =head2 Test the profile with lint()
 
@@ -96,10 +96,10 @@ it on for debugging.
 
 =cut
 
-my $lint = $brick->lint( $Profile );
-unless( is( $lint, 0, "Profile has no errors" ) )
+my $lint = $Profile->lint;
+unless( is( !! $lint, !! 0, "Profile has no errors" ) )
 	{
-	my %lint = $brick->lint( $Profile );
+	my %lint = $Profile->lint;
 	
  	diag( Data::Dumper->Dumper( \%lint ) );
  	}
@@ -114,5 +114,5 @@ it on for debugging.
 =cut
 
 print STDERR "\nExplaining odd-even alternation profile:\n", 
-	$brick->explain( $Profile ) if $ENV{DEBUG};
+	$Profile->explain if $ENV{DEBUG};
 

@@ -40,12 +40,13 @@ condition.
 
 If the brick returns a false value (but didn't die), that means that
 the data did not pass the condition, but it's not a failure. This is
-for "selectors".
+for "selectors", which will let us figure out how to prune validation
+trees later.
 
 =item C<die>s with a reference
 
 If a brick C<die>s with a reference, it's like an exception. The brick
-uses an anonymous hash as the argument to die. That hash contains the
+uses an anonymous hash as the argument to C<die>. That hash contains the
 name of the brick, a message about why the brick failed, and perhaps a
 description of the brick.
 
@@ -82,7 +83,7 @@ I'll talk about that C<die> later.
 		}
 			
 The brick doesn't do me much good until I add it to the bucket,
-though. My call to C<add_to_brick> returns the anonymous subroutine,
+though. My call to C<add_to_bucket> returns the anonymous subroutine,
 but also keeps track of it with a name and a description, as well as
 the details about which line of code it comes from and many other
 details.
@@ -95,7 +96,7 @@ details.
 
 The bucket has two major functions: it keeps track of the
 relationships between bricks so I can "explain" a business rule
-(discussed later), and so I can easily debug what I've done. Since I'm
+(discussed later) and so I can easily debug what I've done. Since I'm
 going to be making a lot of closures, I want to know where they came
 from in the code. I'd go crazy without being able to use the bucket to
 help me keep track of things. More on that coming up.
@@ -122,7 +123,7 @@ up in the Bucket class:
 		my( $bucket, $setup ) = @_;
 		
 		$bucket->add_to_bucket( {
-			name        => '$setup->{field} key checker',
+			name        => "$setup->{field} key checker",
 			description => "The input didn't have a field named '$setup->{field}'",
 			code        => sub {
 				my $input = shift;
@@ -145,10 +146,10 @@ automatically adds the brick to the bucket.
 =head2 Composing bricks
 
 I'll build a business rule from several bricks. When I want to test a
-business rule, I run all of the bricks and look at their return value.
+business rule, I run all of the bricks and look at their return values.
 Instead of keeping track of a bunch of bricks, though, I'll compose
 them into larger structures so I only have to remember one thing. A
-composer simply creates a new brick based on the ones I give it. The
+composer simply creates a new, bigger brick based on the ones I give it. The
 bucket will keep track of the relationships for me.
 
 I create another factory that puts the bricks together. Inside
@@ -256,7 +257,7 @@ anonymous arrays specify three things:
 =item A label
 
 The label can be anything. It reminds you which profile element you're
-working with.
+working with. It doesn't have to be unique, but it should be.
 
 =item A constraint name
 
@@ -315,7 +316,7 @@ brian d foy, C<< <bdfoy@cpan.org> >>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2007, brian d foy, All Rights Reserved.
+Copyright (c) 2007-2008, brian d foy, All Rights Reserved.
 
 You may redistribute this under the same terms as Perl itself.
 

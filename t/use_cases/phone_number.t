@@ -123,7 +123,7 @@ my $Input = {
 	dot_phone    => "555.1234",
 	short_phone  => 555123,
 	long_phone   => 8005551212,
-	letter_phone => 'Grover',
+	letter_phone => '1234567',
 	};
 	
 =head2 Validate the data with apply()
