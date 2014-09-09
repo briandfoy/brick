@@ -1,6 +1,9 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.227 - Tue Sep  9 07:16:25 2014
+	* Update for 8 years later, with modern cleanups
+
 0.226 - Tue May 29 20:39:32 2007
 	* Added is_clamav_clean to Brick::File
 
