@@ -19,6 +19,8 @@ WriteMakefile(
 		'DateTime'       => '0.36',
 		'Test::Manifest' => '1.14',
 		'Storable'       => '0',
+		'MIME::Types'    => '0',
+		'File::MMagic'   => '0',
 		},
 
 	clean  => { FILES    => q|Brick-*| },
