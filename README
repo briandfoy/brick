@@ -1,5 +1,3 @@
-$Id$
-
 You can install this using in the usual Perl fashion
 
 	perl Makefile.PL
@@ -10,16 +8,16 @@ You can install this using in the usual Perl fashion
 The documentation is in the module file.  Once you install
 the file, you can read it with perldoc.
 
-	perldoc Beancounter
+	perldoc Brick
 	
 If you want to read it before you install it, you can use
 perldoc directly on the module file.
 
-	perldoc  lib/Beancounter.pm
+	perldoc  lib/Brick.pm
 	
-This module is also in CVS on SourceForge
+This module is also in Github:
 
-	http://sourceforge.net/projects/brian-d-foy/
+	https://github.com/briandfoy/brick
 
 
 Enjoy, 

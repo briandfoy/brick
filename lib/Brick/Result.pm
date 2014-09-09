@@ -1,4 +1,3 @@
-# $Id: Selectors.pm 2183 2007-02-27 23:24:59Z comdog $
 package Brick::Result;
 use strict;
 
@@ -7,7 +6,7 @@ use vars qw($VERSION);
 use Carp qw(carp croak);
 use UNIVERSAL qw(isa);
 
-$VERSION = sprintf "1.%04d", q$Revision: 2183 $ =~ m/ (\d+) /xg;
+$VERSION = '0.223';
 
 =head1 NAME
 

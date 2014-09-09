@@ -8,7 +8,7 @@ use Carp qw(carp);
 
 use Brick;
 
-$VERSION = sprintf "1.%04d", q$Revision: 2183 $ =~ m/ (\d+) /xg;
+$VERSION = '0.223';
 
 =head1 NAME
 

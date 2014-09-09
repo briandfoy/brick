@@ -1,9 +1,8 @@
-# $Id$
 package Brick::Constraints;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
+$VERSION = '0.223';
 
 package Brick::Bucket;
 use strict;

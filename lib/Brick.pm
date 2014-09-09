@@ -1,4 +1,3 @@
-# $Id$
 package Brick;
 use strict;
 
@@ -12,7 +11,6 @@ use UNIVERSAL qw(isa);
 use Brick::Profile;
 
 $VERSION = '0.223';
-	#sprintf "0.%04d_01", q$Revision$ =~ m/(\d+)/g;
 
 =head1 NAME
 

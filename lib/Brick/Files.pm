@@ -1,11 +1,10 @@
-# $Id: Regexes.pm 2193 2007-03-15 06:41:50Z comdog $
 package Brick::File;
 use strict;
 
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = sprintf "1.%04d", q$Revision: 2193 $ =~ m/ (\d+) /xg;
+$VERSION = '0.223';
 
 package Brick::Bucket;
 use strict;

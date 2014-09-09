@@ -1,5 +1,4 @@
-# $Revision$
-
+package Brick::UserGuide;
 
 =pod
 

@@ -1,4 +1,3 @@
-# $Id$
 package Brick::Bucket;
 use strict;
 
@@ -18,7 +17,7 @@ foreach my $package ( qw(Numbers Regexes Strings Dates General
 	print STDERR $@ if $@;
 	}
 
-$VERSION = sprintf "1.%04d", q$Revision$ =~ m/ (\d+) /xg;
+$VERSION = '0.223';
 
 =head1 NAME
 
