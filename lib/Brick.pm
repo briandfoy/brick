@@ -10,7 +10,7 @@ use UNIVERSAL qw(isa);
 
 use Brick::Profile;
 
-$VERSION = '0.223';
+$VERSION = '0.227';
 
 =head1 NAME
 
