@@ -8,7 +8,7 @@ WriteMakefile(
 	'NAME'	       => 'Brick',
 	'ABSTRACT'     => 'Complex business rule data validation',
 
-	'VERSION'      => '0.226_02',
+	'VERSION_FROM' => 'lib/Brick.pm',
 	'LICENSE'      => 'perl',
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
