@@ -1,3 +1,5 @@
+#!include_default
+
 \.cvsignore
 \.releaserc
 \.lwpcookies
