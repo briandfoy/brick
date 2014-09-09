@@ -30,8 +30,6 @@ by apply() into a useable form for particular situations.
 
 =cut
 
-use UNIVERSAL qw(isa);
-
 use constant LABEL    => 0;
 use constant METHOD   => 1;
 use constant RESULT   => 2;

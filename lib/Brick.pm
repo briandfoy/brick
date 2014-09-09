@@ -6,7 +6,6 @@ use vars qw($VERSION);
 
 use Carp qw( carp croak );
 use Data::Dumper;
-use UNIVERSAL qw(isa);
 
 use Brick::Profile;
 
@@ -181,7 +180,7 @@ sub create_bucket
 
 		$args->{code} = do {
 			if( eval { $method->isa( ref {} ) } or
-				UNIVERSAL::isa( $method, ref sub {} ) )
+				ref $method eq ref sub {} )
 				{
 				$method;
 				}
@@ -216,12 +215,12 @@ sub init
 
 	$self->{buckets} = [];
 
-	if( defined $args->{external_packages} && UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
+	if( defined $args->{external_packages} && ref $args->{external_packages} eq ref [] )
 		{ # defined and array ref
 		$self->{external_packages} = $args->{external_packages};
 		}
 	elsif( defined $args->{external_packages} &&
-		! UNIVERSAL::isa( $args->{external_packages}, ref [] ) )
+		! ($args->{external_packages} eq ref []) )
 		{ # defined but not array ref
 		carp "'external_packages' value must be an anonymous array";
 		$self->{external_packages} = [];
@@ -314,9 +313,9 @@ sub apply
 		my $eval_error = $@;
 
 		carp "Brick: $sub_name: eval error \$\@ is not a string or hash reference"
-			unless( ! ref $eval_error or UNIVERSAL::isa( $eval_error, ref {} ) );
+			unless( ! ref $eval_error or ref $eval_error eq ref {} );
 
-		if( defined $eval_error and isa( $eval_error, ref {} ) )
+		if( defined $eval_error and ref $eval_error eq ref {} )
 			{
 			$result = 0;
 			carp "Brick: $sub_name died with reference, but didn't define 'handler' key"

@@ -4,7 +4,6 @@ use strict;
 use vars qw($VERSION);
 
 use Carp qw(carp croak);
-use UNIVERSAL qw(isa);
 
 $VERSION = '0.227';
 
@@ -93,7 +92,7 @@ sub explain
 				{
 				$str .= $pair->[ MESSAGE ] . "foo";
 				}
-			elsif( ! UNIVERSAL::isa( $pair->[ MESSAGE ], ref {} ) )
+			elsif( ! ref $pair->[ MESSAGE ] eq ref {} )
 				{
 				next;
 				}
@@ -145,7 +144,7 @@ sub flatten
 
 		while( my $hash = shift @uses )
 			{
-			if( ! isa $hash, ref {} )
+			if( ! ref $hash eq ref {} )
 				{
 				carp "Non-hash reference in messages result key! Skipping";
 				next;
