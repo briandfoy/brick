@@ -7,6 +7,8 @@ use vars qw($VERSION);
 
 $VERSION = '0.223';
 
+=encoding utf8
+
 =head1 NAME
 
 Brick::Result::Item - The result from a single profile element
@@ -188,7 +190,7 @@ brian d foy, C<< <bdfoy@cpan.org> >>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2007, brian d foy, All Rights Reserved.
+Copyright (c) 2007-2014, brian d foy, All Rights Reserved.
 
 You may redistribute this under the same terms as Perl itself.
 

@@ -2,6 +2,8 @@ package Brick::UserGuide;
 
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 Brick::UserGuide - How to use Brick
@@ -77,7 +79,7 @@ brian d foy, C<< <bdfoy@cpan.org> >>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2007, brian d foy, All Rights Reserved.
+Copyright (c) 2007-2014, brian d foy, All Rights Reserved.
 
 You may redistribute this under the same terms as Perl itself.
 

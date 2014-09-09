@@ -11,6 +11,8 @@ use subs qw();
 
 use Carp qw(croak carp);
 
+=encoding utf8
+
 =head1 NAME
 
 Brick::Constraints - Connect the input data to the closures in the pool
@@ -159,7 +161,7 @@ brian d foy, C<< <bdfoy@cpan.org> >>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2007, brian d foy, All Rights Reserved.
+Copyright (c) 2007-2014, brian d foy, All Rights Reserved.
 
 You may redistribute this under the same terms as Perl itself.
 
