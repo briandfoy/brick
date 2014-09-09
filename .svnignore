@@ -1,9 +1,0 @@
-cover_db
-*.bak
-*.old
-pm_to_blib
-blib
-.lwpcookies
-*.gz
-Makefile
-Brick-*
