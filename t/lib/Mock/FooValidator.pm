@@ -20,7 +20,7 @@ sub _is_the_number_3
 			} },
 		} );
 	}
-	
+
 sub _is_the_letter_e
 	{
 	my( $bucket, $hash ) = @_;

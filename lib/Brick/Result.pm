@@ -17,11 +17,11 @@ Brick::Result - the result of applying a profile
 =head1 SYNOPSIS
 
 	use Brick;
-	
+
 	my $result = $brick->apply( $Profile, $Input );
 
 	$result->explain;
-	
+
 =head1 DESCRIPTION
 
 This class provides methods to turn the data structure returned
@@ -66,23 +66,23 @@ sub explain
 	my $str   = '';
 
 	foreach my $element ( @$result_set )
-		{		
+		{
 		my $level = 0;
-		
+
 		$str .= "$$element[0]: " . do {
 			if( $element->passed )                  { "passed " }
 			elsif( $element->is_validation_error )  { "failed " }
 			elsif( $element->is_code_error )        { "code error in " }
 			};
-			
+
 		$str .= $element->get_method() . "\n";
-		
+
 		if( $element->passed )
 			{
 			$str .= "\n";
 			next;
 			}
-		
+
 		# this descends into the error tree (without using recursion
 		my @uses = ( [ $level, $element->get_messages ] );
 
@@ -108,8 +108,8 @@ sub explain
 				{
 				# this could come back as an array ref instead of a string
 				no warnings 'uninitialized';
-				$str .=  "\t" . #x $pair->[ LEVEL ] . 
-					join( ": ", @{ $pair->[ MESSAGE ] 
+				$str .=  "\t" . #x $pair->[ LEVEL ] .
+					join( ": ", @{ $pair->[ MESSAGE ]
 						}{qw(failed_field handler message)} ) . "\n";
 				}
 
@@ -134,13 +134,13 @@ sub flatten
 	my $str   = '';
 
 	my @flatten;
-	
+
 	foreach my $element ( @$result_set ) # one element per profile element
 		{
 		bless $element, $result_set->result_item_class;
 		next if $element->passed;
 		my $constraint = $element->get_method;
-		
+
 		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
@@ -150,7 +150,7 @@ sub flatten
 				carp "Non-hash reference in messages result key! Skipping";
 				next;
 				}
-				
+
 			# is it a single error or a composition?
 			unless( ref $hash  )
 				{
@@ -186,12 +186,12 @@ sub flatten_by_field
 
 	my %flatten;
 	my %Seen;
-	
+
 	foreach my $element ( @$result_set ) # one element per profile element
 		{
 		next if $element->passed;
 		my $constraint = $element->get_method;
-		
+
 		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
@@ -208,9 +208,9 @@ sub flatten_by_field
 			else
 				{
 				my $field = $hash->{failed_field};
-				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;				
+				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;
 				$flatten{ $field } = [] unless exists $flatten{ $field };
-				push @{ $flatten{ $field } }, 
+				push @{ $flatten{ $field } },
 					{ %$hash, constraint => $constraint };
 				$Seen{$field}{$hash->{handler}}++;
 				}
@@ -236,12 +236,12 @@ sub flatten_by
 
 	my %flatten;
 	my %Seen;
-	
+
 	foreach my $element ( @$result_set ) # one element per profile element
 		{
 		next if $element->passed;
 		my $constraint = $element->get_method;
-		
+
 		my @uses = ( $element->get_messages );
 
 		while( my $hash = shift @uses )
@@ -258,9 +258,9 @@ sub flatten_by
 			else
 				{
 				my $field = $hash->{$key};
-				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;				
+				next if $hash->{handler} and $Seen{$field}{$hash->{handler}}++;
 				$flatten{ $field } = [] unless exists $flatten{ $field };
-				push @{ $flatten{ $field } }, 
+				push @{ $flatten{ $field } },
 					{ %$hash, constraint => $constraint };
 				$Seen{$field}{$hash->{handler}}++;
 				}
@@ -271,7 +271,7 @@ sub flatten_by
 
 	\%flatten;
 	}
-	
+
 =item dump
 
 What should this do?

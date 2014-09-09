@@ -52,7 +52,7 @@ sub __make_constraint # may need to change name to make generic
 
 	my $name = $setup->{name} || $callers[1]{'sub'} || 'Anonymous';
 	print STDERR "Constraint name is $name\n" if $ENV{DEBUG};
-	
+
 	unless(
 		eval { $validator->isa( ref sub {} ) }    ||
 		UNIVERSAL::isa( $validator, ref sub {} )

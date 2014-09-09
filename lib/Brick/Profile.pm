@@ -18,19 +18,19 @@ Brick::Profile - the validation profile for Brick
 
 =head1 SYNOPSIS
 
-	
+
 
 =head1 DESCRIPTION
 
 This class turns a profile description into a ready-to-use profile object
 that has created all of the code it needs to validate input. In Brick
-parlance, it creates the bucket and the bricks that need to go into the 
+parlance, it creates the bucket and the bricks that need to go into the
 bucket based on the validation description.
 
 =head2 Validation profile
 
 The validation profile is an array of arrays. Each item in the array specifies
-three things: a label for that item, the name of the method to run to 
+three things: a label for that item, the name of the method to run to
 validate the item, and optional arguments to pass to the the method.
 
 For instance, here's a simple validation description to check if a user
@@ -39,7 +39,7 @@ is registered with the system. This profile has one item:
 	@profile = (
 		[ username => is_registered => { field => form_name } ],
 		);
-		
+
 The label for the item is C<username>. When Brick reports the results
 of the validation, the label C<username> will be attached to the
 result for this part of the validation.
@@ -55,7 +55,7 @@ field => form_name }>, to C<is_registered>. A brick merely creates
 a closure that will run later, so the optional arguments are for
 the initialization of that closure. The validation doesn't happen
 until you C<apply> it.
-		
+
 =head2 Class methods
 
 =over 4
@@ -66,33 +66,33 @@ Create a new profile object tied to the Brick object.
 
 =cut
 
-sub new 
+sub new
 	{
 	my( $class, $brick, $array_ref ) = @_;
-	
+
 	unless( $brick->isa( $class->brick_class ) )
 		{
 		carp "First argument to \$class->new() must be a brick object. " .
 			"Got [$brick]\n";
 		return;
 		}
-		
+
 	my $self = bless {}, $class;
-	
+
 	my $lint_errors = $class->lint( $array_ref );
-		
+
 	if( ! defined $lint_errors or $lint_errors )
 		{
 		carp "Profile did not validate!";
 		return;
 		}
-	
+
 	my( $bucket, $refs ) = $brick->create_bucket( $array_ref );
-	
+
 	$self->set_bucket( $bucket );
 	$self->set_coderefs( $refs );
 	$self->set_array( $array_ref );
-	
+
 	return $self;
 	}
 
@@ -167,12 +167,12 @@ Errors for duplicate names?
 sub lint
 	{
 	my( $class, $array ) = @_;
-	
+
 	return unless(
 		eval { $array->isa( ref [] ) } or
 		UNIVERSAL::isa( $array, ref [] )
 		);
-	
+
 	my $lint = {};
 
 	foreach my $index ( 0 .. $#$array )
@@ -195,7 +195,7 @@ sub lint
 			eval { $method->isa( ref sub {} ) } or
 			UNIVERSAL::isa( $method, sub {} )    or
 			eval { $class->brick_class->bucket_class->can( $method ) };
-			
+
 		$h->{args} = "Args is not a hash reference" unless
 			eval { $args->isa( ref {} ) } or
 			UNIVERSAL::isa( $args, ref {} );
@@ -273,7 +273,7 @@ sub explain
 
 	$str;
 	}
-		
+
 =item get_bucket
 
 =cut
@@ -300,7 +300,7 @@ sub get_coderefs
 	{
 	$_[0]->{coderefs};
 	}
-	
+
 =item set_coderefs
 
 =cut
@@ -318,7 +318,7 @@ sub get_array
 	{
 	$_[0]->{array};
 	}
-	
+
 =item set_array
 
 =cut

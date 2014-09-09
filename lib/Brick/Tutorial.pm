@@ -73,16 +73,16 @@ I'll talk about that C<die> later.
 
 	my $sub = sub {
 		my $input = shift;
-		
+
 		return 1 if exists $input->{cat};
-		
-		die { 
+
+		die {
 			handler      => 'Cat key check',
 			failed_field => 'cat'
 			message      => "The input didn't have a field named 'cat'",
 			};
 		}
-			
+
 The brick doesn't do me much good until I add it to the bucket,
 though. My call to C<add_to_bucket> returns the anonymous subroutine,
 but also keeps track of it with a name and a description, as well as
@@ -111,33 +111,33 @@ literal 'cat' before I now have a variable, C<$setup->{field}>, which
 came from the input to C<_input_key_exists>.
 
 	my $cat_brick = $bucket->_input_key_exists( { field => 'cat' } );
-	
+
 	my $dog_brick = $bucket->_input_key_exists( { field => 'dog' } );
-	
+
 Somewhere I defined the C<_input_key_exists> method so it shows
 up in the Bucket class:
 
 	package Brick::Bucket;
-	
+
 	sub _input_key_exists
 		{
 		my( $bucket, $setup ) = @_;
-		
+
 		$bucket->add_to_bucket( {
 			name        => "$setup->{field} key checker",
 			description => "The input didn't have a field named '$setup->{field}'",
 			code        => sub {
 				my $input = shift;
-				
+
 				return 1 if exists $input->{ $setup->{field} };
-				
-				die { 
+
+				die {
 					handler => 'Cat key check',
 					message => "The input didn't have a field named '$setup->{field}'",
 					};
 				},
 			} );
-		
+
 		}
 
 Every time I call C<_input_key_exists> I get a new brick, because it's
@@ -162,14 +162,14 @@ return true.
 	sub _cat_and_dog_exists
 		{
 		my( $bucket, $setup );
-		
-		my $cat_brick = $bucket->_input_key_exists( 
+
+		my $cat_brick = $bucket->_input_key_exists(
 			{ %$setup, field => 'cat' } );
-		
-		my $dog_brick = $bucket->_input_key_exists( 
+
+		my $dog_brick = $bucket->_input_key_exists(
 			{  %$setup, field => 'dog' } );
-		
-		
+
+
 		$bucket->__compose_satisfy_all( $cat_brick, $dog_brick );
 		}
 
@@ -182,14 +182,14 @@ to pass:
 	sub _either_cat_and_dog_exists
 		{
 		my( $bucket, $setup );
-		
-		my $cat_brick = $bucket->_input_key_exists( 
+
+		my $cat_brick = $bucket->_input_key_exists(
 			{ %$setup, field => 'cat' } );
-		
-		my $dog_brick = $bucket->_input_key_exists( 
+
+		my $dog_brick = $bucket->_input_key_exists(
 			{  %$setup, field => 'dog' } );
-		
-		
+
+
 		$bucket->__compose_satisfy_any( $cat_brick, $dog_brick );
 		}
 
@@ -234,9 +234,9 @@ whose name reflects what it does.
 	sub check_cat_and_dog
 		{
 		my( $bucket, $setup );
-		
+
 		my $brick = $bucket->_either_cat_and_dog_exists( $setup );
-		
+
 		my $constraint = $brick->__make_constraint( $brick, $setup );
 		}
 
@@ -273,7 +273,7 @@ is the C<$setup> variable seen in the examples.
 
 =back
 
-Here's a simple profile. 
+Here's a simple profile.
 
 	my @Profile = (
 		#  label          #method name       #setup
@@ -283,18 +283,18 @@ Here's a simple profile.
 To apply the profile, I pass it along with the input hash to C<apply>:
 
 	use Brick;
-	
+
 	my $Brick = Brick->new;
-	
+
 	my $profile = $Brick->profile_class->new( \@Profile );
-	
+
 	$Brick->apply( $profile, \%input );
 
 Before I apply a profile, I might want to use C<lint> to check it for
 errors. It's a class method since it hasn't created an object yet:
 
 	$Brick->profile_class->lint( \@Profile );
-	
+
 I can dump the profile in a handy text format with C<explain> to see
 if it does what I want:
 

@@ -16,11 +16,11 @@ Brick::Result::Item - The result from a single profile element
 =head1 SYNOPSIS
 
 	use Brick;
-	
+
 	my $result = $brick->apply( $Profile, $Input );
 
 	$result->explain;
-	
+
 =head1 DESCRIPTION
 
 This class provides methods to turn the data structure returned
@@ -42,13 +42,13 @@ use constant MESSAGES => 3;
 Keys:
 
 	label    - the label for the item
-	
+
 	method   - the responsible subroutine
-	
+
 	result   - 1 | 0 | undef (See set_result)
-	
+
 	messages - the error reference that comes back from the brick
-	
+
 =cut
 
 use Data::Dumper;
@@ -56,17 +56,17 @@ use Data::Dumper;
 sub new
 	{
 	my( $class, @args ) = @_;
-		
+
 	my $hash = { @args };
-	
+
 	my $self = bless [], $class;
-	
+
 	$self->set_label(    $hash->{label}    );
 	$self->set_method(   $hash->{method}   );
 	$self->set_result(   $hash->{result}   );
 	$self->set_messages( $hash->{messages} );
 
-	$self;	
+	$self;
 	}
 
 =item get_label
@@ -80,7 +80,7 @@ items in the profile.
 =cut
 
 sub get_label { $_[0]->[ LABEL ] }
-	
+
 sub set_label { $_[0]->[ LABEL ] = $_[1] }
 
 =item get_method
@@ -107,18 +107,18 @@ depending on what happened:
 	1     - passed
 	0     - failed by validation
 	undef - failed by program error
-	
+
 =cut
 
 sub get_result { $_[0]->[ RESULT ] }
 
 sub set_result { $_[0]->[ RESULT ] = $_[1] }
-	
+
 =item get_messages
 
 =item set_messages( HASH_REF )
 
-Get or set the message hash for the errors. 
+Get or set the message hash for the errors.
 
 =cut
 
@@ -133,7 +133,7 @@ Returns true if the item passed validation.
 =cut
 
 sub passed { !! $_[0]->[ RESULT ] }
-	
+
 =item failed
 
 Returns true if the item failed validation. This ight mean that the
@@ -143,7 +143,7 @@ C<is_validation_error> and C<is_code_error>.
 =cut
 
 sub failed { ! $_[0]->[ RESULT ]  }
-	
+
 =item is_validation_error
 
 Returns true if the failure was the result of a validation error (so not
@@ -152,7 +152,7 @@ a programming error).
 =cut
 
 sub is_validation_error { ! $_[0]->[ RESULT ] and defined $_[0]->[ RESULT ] }
-	
+
 =item is_code_error
 
 Returns true if the failure was the result of a programming error (so

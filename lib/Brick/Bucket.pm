@@ -9,7 +9,7 @@ use Carp;
 
 use Brick::Constraints;
 
-foreach my $package ( qw(Numbers Regexes Strings Dates General 
+foreach my $package ( qw(Numbers Regexes Strings Dates General
 	Composers Filters Selectors Files) )
 	{
 	# print STDERR "Requiring $package\n";
@@ -299,17 +299,17 @@ every brick has a chance to call them.
 
 =item use_field_labels( HASHREF )
 
-Set the hash that C<get_field_label> uses to map field names to 
+Set the hash that C<get_field_label> uses to map field names to
 field labels.
 
-This method croaks if its argument isn't a hash reference. 
+This method croaks if its argument isn't a hash reference.
 
 =cut
 
 sub use_field_labels
 	{
 	croak "Not a hash reference!" unless UNIVERSAL::isa( $_[1], ref {} );
-	$_[0]->{_field_labels} = { %{$_[1]} };	
+	$_[0]->{_field_labels} = { %{$_[1]} };
 	}
 
 =item get_field_label( FIELD )
@@ -323,7 +323,7 @@ sub get_field_label
 	no warnings 'uninitialized';
 	$_[0]->{_field_labels}{ $_[1] };
 	}
-	
+
 =item set_field_label( FIELD, VALUE )
 
 Set the label for FIELD to VALUE. It returns VALUE.
@@ -355,7 +355,7 @@ sub __caller_chain_as_list
 	#print STDERR Data::Dumper->Dump( [\@Callers], [qw(callers)] ), "-" x 73, "\n";
 	@Callers;
 	}
-	
+
 =back
 
 =head1 Brick::Bucket::Entry

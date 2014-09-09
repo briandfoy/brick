@@ -20,7 +20,7 @@ sub _is_odd
 			} },
 		} );
 	}
-	
+
 sub _is_even
 	{
 	my( $bucket, $hash ) = @_;

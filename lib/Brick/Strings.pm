@@ -104,7 +104,7 @@ sub _value_length_is_between
 	my( $bucket, $setup ) = @_;
 
 	local $setup->{name} = '';
-	
+
 	my $min = $bucket->_value_length_is_equal_to_greater_than( $setup );
 
 	my $max = $bucket->_value_length_is_equal_to_less_than( $setup );

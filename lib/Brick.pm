@@ -37,7 +37,7 @@ Brick - Complex business rule data validation
 		name => 'Joe Snuffy',
 		...
 		);
-		
+
 	my $results = $brick->apply( $profile, \%%input_from_app );
 
 =head1 DESCRIPTION
@@ -271,7 +271,7 @@ sub explain
 	{
 	croak "Who's calling Brick::explain? That's in Brick::Profile now!";
 	}
-	
+
 =item apply(  PROFILE OBJECT, INPUT_DATA_HASHREF )
 
 Apply the profile to the data in the input hash reference. The profile
@@ -288,13 +288,13 @@ sub apply
 	{
 	my( $brick, $profile, $input ) = @_;
 
-	croak "Did not get a profile object in Brick::apply()!\n" 
+	croak "Did not get a profile object in Brick::apply()!\n"
 		unless eval { $profile->isa( $brick->profile_class ) };
-	
+
 	my $bucket   = $profile->get_bucket;
 	my $coderefs = $profile->get_coderefs;
 	my $array    = $profile->get_array;
-	
+
 	my @entries = map {
 		my $e = $bucket->get_from_bucket( $_ );
 		[ map { $e->$_ } qw(get_coderef get_name) ]
@@ -306,13 +306,13 @@ sub apply
 		{
 		my $e    = $entries[$index];
 		my $name = $array->[$index][0];
-		
+
 		my $bucket_entry = $bucket->get_from_bucket( "$e->[0]" );
 		my $sub_name     = $bucket_entry->get_name;
-		
+
 		my $result = eval{ $e->[0]->( $input ) };
 		my $eval_error = $@;
-		
+
 		carp "Brick: $sub_name: eval error \$\@ is not a string or hash reference"
 			unless( ! ref $eval_error or UNIVERSAL::isa( $eval_error, ref {} ) );
 
@@ -321,9 +321,9 @@ sub apply
 			$result = 0;
 			carp "Brick: $sub_name died with reference, but didn't define 'handler' key"
 				unless exists $eval_error->{handler};
-				
+
 			carp "Brick: $sub_name died with reference, but didn't define 'message' key"
-				unless exists $eval_error->{message};	
+				unless exists $eval_error->{message};
 			}
 		elsif( defined $eval_error ) # but not a reference
 			{
@@ -334,7 +334,7 @@ sub apply
 				errors        => [],
 				};
 			}
-			
+
 		my $handler = $array->[$index][1];
 
 		my $result_item = $brick->result_class->result_item_class->new(
@@ -343,13 +343,13 @@ sub apply
 			result   => $result,
 			messages => $eval_error,
 			);
-			
+
 		push @results, $result_item;
 		}
-	
+
 	return bless \@results, $brick->result_class;
 	}
-		
+
 =item bucket_class
 
 The namespace where the constraint building blocks are defined. By
@@ -358,7 +358,7 @@ this in a subclass. Things that need to work with the bucket class
 name, such as a factory method, will use the return value of this
 method.
 
-This method also loads the right class, so if you override it, 
+This method also loads the right class, so if you override it,
 remember to load the class too!
 
 =cut
@@ -372,7 +372,7 @@ this is C<Brick::Result>. If you don't like that, override this in a
 subclass. Things that need to work with the result class name, such as
 a factory method, will use the return value of this method.
 
-This method also loads the right class, so if you override it, 
+This method also loads the right class, so if you override it,
 remember to load the class too!
 
 =cut
@@ -386,7 +386,7 @@ C<Brick::Profile>. If you don't like that, override this in a
 subclass. Things that need to work with the result class name, such as
 a factory method, will use the return value of this method.
 
-This method also loads the right class, so if you override it, 
+This method also loads the right class, so if you override it,
 remember to load the class too!
 
 =cut
