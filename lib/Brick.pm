@@ -9,7 +9,7 @@ use Data::Dumper;
 
 use Brick::Profile;
 
-$VERSION = '0.227';
+$VERSION = '0.227_01';
 
 =head1 NAME
 
