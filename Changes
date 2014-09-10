@@ -1,6 +1,10 @@
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
+0.227_01 - Wed Sep 10 05:25:52 2014
+	* Fix up the use_case/phone_number.t test which had a bad input
+
+
 0.227 - Tue Sep  9 07:16:25 2014
 	* Update for 8 years later, with modern cleanups
 
