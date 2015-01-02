@@ -31,7 +31,7 @@
 	* Programming errors caught by eval are now full-fledged errors,
 	instead of silently ignoring. You can ask the result item if the
 	error is a validation or programming error.
-	* There are some broken composer things now that I've made these 
+	* There are some broken composer things now that I've made these
 	changes, but I'm working on those.
 
 0.223 - Tue May  1 17:48:27 2007
@@ -43,7 +43,7 @@
 	explain) aren't in the Brick class anymore, so you need to
 	either call them on a Profile object or use the Profile
 	class name ( probably $brick->profile_class->lint( ... )
-	* lint() still just takes an Array of Arrays because you 
+	* lint() still just takes an Array of Arrays because you
 	can't make a Profile object without passing lint. explain()
 	still works with an object or an array.
 
