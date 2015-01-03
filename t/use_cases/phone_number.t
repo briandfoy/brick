@@ -149,7 +149,7 @@ it on for debugging.
 #print STDERR Data::Dumper->Dump( [$result], [qw(result)] ) ; #if $ENV{DEBUG};
 use Data::Dumper;
 
-diag "\n"  if $ENV{DEBUG};
+diag "\n" if $ENV{DEBUG};
 
 foreach my $index ( 0 .. $#$result )
 	{
