@@ -1,3 +1,5 @@
+# Changes to Brick
+
 0.220 - Mon Mar 26 01:57:57 2007
 	* made __and, __or, __none aliases for composers
 
