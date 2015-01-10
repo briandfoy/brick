@@ -53,7 +53,7 @@ my %WriteMakefile = (
 			},
 		},
 	
-	clean  => { FILES    => q|Brick-*| },
+	clean => { FILES => "$dist-*" },
 	);
 
 sub arguments { \%WriteMakefile }
