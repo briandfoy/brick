@@ -11,6 +11,8 @@ use Brick::Profile;
 
 $VERSION = '0.227_01';
 
+=encoding utf8
+
 =head1 NAME
 
 Brick - Complex business rule data validation
