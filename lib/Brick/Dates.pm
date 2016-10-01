@@ -433,7 +433,6 @@ sub _get_days_between
 
 	foreach my $date ( $start, $stop )
 		{
-		my( $year, $month, $day ) = $bucket->__get_ymd_as_hashref( $date );
 
 		push @dates, DateTime->new(
 			$bucket->__get_ymd_as_hashref( $date )
