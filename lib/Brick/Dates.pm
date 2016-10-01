@@ -10,7 +10,7 @@ use strict;
 use subs qw();
 
 use Carp qw(carp croak);
-use DateTime;
+use Time::Moment;
 
 =encoding utf8
 
@@ -69,7 +69,7 @@ sub _is_valid_date
 				{
 				$eval_error = '';
 				my $dt = eval {
-					DateTime->new(
+					Time::Moment->new(
 						year  => $year,
 						month => $month,
 						day   => $day,
@@ -433,18 +433,12 @@ sub _get_days_between
 
 	foreach my $date ( $start, $stop )
 		{
-		my( $year, $month, $day ) = $bucket->__get_ymd_as_hashref( $date );
-
-		push @dates, DateTime->new(
-			$bucket->__get_ymd_as_hashref( $date )
+		push @dates, Time::Moment->new(
+			%{$bucket->__get_ymd_as_hashref( $date )}
 			);
 		}
 
-	my $duration = $dates[1]->delta_days( $dates[0] );
-
-	$duration *= -1 if $dates[1] < $dates[0];
-
-	my $days = $duration->delta_days;
+	my $duration = $dates[0]->delta_days( $dates[1] );
 	}
 
 =item __get_ymd_as_hashref( YYYYMMDD );
@@ -472,9 +466,13 @@ sub __get_ymd_as_hashref
 			\z
 			/x;
 
-		my $dt = DateTime->new( year => $1, month => $2, day => $3 );
+		my $dt = Time::Moment->new( year => $1, month => $2, day => $3 );
 
-		map { $_, $dt->$_ } qw( year month day );
+		(
+			year   => $dt->year,
+			month  => $dt->month,
+			day    => $dt->day_of_month
+		);
 		};
 
 	if( $@ )
