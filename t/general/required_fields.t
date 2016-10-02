@@ -47,17 +47,17 @@ my %input = (
 	undef_field  => undef,
 	);
 
-my( $lint ) = $brick->lint( \@profile );
+my( $lint ) = $brick->profile_class->lint( \@profile );
 is( keys %$lint, 0, "Profile is formatted correctly\n" );
-#print STDERR Data::Dumper->Dump( [$lint], [qw(lint)] );
 use Data::Dumper;
+#print STDERR "\n", Data::Dumper->Dump( [$lint], [qw(lint)] );
 
 if( $ENV{DEBUG} )
 	{
 	print STDERR $brick->explain( \@profile );
 	}
 
-my $result = $brick->apply( \@profile, \%input );
+my $result = $brick->apply( Brick::Profile->new($brick, \@profile), \%input );
 
 isa_ok( $result, ref [], "apply() returns an array reference" );
 
