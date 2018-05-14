@@ -1,5 +1,9 @@
 Revision history for Perl module Brick
 
+0.228 2018-05-14T12:42:32Z
+	* Clarify that it's the Artistic License 2.0
+	* Bump to user release
+
 0.220 - 2007-03-26
 	* made __and, __or, __none aliases for composers
 
