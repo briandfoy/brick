@@ -2,7 +2,7 @@ package Brick::Composers;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = '0.227_01';
+$VERSION = '0.228';
 
 use Brick::Bucket;
 

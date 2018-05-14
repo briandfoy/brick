@@ -2,7 +2,7 @@ package Brick::Dates;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = '0.227_01';
+$VERSION = '0.228';
 
 package Brick::Bucket;
 use strict;
