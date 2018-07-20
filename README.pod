@@ -10,7 +10,7 @@
 
 =for HTML <a href="https://github.com/briandfoy/brick/blob/master/LICENSE"><img src="https://img.shields.io/cpan/l/Brick.svg" /></a>
 
-=for HTML <a href="http://www.metacpan.org/module/Brick"><img src="https://img.shields.io/cpan/v/Brick.svg" /></A>
+=for HTML <a href="https://metacpan.org/pod/Brick"><img src="https://img.shields.io/cpan/v/Brick.svg" /></A>
 
 =head1 The Brick module
 
@@ -23,7 +23,7 @@ for any Perl module.
 
 To read about L<Brick>, look at the embedded documentation
 in the module itself. Inside the distribution, you can format it
-with L<perldoc|http://perldoc.perl.org/perldoc.html>:
+with L<perldoc|https://perldoc.perl.orgperldoc.html>:
 
 	% perldoc lib/Brick.pm
 
@@ -33,7 +33,7 @@ name instead of the file location:
 	% perldoc Brick
 
 You can read the documentation and inspect the meta data at
-L<MetaCPAN|http://www.metacpan.org/module/Brick>.
+L<MetaCPAN|https://metacpan.org/pod/Brick>.
 
 The standard module documentation has example uses in the SYNOPSIS
 section, but you can also look in the I<examples/> directory (if it's
