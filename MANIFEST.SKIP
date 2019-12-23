@@ -81,3 +81,4 @@ t/prereq.t
 Brick-.*
 
 \.travis\.yml
+\.appveyor\.yml
