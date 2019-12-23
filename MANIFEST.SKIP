@@ -82,3 +82,6 @@ Brick-.*
 
 \.travis\.yml
 \.appveyor\.yml
+
+Changes\s+\d
+MANIFEST\s+\d
