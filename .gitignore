@@ -27,4 +27,4 @@ cover_db/
 inc/
 nytprof.out
 *.bak
-MANIFEST 3
+MANIFEST 3*.icould
