@@ -2,7 +2,7 @@ package Brick::Constraints;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = '0.229';
+$VERSION = '0.901';
 
 package Brick::Bucket;
 use strict;
