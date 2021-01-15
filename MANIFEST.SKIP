@@ -87,6 +87,6 @@ Changes\s+\d
 MANIFEST\s+\d
 \bMANIFEST\s\d
 \bChanges\s\d
-
+\.icloud$
 \A\.github\b
 
