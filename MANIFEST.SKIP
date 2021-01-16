@@ -80,7 +80,6 @@ t/prereq.t
 ^cover_db\b
 Brick-.*
 
-\.travis\.yml
 \.appveyor\.yml
 
 Changes\s+\d
