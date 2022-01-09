@@ -4,7 +4,7 @@ use strict;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = '0.901';
+$VERSION = '0.902';
 
 package Brick::Bucket;
 use strict;
