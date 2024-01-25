@@ -91,8 +91,7 @@ tests the value with the key C<field>.
 
 =cut
 
-sub _is_even_number
-	{
+sub _is_even_number {
 	sub{ $_[0]->{field} % 2 ? 0 : 1 };
 	}
 
@@ -106,8 +105,7 @@ tests the value with the key C<field>.
 
 =cut
 
-sub _is_odd_number
-	{
+sub _is_odd_number {
 	sub{ $_[0]->{field} % 2 ? 1 : 0 };
 	}
 
@@ -118,8 +116,7 @@ indicates it's Tuesday, and return the empty list otherwise.
 
 =cut
 
-sub _is_tuesday
-	{
+sub _is_tuesday {
 	sub { (localtime)[6] == 2 ? 1 : 0 };
 	}
 

@@ -29,8 +29,7 @@ Brick::General - constraints for domain-nonspecific stuff
 
 =cut
 
-sub _value_length_is_exactly
-	{
+sub _value_length_is_exactly {
 	my( $bucket, $setup ) = @_;
 
 	$setup->{minimum_length} = $setup->{exact_length};
@@ -45,8 +44,7 @@ sub _value_length_is_exactly
 
 =cut
 
-sub _value_length_is_equal_to_greater_than
-	{
+sub _value_length_is_equal_to_greater_than {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -72,8 +70,7 @@ sub _value_length_is_equal_to_greater_than
 
 =cut
 
-sub _value_length_is_equal_to_less_than
-	{
+sub _value_length_is_equal_to_less_than {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -99,8 +96,7 @@ sub _value_length_is_equal_to_less_than
 
 =cut
 
-sub _value_length_is_between
-	{
+sub _value_length_is_between {
 	my( $bucket, $setup ) = @_;
 
 	local $setup->{name} = '';

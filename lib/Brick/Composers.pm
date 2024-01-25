@@ -52,8 +52,7 @@ once.
 
 =cut
 
-sub __compose_satisfy_all
-	{
+sub __compose_satisfy_all {
 	my $bucket = shift;
 	$bucket->__compose_satisfy_N( scalar @_, @_ );
 	}
@@ -76,8 +75,7 @@ short-circuiting.
 
 =cut
 
-sub __compose_satisfy_any
-	{
+sub __compose_satisfy_any {
 	my $bucket = shift;
 	$bucket->__compose_satisfy_N_to_M( 1, scalar @_, @_ );
 	}
@@ -101,8 +99,7 @@ short-circuiting.
 
 =cut
 
-sub __compose_satisfy_none
-	{
+sub __compose_satisfy_none {
 	my $bucket = shift;
 	$bucket->__compose_satisfy_N_to_M( 0, 0, @_ );
 	}
@@ -119,8 +116,7 @@ is no short-circuiting.
 
 =cut
 
-sub __compose_satisfy_N
-	{
+sub __compose_satisfy_N {
 	my( $bucket, $n, @subs ) = @_;
 
 	$bucket->__compose_satisfy_N_to_M( $n, $n, @subs );
@@ -134,8 +130,7 @@ checked so there is no short-circuiting.
 
 =cut
 
-sub __compose_satisfy_N_to_M
-	{
+sub __compose_satisfy_N_to_M {
 	my( $bucket, $n, $m, @subs ) = @_;
 
 	if( grep { ref $_ ne ref sub {} } @subs )
@@ -193,8 +188,7 @@ true, this composer makes it false, and vice versa.
 =cut
 
 
-sub __compose_not
-	{
+sub __compose_not {
 	my( $bucket, $not_sub ) = @_;
 
 	my $sub = $bucket->add_to_bucket( {
@@ -226,12 +220,10 @@ for programming (not logic) errors.
 
 =cut
 
-sub __compose_pass_or_skip
-	{
+sub __compose_pass_or_skip {
 	my( $bucket, @subs ) = @_;
 
-	if( grep { ref $_ ne ref sub {} } @subs )
-		{
+	if( grep { ref $_ ne ref sub {} } @subs ) {
 		croak "Got something else when expecting code ref!";
 		return sub {};
 		}
@@ -302,8 +294,7 @@ This can still die for programming (not logic) errors.
 
 =cut
 
-sub __compose_pass_or_stop
-	{
+sub __compose_pass_or_stop {
 	my( $bucket, @subs ) = @_;
 
 	if( grep { ref $_ ne ref sub {} } @subs )

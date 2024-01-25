@@ -51,8 +51,7 @@ Keys:
 
 use Data::Dumper;
 
-sub new
-	{
+sub new {
 	my( $class, @args ) = @_;
 
 	my $hash = { @args };

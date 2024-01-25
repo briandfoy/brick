@@ -35,8 +35,7 @@ error.
 
 =cut
 
-sub _uppercase
-	{
+sub _uppercase {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -68,8 +67,7 @@ error.
 
 =cut
 
-sub _lowercase
-	{
+sub _lowercase {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -101,8 +99,7 @@ error.
 
 =cut
 
-sub _remove_non_digits
-	{
+sub _remove_non_digits {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -139,8 +136,7 @@ This filter always succeeds, so it will not generate an error.
 
 =cut
 
-sub _remove_whitespace
-	{
+sub _remove_whitespace {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
@@ -169,8 +165,7 @@ This filter always succeeds, so it will not generate an error.
 
 =cut
 
-sub _remove_extra_fields
-	{
+sub _remove_extra_fields {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();

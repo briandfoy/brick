@@ -35,8 +35,7 @@ pieces you want.
 
 =cut
 
-sub __make_constraint # may need to change name to make generic
-	{
+sub __make_constraint { # may need to change name to make generic
 	my( $bucket, $validator, $setup ) = @_;
 
 	$setup ||= {};
@@ -45,8 +44,7 @@ sub __make_constraint # may need to change name to make generic
 
 	#print STDERR Data::Dumper->Dump( [\@callers], [qw(callers)] ); use Data::Dumper;
 
-	if( $#callers >= 1 and exists $callers[1]{'sub'} and  $callers[1]{'sub'} =~ m/^_/ )
-		{
+	if( $#callers >= 1 and exists $callers[1]{'sub'} and  $callers[1]{'sub'} =~ m/^_/ ) {
 		carp "$callers[1]{'sub'} called from sub with leading underscore. Are you sure you want that?";
 		}
 
@@ -56,8 +54,7 @@ sub __make_constraint # may need to change name to make generic
 	unless(
 		eval { $validator->isa( ref sub {} ) }    ||
 		UNIVERSAL::isa( $validator, ref sub {} )
-		)
-		{
+		) {
 		croak( "Argument to $callers[1]{'sub'} must be a code reference [$validator]: $@" );
 		}
 

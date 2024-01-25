@@ -39,14 +39,12 @@ Create a code ref to apply a regular expression to the named field.
 
 =cut
 
-sub _matches_regex
-	{
+sub _matches_regex {
 	my( $bucket, $setup ) = @_;
 
 	my @caller = $bucket->__caller_chain_as_list();
 
-	unless( eval { $setup->{regex}->isa( ref qr// ) } )
-		{
+	unless( eval { $setup->{regex}->isa( ref qr// ) } ) {
     	croak( "Argument to $caller[0]{'sub'} must be a regular expression object" );
 		}
 
