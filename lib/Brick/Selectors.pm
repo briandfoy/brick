@@ -232,7 +232,7 @@ brian d foy, C<< <briandfoy@pobox.com> >>
 
 =head1 COPYRIGHT
 
-Copyright © 2007-2023, brian d foy <briandfoy@pobox.com>. All rights reserved.
+Copyright © 2007-2024, brian d foy <briandfoy@pobox.com>. All rights reserved.
 
 You may redistribute this under the terms of the Artistic License 2.0.
 
