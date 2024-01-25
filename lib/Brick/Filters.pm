@@ -3,7 +3,7 @@ package Brick::Filters;
 use base qw(Exporter);
 use vars qw($VERSION);
 
-$VERSION = '0.902';
+$VERSION = '0.903';
 
 package Brick::Bucket;
 use strict;

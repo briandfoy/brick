@@ -16,7 +16,7 @@ foreach my $package ( qw(Numbers Regexes Strings Dates General
 	print STDERR $@ if $@;
 	}
 
-$VERSION = '0.902';
+$VERSION = '0.903';
 
 =encoding utf8
 

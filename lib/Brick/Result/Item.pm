@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.902';
+$VERSION = '0.903';
 
 =encoding utf8
 
