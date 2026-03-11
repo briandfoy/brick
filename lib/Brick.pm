@@ -9,7 +9,7 @@ use Data::Dumper;
 
 use Brick::Profile;
 
-$VERSION = '0.904';
+$VERSION = '0.905';
 
 =encoding utf8
 
