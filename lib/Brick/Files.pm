@@ -65,16 +65,6 @@ sub _file_magic_type {
 	return $format;
 	}
 
-sub _get_file_extensions_by_mime_type {
-	my( $bucket, $type ) = @_;
-
-	require MIME::Types;
-
-	my $mime_types = MIME::Types->new;
-	my $t          = $mime_types->type( $type || '' );
-	my @extensions = $t ? $t->extensions : ();
-	}
-
 =item is_mime_type( HASH_REF )
 
 Passes if the file matches one of the listed MIME types.

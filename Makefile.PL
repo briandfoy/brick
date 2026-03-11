@@ -86,7 +86,6 @@ my %WriteMakefile = (
 	'PREREQ_PM'     => {
 		'Time::Moment'   => '0.38',
 		'Storable'       => '0',
-		'MIME::Types'    => '0',
 		'File::MMagic'   => '0',
 		},
 
